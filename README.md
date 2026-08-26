@@ -1,113 +1,152 @@
 # Threat Harbour
-## A T-Pot-Based Cloud Threat Intelligence Sensor
+## A Cowrie-Based Cloud Threat Intelligence Sensor
 
 Hello Hackers! 
 Today, I will be trying out something new. Usually I am all about red teaming, CTF's and breaking into stuff (legally of course)  
-But today, I've decided to spin up my own honeypot, using T-Pot, to learn more about the other side of the game.   
+
+But today, I've decided to spin up my own honeypot, using Cowrie, to learn more about the other side of the game.   
+
 We will analyze what happens to our instance on internet, which will provide us an insight on how attackers think and work.   
- 
-> A defensive security research project that deploys the T-Pot multi-honeypot
-platform on Oracle Cloud Infrastructure to observe opportunistic attacks,
-collect telemetry, and analyze attacker behavior.
- 
-## Skills demonstrated:
- 
-- Linux server administration
-- Oracle Cloud Infrastructure
-- Virtual networks and firewall rules
-- Docker and containerized security tools
-- Honeypot deployment
-- Log ingestion and analysis
-- Kibana dashboards
-- Threat intelligence
-- Incident triage
-- Detection engineering
-- Technical documentation
-- Secure operations
- 
-## Project status
- 
-| Item | Status |
-|---|---|
-| Cloud deployment | Operational |
-| Honeypot platform | T-Pot |
-| Cloud provider | Oracle Cloud Infrastructure |
-| Architecture | Single-node public sensor |
-| Data visualization | Kibana |
-| Monitoring period | YYYY-MM-DD to YYYY-MM-DD |
-| Last tested | YYYY-MM-DD |
- 
+
+> A lightweight Cowrie SSH/Telnet honeypot sensor deployed on Oracle Cloud Infrastructure Free Tier for defensive security research.
+
+## Executive Summary
+
+This project operates a deliberately exposed Cowrie honeypot sensor in `ap-hyderabad-1`. It records unsolicited authentication attempts, commands, sessions, downloads, and related connection metadata for a defined observation period.  
+The deployment is intentionally lightweight. Because the OCI Free Tier VM has limited CPU, memory, storage, and network resources, this project uses Cowrie rather than a full multi-service like T-Pot.  
+The sensor focuses on SSH/Telnet interaction, operational reliability, careful data collection, and reproducible analysis instead of running every available honeypot service. The deployment is isolated from production systems and does not contain personal data, production workloads, credentials, private keys, or sensitive information. 
+
 ## Objectives
- 
-1. Deploy a multi-honeypot sensor in a cloud environment.
-2. Expose realistic but isolated services to the public Internet.
-3. Collect and visualize attack telemetry.
-4. Identify recurring source networks, usernames, passwords, tools, and payloads.
-5. Produce defensible threat-intelligence findings.
-6. Document the deployment so it can be reproduced safely.
- 
+
+- Deploy and operate a public-facing Cowrie honeypot.
+- Practice cloud networking and host hardening.
+- Measure unsolicited SSH/Telnet activity.
+- Build a resource-conscious collection and analysis pipeline.
+- Produce reproducible, redacted threat-intelligence observations.
+- Document expected honeypot activity separately from possible host compromise.
+
 ## Architecture
- 
-The system consists of:
- 
-- Oracle Cloud public subnet
-- Ubuntu or Debian host
-- T-Pot Docker-based honeypot platform
-- Internet-facing honeypot services
-- T-Pot management interface
-- Elastic/Kibana-based visualization
-- Administrative SSH access on the T-Pot management port
- 
-See [`docs/architecture.md`](docs/architecture.md).
- 
-## Key findings
- 
-This section is updated periodically.
- 
-- Observation period:
-- Total connection attempts:
-- Unique source IPs:
-- Most targeted service:
-- Most common usernames:
-- Most common passwords:
-- Most frequent countries or networks:
-- Malware or payload families observed:
-- Most significant behavioral pattern:
- 
-All findings are based on honeypot telemetry and should not be interpreted
-as attribution of activity to a specific person or organization.
- 
-## Security model
- 
-This sensor is intentionally exposed to hostile traffic. It does not host
-production workloads and must not contain personal data, credentials, or
-sensitive business information.
- 
-Administrative access is restricted to the operator. Honeypot traffic is
-treated as untrusted, and collected data is reviewed and redacted before
-publication.
- 
+
+![Architecture diagram](diagrams/architecture.png)
+
+The architecture consists of one OCI VM in a public subnet. The VM hosts the
+operating system, Cowrie, logging, local analysis utilities, and optional
+dashboard components.
+
+See [docs/architecture.md](docs/architecture.md).
+
+## Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Cloud | Oracle Cloud Infrastructure Free Tier |
+| Region | `ap-hyderabad-1` |
+| Compute shape | `VM.Standard.E2.1.Micro` |
+| Operating system | `Canonical Ubuntu 24.04` |
+| Honeypot | Cowrie `<COWRIE_VERSION>` |
+| Runtime | `Docker` |
+| Collection format | Cowrie JSON logs |
+| Analysis | Python, shell, `<ANALYSIS_TOOL>` |
+| Dashboard | `<KIBANA_OR_OTHER_LIGHTWEIGHT_TOOL>` |
+| Administration | SSH restricted to private-key holders only` |
+| Time standard | UTC |
+
+## Resource-Constrained Design
+
+This is not a full-fledged all-services honeypot. The Free Tier VM imposes resource limitations that affect the design:
+
+- Limited memory for containers and analytical services
+- Limited CPU for simultaneous collection and visualization
+- Limited local storage for logs and downloaded artifacts
+- One public IP and one observation location
+- Possible service degradation during high-volume scanning
+
+To reduce resource pressure, the deployment prioritizes:
+
+- Cowrie SSH/Telnet interaction
+- JSONL logging
+- Log rotation and retention
+- Offline analysis
+- Restricted dashboard access
+- Rebuildability over long-term local accumulation
+
+## Observation Scope
+
+Observation period: `27-08-2026` to `CHANGETHIS`
+
+The sensor records activity directed at intentionally exposed Cowrie services. It does not scan external systems, initiate attacks, or attempt to identify operators.
+
 ## Results
- 
-Include screenshots of:
- 
-- Overall T-Pot dashboard
-- Attack volume over time
-- Source-country or ASN distribution
-- Credential attacks
-- Targeted ports
-- Malware or command activity
-- Storage and system-health metrics
- 
+
+- Total events: `<NUMBER_OF_EVENTS>`
+- Unique source IPs: `<NUMBER_OF_SOURCE_IPS>`
+- SSH sessions: `<NUMBER_OF_SSH_SESSIONS>`
+- Telnet sessions: `<NUMBER_OF_TELNET_SESSIONS>`
+- Successful fake logins: `<NUMBER_OF_FAKE_LOGINS>`
+- Commands observed: `<NUMBER_OF_COMMANDS>`
+- Download attempts: `<NUMBER_OF_DOWNLOADS>`
+- Observation uptime: `<UPTIME_PERCENTAGE>`
+
+These results describe this sensor only. They do not represent all Internet activity.
+
+## Dashboard
+
+![Dashboard overview](dashboards/screenshots/overview.png)
+
+The dashboard displays:
+
+- Events over time
+- Source IP volume
+- Targeted service
+- Username and password combinations
+- Command categories
+- Download attempts
+- Session duration
+- Geographic enrichment, where used, with uncertainty clearly stated
+
+See [dashboards/README.md](dashboards/README.md).
+
+## Ethical Use
+
+This project is intended for defensive security research, education, and controlled observation.
+
+The sensor must not be used to attack, scan, exploit, or access systems without authorization. Published data must be redacted and should not expose credentials, private keys, personal information, malware samples, or unnecessary infrastructure identifiers.
+
 ## Limitations
- 
-- The sensor represents one public IP and one cloud region.
-- Results are affected by Internet scanning trends.
-- GeoIP and ASN data may be inaccurate.
-- T-Pot telemetry is not equivalent to telemetry from a production network.
-- A honeypot cannot establish attacker identity or intent.
- 
-## Ethical use
- 
-This project is for defensive research and monitoring. No attempt is made
-to access, disrupt, exploit, or retaliate against attacking systems.
+
+This project uses one VM, one public IP, and one OCI region. Results are affected by sensor placement, Cowrie's emulation behavior, Internet scanning patterns, resource limits, logging gaps, and the observation period.
+
+The project does not:
+
+- Identify attackers
+- Establish operator identity or intent
+- Attribute activity to a country or organization
+- Stop attacks
+- Represent all Internet activity
+- Prove that a source IP belongs to the person operating the activity
+
+A source IP does not establish the identity, physical location, or intent of the operator.
+
+See [docs/limitations.md](docs/limitations.md).
+
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [Deployment](docs/deployment.md)
+- [Hardening](docs/hardening.md)
+- [Operations](docs/operations.md)
+- [Incident response](docs/incident-response.md)
+- [Threat intelligence](docs/threat-intelligence.md)
+- [Research methodology](docs/research-methodology.md)
+- [Limitations](docs/limitations.md)
+- [Dashboard design](dashboards/README.md)
+- [Security policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+
+## Licensing
+
+No license has been selected for this repository because it is primarily a portfolio and research documentation project.
+
+Third-party software, including Cowrie and its dependencies, retains its own licenses. This repository does not relicense Cowrie or any third-party component.
+
+Original documentation and diagrams may optionally be released under CC BY 4.0. Original scripts may optionally be released under MIT. These are separate licensing choices and do not apply to Cowrie or other third-party software.
