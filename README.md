@@ -2,9 +2,10 @@
 ## A T-Pot-Based Cloud Threat Intelligence Sensor
 
 Hello Hackers! 
-Today, I will be trying out something new. Usually I am all about red teaming, CTF's and breaking into stuff (legally of course)
-But today, I've decided to spin up my own honeypot, using T-Pot, to learn more about the other side of the game. 
-We will analyze what happens to our instance on internet, which will provide us an insight on how attackers think and work. 
+Today, I will be trying out something new. Usually I am all about red teaming, CTF's and breaking into stuff (legally of course)  
+But today, I've decided to spin up my own honeypot, using T-Pot, to learn more about the other side of the game.   
+We will analyze what happens to our instance on internet, which will provide us an insight on how attackers think and work.   
+
 ------------------
 
 > A defensive security research project that deploys the T-Pot multi-honeypot
