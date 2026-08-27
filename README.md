@@ -13,8 +13,10 @@ We will analyze what happens to our instance on internet, which will provide us 
 
 ## Executive Summary
 
-This project operates a deliberately exposed Cowrie honeypot sensor in `ap-hyderabad-1`. It records unsolicited authentication attempts, commands, sessions, downloads, and related connection metadata for a defined observation period.  
+This project operates a deliberately exposed Cowrie honeypot sensor in `ap-hyderabad-1`. It records unsolicited authentication attempts, commands, sessions, downloads, and related connection metadata for a defined observation period. 
+  
 The deployment is intentionally lightweight. Because the OCI Free Tier VM has limited CPU, memory, storage, and network resources, this project uses Cowrie rather than a full multi-service like T-Pot.  
+  
 The sensor focuses on SSH/Telnet interaction, operational reliability, careful data collection, and reproducible analysis instead of running every available honeypot service. The deployment is isolated from production systems and does not contain personal data, production workloads, credentials, private keys, or sensitive information. 
 
 ## Objectives
@@ -91,7 +93,7 @@ These results describe this sensor only. They do not represent all Internet acti
 
 ## Dashboard
 
-![Dashboard overview](dashboards/screenshots/overview.png)
+![Dashboard overview](dashboard/dashboard.png)
 
 The dashboard displays:
 
@@ -104,7 +106,7 @@ The dashboard displays:
 - Session duration
 - Geographic enrichment, where used, with uncertainty clearly stated
 
-See [dashboards/README.md](dashboards/README.md).
+See [dashboards/README.md](dashboard/README.md).
 
 ## Ethical Use
 
