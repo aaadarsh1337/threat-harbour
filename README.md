@@ -1,7 +1,8 @@
 # Threat Harbour
 ## A Cowrie-Based Cloud Threat Intelligence Sensor
 
-Hello Hackers! 
+Hello Hackers!  
+
 Today, I will be trying out something new. Usually I am all about red teaming, CTF's and breaking into stuff (legally of course)  
 
 But today, I've decided to spin up my own honeypot, using Cowrie, to learn more about the other side of the game.   
@@ -43,12 +44,11 @@ See [docs/architecture.md](docs/architecture.md).
 | Region | `ap-hyderabad-1` |
 | Compute shape | `VM.Standard.E2.1.Micro` |
 | Operating system | `Canonical Ubuntu 24.04` |
-| Honeypot | Cowrie `<COWRIE_VERSION>` |
+| Honeypot | Cowrie `3.0.13` |
 | Runtime | `Docker` |
-| Collection format | Cowrie JSON logs |
-| Analysis | Python, shell, `<ANALYSIS_TOOL>` |
-| Dashboard | `<KIBANA_OR_OTHER_LIGHTWEIGHT_TOOL>` |
-| Administration | SSH restricted to private-key holders only` |
+| Collection format | Cowrie JSON logs parsed via Loki |
+| Dashboard | `Grafana + Loki` |
+| Administration | `SSH restricted to private-key holders only` |
 | Time standard | UTC |
 
 ## Resource-Constrained Design
