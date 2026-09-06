@@ -74,20 +74,22 @@ To reduce resource pressure, the deployment prioritizes:
 
 ## Observation Scope
 
-Observation period: `27-08-2026` to `CHANGETHIS`
+Observation period: `27-08-2026` to `ongoing` (interim analysis frozen at `06-09-2026 UTC`).
 
 The sensor records activity directed at intentionally exposed Cowrie services. It does not scan external systems, initiate attacks, or attempt to identify operators.
 
-## Results
+## Results (interim, frozen at `06-09-2026 UTC`; sensor still running)
 
-- Total events: `<NUMBER_OF_EVENTS>`
-- Unique source IPs: `<NUMBER_OF_SOURCE_IPS>`
-- SSH sessions: `<NUMBER_OF_SSH_SESSIONS>`
-- Telnet sessions: `<NUMBER_OF_TELNET_SESSIONS>`
-- Successful fake logins: `<NUMBER_OF_FAKE_LOGINS>`
-- Commands observed: `<NUMBER_OF_COMMANDS>`
-- Download attempts: `<NUMBER_OF_DOWNLOADS>`
-- Observation uptime: `<UPTIME_PERCENTAGE>`
+- Total events: `87,059`
+- Unique source IPs: `1,876`
+- SSH sessions: `17,102`
+- Telnet sessions: `0` (no Telnet events observed; SSH-only in this window)
+- Successful fake logins: `7,404`
+- Commands observed: `6,521` command-input events
+- Download attempts: `66` (+5 uploads)
+- Observation continuity: daily log files for every day `27-08-2026` through `06-09-2026`, no missing days (uptime % not claimed)
+
+See `analysis/summary.md` and `analysis/metrics.json` for method and full tables.
 
 These results describe this sensor only. They do not represent all Internet activity.
 
@@ -95,18 +97,16 @@ These results describe this sensor only. They do not represent all Internet acti
 
 ![Dashboard overview](dashboard/dashboard.png)
 
-The dashboard displays:
+The dashboard displays (tables-only, matching `grafana-dashboard.json`):
 
-- Events over time
-- Source IP volume
-- Targeted service
-- Username and password combinations
-- Command categories
-- Download attempts
-- Session duration
-- Geographic enrichment, where used, with uncertainty clearly stated
+- Login attempts
+- Commands executed
+- Top attacking source IPs by volume
+- Top commands
+- Top usernames
+- Top passwords
 
-See [dashboards/README.md](dashboard/README.md).
+See [dashboard/README.md](dashboard/README.md).
 
 ## Ethical Use
 
@@ -141,14 +141,11 @@ See [docs/limitations.md](docs/limitations.md).
 - [Threat intelligence](docs/threat-intelligence.md)
 - [Research methodology](docs/research-methodology.md)
 - [Limitations](docs/limitations.md)
-- [Dashboard design](dashboards/README.md)
-- [Security policy](SECURITY.md)
+- [Dashboard design](dashboard/README.md)
 - [Changelog](CHANGELOG.md)
 
 ## Licensing
 
-No license has been selected for this repository because it is primarily a portfolio and research documentation project.
+No license file is included: this is a portfolio and research documentation project, all rights reserved by default.
 
 Third-party software, including Cowrie and its dependencies, retains its own licenses. This repository does not relicense Cowrie or any third-party component.
-
-Original documentation and diagrams may optionally be released under CC BY 4.0. Original scripts may optionally be released under MIT. These are separate licensing choices and do not apply to Cowrie or other third-party software.

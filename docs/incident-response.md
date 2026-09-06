@@ -1,5 +1,12 @@
 # Incident Response
 
+## Observation-period disposition (interim, 2026-09-06)
+
+No host-compromise indicators observed in this window. All observed
+activity (logins, commands, `authorized_keys` writes) stayed inside Cowrie
+emulation. `authorized_keys` writes are expected honeypot persistence-probe
+behavior, not host compromise. Continued monitoring per `docs/operations.md`.
+
 ## Expected Honeypot Activity
 
 The following is expected:
@@ -47,7 +54,7 @@ Escalate when there is evidence of:
 9. Rotate any potentially exposed credentials or keys.
 10. Conduct a post-incident review.
 
-## Evidence Record
+## Evidence Record (template — copy when needed; no incident filed in this window)
 
 ```text
 Incident ID: <INCIDENT\_ID>

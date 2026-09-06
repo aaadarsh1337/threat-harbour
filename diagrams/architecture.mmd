@@ -1,0 +1,10 @@
+flowchart TD
+    Internet --> IGW["OCI Internet Gateway"]
+    IGW --> VCN["VCN / Public subnet"]
+    VCN --> FW["Security list / NSG<br/>(honeypot ports only)"]
+    FW --> VM["OCI VM ap-hyderabad-1<br/>VM.Standard.E2.1.Micro<br/>Ubuntu 24.04"]
+    VM --> Cowrie["Cowrie 3.0.13<br/>SSH honeypot<br/>JSONL logs"]
+    Cowrie --> Promtail["Promtail job=cowrie"]
+    Promtail --> Loki["Loki:3100 (localhost)"]
+    Loki --> Grafana["Grafana:3000 (localhost,<br/>via SSH tunnel)"]
+    Cowrie --> Offline["Offline analysis<br/>analysis/ + evidence/"]

@@ -10,7 +10,7 @@
 
 ## Study Design
 
-This is an observational study using one lightweight Cowrie sensor from `<START_UTC>` through `<END_UTC>`.
+This is an observational study using one lightweight Cowrie sensor from `2026-08-27` through `ongoing` (interim cutoff `2026-09-06T20:36:00Z`).
 
 No external systems are scanned or accessed.
 
