@@ -13,7 +13,7 @@ The VM contains:
 - Local storage
 - Analysis scripts
 
-The term single-node refers to the infrastructure layout. This deployment runs Cowrie as an SSH-only sensor; Telnet emulation is disabled by design to fit Free Tier resources and keep the observation scope tight.
+The term single-node refers to the infrastructure layout.
 
 ## Network Flow
 

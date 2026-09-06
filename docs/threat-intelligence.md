@@ -6,7 +6,7 @@
 
 ## Scope
 
-One Cowrie `3.0.13` sensor, SSH-only (Telnet disabled by design).
+One Cowrie `3.0.13` sensor (SSH).
 No external scanning was performed.
 
 ## Data sources

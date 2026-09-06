@@ -196,8 +196,7 @@
   "start": "2026-08-27"
  },
  "protocols": {
-  "ssh": 87059,
-  "telnet_enabled": false
+  "ssh": 87059
  },
  "sessions": {
   "session_connect_events": 17102,
