@@ -4,7 +4,7 @@
 
 - Froze interim metrics at `2026-09-06T20:36:00Z`: 87,059 events, 1,876
   source IPs, 17,102 SSH sessions, 7,404 fake logins, 6,521 commands,
-  66 downloads (+5 uploads). SSH-only; no Telnet events observed.
+  66 downloads (+5 uploads). SSH-only sensor (Telnet disabled).
 - Added `analysis/metrics.json`, `analysis/summary.md`,
   `evidence/manifest.md`
 - Filled `docs/threat-intelligence.md` (interim findings, redacted IoCs)

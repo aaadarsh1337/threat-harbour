@@ -13,7 +13,7 @@ The VM contains:
 - Local storage
 - Analysis scripts
 
-The term single-node refers to the infrastructure layout. It does not mean that only one honeypot behavior or service exists. Cowrie can provide SSH and Telnet emulation from the same VM.
+The term single-node refers to the infrastructure layout. This deployment runs Cowrie as an SSH-only sensor; Telnet emulation is disabled by design to fit Free Tier resources and keep the observation scope tight.
 
 ## Network Flow
 
@@ -30,7 +30,7 @@ Security list / NSG rules
    |
 Public Cowrie VM
    |
-Cowrie SSH/Telnet listeners
+Cowrie SSH listener (port 22 equivalent, SSH-only)
    |
 JSON logs and session artifacts
    |

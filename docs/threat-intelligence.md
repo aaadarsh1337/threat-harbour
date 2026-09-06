@@ -6,8 +6,8 @@
 
 ## Scope
 
-One Cowrie `3.0.13` sensor, SSH-only observations. No Telnet events were
-recorded in this window. No external scanning was performed.
+One Cowrie `3.0.13` sensor, SSH-only (Telnet disabled by design).
+No external scanning was performed.
 
 ## Data sources
 

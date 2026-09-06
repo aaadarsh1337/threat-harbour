@@ -31,8 +31,7 @@ sensor public IP, OCIDs, or keys.
 Allow only the intended honeypot ports from the Internet (SSH to Cowrie).
 Administrative and analytical services must NOT be public:
 
-- Cowrie SSH honeypot: public (observed SSH-only in this window; no Telnet
-  events recorded)
+- Cowrie SSH honeypot: public, SSH-only (Telnet disabled by design)
 - Admin SSH: restricted port/key only (not the honeypot port)
 - Grafana (`3000`) and Loki (`3100`): localhost-bound, reached via SSH
   tunnel (e.g. `ssh -L 3000:localhost:3000`), never exposed publicly

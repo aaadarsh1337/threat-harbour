@@ -21,8 +21,7 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are frozen at
 | Total events | 87,059 |
 | Unique source IPs | 1,876 |
 | Sessions (`cowrie.session.connect`) | 17,102 |
-| SSH events | 87,059 (100% of observed) |
-| Telnet events observed | 0 |
+| SSH events | 87,059 (100%; SSH-only sensor, Telnet disabled) |
 | Fake successful logins (`cowrie.login.success`) | 7,404 |
 | Failed logins | 81 |
 | Command-input events | 6,521 (+67 `command.failed`) |
@@ -57,7 +56,7 @@ Per-day UTC: 08-27: 964 · 08-28: 15,483 · 08-29: 17,457 · 08-30: 6,980 ·
 
 ## Limitations that shape these numbers
 
-- One sensor, one region, SSH-only observations (no Telnet events seen).
+- One SSH-only sensor, one region (Telnet disabled by design).
 - Cowrie emulation + Free Tier resource limits bias what is recorded.
 - 2026-09-06 is a partial-day spike; do not annualize it.
 - Geo/attribution claims are out of scope (see `docs/limitations.md`).

@@ -2,7 +2,7 @@
 
 ## Research Questions
 
-- What unsolicited SSH/Telnet activity reaches the sensor?
+- What unsolicited SSH activity reaches the sensor?
 - Which usernames, passwords, commands, and services are most common?
 - How does activity vary by UTC time period?
 - Which behavioral categories can be identified from Cowrie events?
