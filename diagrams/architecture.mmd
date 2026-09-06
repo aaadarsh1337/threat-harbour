@@ -1,20 +1,12 @@
-flowchart TD
-    Internet["Internet scanners/bots<br/>(unsolicited SSH only)"] --> IGW["OCI Internet Gateway"]
-    IGW --> VCN["VCN + public subnet<br/>+ route table"]
-    VCN --> NSG["Security list / NSG<br/>allow: Cowrie SSH honeypot<br/>deny: 3000/3100, admin SSH"]
-    NSG --> VM["Sensor VM ap-hyderabad-1<br/>E2.1.Micro · Ubuntu 24.04"]
+flowchart LR
+    Internet["Internet scanners/bots<br/>(unsolicited SSH)"] -- scan --> IGW["OCI Edge<br/>Internet Gateway<br/>VCN + public subnet"]
+    IGW --> NSG["NSG / SecList<br/>allow: Cowrie SSH<br/>deny: 3000 / 3100, admin SSH"]
+    NSG -- SSH in --> Cowrie
 
-    subgraph VMBox["Sensor VM (localhost-bound analytics)"]
-        Cowrie["Cowrie 3.0.13 SSH-only<br/>JSONL + tty + downloads/"]
-        Promtail["Promtail 2.9.4<br/>job=cowrie"]
-        Loki["Loki 2.9.4<br/>:3100 localhost"]
-        Grafana["Grafana 10.2.3<br/>:3000 via SSH tunnel"]
-        Cowrie --> Promtail --> Loki --> Grafana
+    subgraph VM["Sensor VM (ap-hyderabad-1 · E2.1.Micro · Ubuntu 24.04)"]
+        Cowrie["Cowrie 3.0.13 SSH-only<br/>SSH honeypot :22<br/>JSONL + tty + downloads/"]
+        Monitor["Monitor stack<br/>Promtail → Loki → Grafana<br/>localhost only"]
+        Cowrie --> Monitor
     end
 
-    VM --> VMBox
-    Cowrie --> Offline["Offline analysis<br/>analysis/metrics.json<br/>evidence/manifest.md"]
-    Grafana -.->|ssh -L 3000:localhost:3000| Analyst["Analyst browser<br/>localhost:3000"]
-
-    style VMBox fill:#eef4ff,stroke:#1b2a4a
-    style Cowrie fill:#e9f5f0,stroke:#0e7c7b
+    Monitor -. tunnel .-> Analyst["Analyst<br/>ssh -L 3000:localhost<br/>Grafana in browser"]

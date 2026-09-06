@@ -1,0 +1,9 @@
+flowchart LR
+    Cowrie["Cowrie 3.0.13<br/>cowrie.json* · 11 files<br/>87,059 events · 0 bad lines"]
+    Promtail["Promtail 2.9.4<br/>job=cowrie<br/>read-only mount"]
+    Loki["Loki 2.9.4<br/>:3100 localhost<br/>LogQL · 6 table panels"]
+    Grafana["Grafana 10.2.3<br/>:3000 via tunnel<br/>logins · commands · tops"]
+    Repo["Repo (published)<br/>analysis/metrics.json<br/>analysis/summary.md<br/>evidence/manifest.md"]
+
+    Cowrie --> Promtail --> Loki --> Grafana --> Repo
+    Cowrie -. offline Python parse .-> Repo

@@ -1,0 +1,35 @@
+// Source for diagrams/architecture.png — render with:
+//   dot -Tpng -Gdpi=150 diagrams/architecture.dot -o diagrams/architecture.png
+digraph architecture {
+  rankdir=LR;
+  bgcolor="#f4f6f9";
+  pad=0.6;
+  nodesep=0.7;
+  ranksep=0.9;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#1b2a4a", penwidth=2];
+  edge [fontname="Helvetica", fontsize=10, fontcolor="#5b6b82", color="#5b6b82", penwidth=2, arrowsize=0.9];
+
+  internet [label="Internet\nscanners / bots\nunsolicited SSH", fillcolor="#fff7e8", color="#c67c1b"];
+  edge_oci [label="OCI Edge\nInternet Gateway\nVCN + public subnet", fillcolor="white"];
+  nsg [label="NSG / SecList\nallow: Cowrie SSH\ndeny: 3000 / 3100, admin SSH", fillcolor="#eef4ff"];
+  analyst [label="Analyst\nssh -L 3000:localhost\nGrafana in browser", fillcolor="white", color="#5b6b82"];
+
+  subgraph cluster_vm {
+    label="Sensor VM (ap-hyderabad-1 · E2.1.Micro · Ubuntu 24.04)";
+    fontname="Helvetica-Bold";
+    fontsize=12;
+    fontcolor="#1b2a4a";
+    color="#0e7c7b";
+    penwidth=2;
+    bgcolor="#e9f5f0";
+    style="rounded,filled";
+    cowrie [label="Cowrie 3.0.13 (venv)\nSSH honeypot :22\nJSONL + tty + downloads/", fillcolor="white", color="#0e7c7b"];
+    monitor [label="Monitor stack\nPromtail → Loki → Grafana\nlocalhost only", fillcolor="white", color="#0e7c7b"];
+    cowrie -> monitor;
+  }
+
+  internet -> edge_oci [label="scan"];
+  edge_oci -> nsg;
+  nsg -> cowrie [label="SSH in"];
+  monitor -> analyst [label="tunnel", style=dashed, color="#0e7c7b", fontcolor="#0e7c7b"];
+}

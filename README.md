@@ -50,8 +50,11 @@ The sensor focuses on SSH interaction, operational reliability, careful data col
 
 ## Architecture
 
-![Architecture diagram](diagrams/architecture.png)
+![Sensor architecture](diagrams/architecture.png)
+*Internet → OCI edge → NSG → Sensor VM (Cowrie + localhost-bound monitor stack) → analyst via SSH tunnel. Grafana/Loki are never public; raw logs stay on sensor.*
+
 ![Data pipeline](diagrams/data-pipeline.png)
+*Same Cowrie JSONL feeds Loki dashboards and the reproducible offline parse. Sources: [`diagrams/architecture.dot`](diagrams/architecture.dot), [`diagrams/data-pipeline.dot`](diagrams/data-pipeline.dot) — re-render with `dot -Tpng -Gdpi=150`.*
 
 One OCI VM in a public subnet: SSH-only Cowrie plus localhost-bound logging and dashboard components (reached via SSH tunnel, never public). See [docs/architecture.md](docs/architecture.md).
 
