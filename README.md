@@ -17,7 +17,7 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — interim, frozen `06-09-2026 UTC` (sensor still running)
+## Collected Data — refreshed every 24 hours (last run `06-09-2026 UTC`)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 

@@ -116,7 +116,7 @@ def readme_block(m):
         cmd_rows.append(f"| {i} | `{short_cmd}` ({fmt(c['count'])}) |")
 
     lines = [
-        f"## Collected Data — interim, frozen `{cutoff} UTC` (sensor still running)",
+        f"## Collected Data — refreshed every 24 hours (last run `{cutoff} UTC`)",
         "",
         f"`27-08-2026` → `ongoing` · Cowrie `{STACK['cowrie']}` · SSH-only · `ap-hyderabad-1`.",
         "",
