@@ -1,0 +1,90 @@
+# Daily metrics — SSH to the sensor, parse Cowrie logs, publish aggregates.
+#
+# Schedule: 00:00 UTC every 24h, plus manual runs via workflow_dispatch.
+# Only aggregates cross the wire (parse_remote.py runs ON the sensor);
+# raw logs, IPs, payloads and keys never leave it.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   SSH_HOST         sensor admin-SSH hostname/IP
+#   SSH_PORT         admin SSH port
+#   SSH_USER         restricted user (metrics)
+#   SSH_PRIVATE_KEY  dedicated ed25519 private key (threat-harbour-metrics)
+#   SSH_KNOWN_HOSTS  `ssh-keyscan -p <port> -t ed25519 <host>` output
+#
+# The workflow needs write access: Settings → Actions → General →
+# Workflow permissions → "Read and write permissions".
+
+name: daily-metrics
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-metrics
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install matplotlib
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/metrics_key
+          chmod 600 ~/.ssh/metrics_key
+          printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Collect metrics from sensor
+        run: |
+          TS=$(date +%s)
+          scp -P "${{ secrets.SSH_PORT }}" \
+            -i ~/.ssh/metrics_key -o BatchMode=yes \
+            scripts/parse_remote.py \
+            "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}":/tmp/th-parse-$TS.py
+          ssh -p "${{ secrets.SSH_PORT }}" \
+            -i ~/.ssh/metrics_key -o BatchMode=yes \
+            "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" \
+            "sudo -n /usr/bin/python3 /tmp/th-parse-$TS.py > /tmp/th-payload.json && rm -f /tmp/th-parse-$TS.py"
+          scp -P "${{ secrets.SSH_PORT }}" \
+            -i ~/.ssh/metrics_key -o BatchMode=yes \
+            "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}":/tmp/th-payload.json payload.json
+          ssh -p "${{ secrets.SSH_PORT }}" \
+            -i ~/.ssh/metrics_key -o BatchMode=yes \
+            "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" \
+            "rm -f /tmp/th-payload.json"
+
+      - name: Render repo files
+        run: python3 scripts/render.py payload.json && rm -f payload.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "threat-harbour-bot"
+          git config user.email "threat-harbour-bot@users.noreply.github.com"
+          git add analysis/metrics.json analysis/summary.md evidence/manifest.md \
+            README.md diagrams/activity-timeline.png diagrams/session-funnel.png
+          if git diff --cached --quiet; then
+            echo "No data changes — nothing to commit."
+            exit 0
+          fi
+          TOTAL=$(python3 -c "import json;print(f\"{json.load(open('analysis/metrics.json'))['totals']['total_events']:,}\")")
+          git commit -m "Daily metrics: ${TOTAL} events (automated)"
+          git push

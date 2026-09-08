@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased: daily automation + README repositioning
+
+- README reframed around the project's purpose: a leaderboard of
+  attacker-tried credentials, refreshed every 24 hours.
+- Added 24h GitHub Actions pipeline (`.github/workflows/daily-metrics.yml`):
+  restricted `metrics` SSH user on the sensor, `scripts/parse_remote.py`
+  (on-box parsing, aggregates only), `scripts/render.py` (README block,
+  `analysis/`, `evidence/`, charts), auto-commit + push on change.
+- README data section wrapped in `METRICS` markers as the render target;
+  methodology and threat-intel docs now point at the live leaderboard.
+
 ## 06-09-2026 (interim analysis, sensor still running)
 
 - Froze interim metrics at `2026-09-06T20:36:00Z`: 87,059 events, 1,876

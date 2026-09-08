@@ -3,6 +3,9 @@
 > Sensor is still running. Observation: `2026-08-27` → `ongoing`.
 > Figures below frozen at `2026-09-06T20:36:00Z`. See `analysis/summary.md`
 > and `analysis/metrics.json` for method.
+>
+> Live leaderboard: the README refreshes every 24 hours — this report is
+> the analyst deep-dive frozen at the cutoff above.
 
 ## Scope
 

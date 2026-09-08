@@ -15,8 +15,33 @@ Then open `http://localhost:3000/d/b3f714e8-54fc-420f-b0ea-1aabea9d4858/cowrie`
 and confirm fresh `cowrie.session.connect` events.
 
 (The legacy `./scripts/health-check.sh` / `./scripts/disk-usage.sh` names
-are retired; no `scripts/` dir ships in this repo. The commands above are
-the current procedure.)
+are retired; `scripts/` now holds the automation below. The commands above
+are the current manual health procedure.)
+
+## Automated daily metrics (GitHub Actions)
+
+`.github/workflows/daily-metrics.yml` runs at `00:00 UTC` daily (plus manual
+`workflow_dispatch`): SSH to the sensor as the restricted `metrics` user,
+`scp` + execute `scripts/parse_remote.py` read-only, render
+`scripts/render.py` output (README block, `analysis/`, `evidence/`, charts),
+then auto-commit + push when numbers changed.
+
+- Sensor side: `metrics` user, key-only auth (`~/.ssh/threat-harbour-metrics`
+  pubkey in `authorized_keys`), passwordless sudo limited to
+  `/usr/bin/python3 /tmp/th-parse-*.py` (`/etc/sudoers.d/metrics-read`).
+  It cannot run anything else as root — verified (`sudo whoami` denied).
+- Secrets (repo Settings → Secrets → Actions): `SSH_HOST`, `SSH_PORT`,
+  `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`.
+- Workflow needs Settings → Actions → General → Workflow permissions →
+  "Read and write permissions".
+- The admin SSH port must be reachable from GitHub-hosted runners, so the
+  OCI security list allows it from `0.0.0.0/0`. Accepted tradeoff: port is
+  key-only, and the automation account is restricted to log parsing.
+- Failures fail loud and push nothing — a stale README beats a wrong one.
+  Manual equivalent of one run is documented in `evidence/manifest.md`.
+
+Key rotation: `ssh-keygen -t ed25519`, replace the pubkey in
+`/home/metrics/.ssh/authorized_keys`, update the `SSH_PRIVATE_KEY` secret.
 
 ## What to watch
 

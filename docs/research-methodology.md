@@ -59,3 +59,10 @@ Record:
 ## Ethics
 
 The sensor is intentionally exposed for defensive observation. Analysis must avoid unnecessary publication of personal information, credentials, private keys, malware content, or sensitive infrastructure details.
+
+## Publication
+
+Aggregates refresh every 24 hours through the automated pipeline
+(`.github/workflows/daily-metrics.yml` + `scripts/`): the README leaderboard
+is the live view, `analysis/` holds the machine-readable tables, and
+`docs/threat-intelligence.md` records the analyst deep-dive per cutoff.

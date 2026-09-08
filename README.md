@@ -1,8 +1,22 @@
 # Threat Harbour
-## A Cowrie-Based Cloud Threat Intelligence Sensor
+## What credentials are attackers trying right now? Ask this box.
 
-> A lightweight Cowrie SSH honeypot sensor on Oracle Cloud Infrastructure Free Tier for defensive security research. I usually do red teaming — this is my look at the other side: what actually hits an exposed box on the internet.
+> A Cowrie SSH honeypot on Oracle Cloud Free Tier that publishes a **fresh leaderboard of real attacker credentials every 24 hours** — the usernames, passwords, and commands bots actually try against SSH servers in the wild.
 
+## Why this exists
+
+Every exposed SSH port on the internet gets knocked on thousands of times a day by bots working through credential lists. Most people still pick passwords from exactly the pool those bots try first. This repo closes that gap with live evidence: **if a password appears in the table below, bots are already trying it against your servers too.**
+
+Use it to:
+
+- Sanity-check password choices against what is actively being brute-forced.
+- Justify MFA and password-manager adoption with real numbers, not theory.
+- Teach brute-force attacks with a live specimen instead of slides.
+- Feed blue-team awareness, blocklists, and detection ideas.
+
+No attribution, no hype — just counts of what hit the sensor, refreshed daily.
+
+<!-- METRICS:START -->
 ## Collected Data — interim, frozen `06-09-2026 UTC` (sensor still running)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
@@ -30,23 +44,11 @@ Key findings:
 ![Activity timeline](diagrams/activity-timeline.png)
 
 Method + full tables: [`analysis/summary.md`](analysis/summary.md), [`analysis/metrics.json`](analysis/metrics.json). These results describe this sensor only.
+<!-- METRICS:END -->
 
-## Executive Summary
+## How it stays fresh
 
-This project operates a deliberately exposed Cowrie honeypot sensor in `ap-hyderabad-1`. It records unsolicited authentication attempts, commands, sessions, downloads, and related connection metadata for a defined observation period. 
-  
-The deployment is intentionally lightweight. Because the OCI Free Tier VM has limited CPU, memory, storage, and network resources, this project uses Cowrie rather than a full multi-service like T-Pot.  
-  
-The sensor focuses on SSH interaction, operational reliability, careful data collection, and reproducible analysis instead of running every available honeypot service. The deployment is isolated from production systems and does not contain personal data, production workloads, credentials, private keys, or sensitive information. 
-
-## Objectives
-
-- Deploy and operate a public-facing Cowrie honeypot.
-- Practice cloud networking and host hardening.
-- Measure unsolicited SSH activity.
-- Build a resource-conscious collection and analysis pipeline.
-- Produce reproducible, redacted threat-intelligence observations.
-- Document expected honeypot activity separately from possible host compromise.
+A GitHub Actions job runs **every 24 hours**: it SSHes into the sensor as a restricted read-only user, parses the Cowrie logs on the box, and commits the updated tables and charts back here. Only aggregates ever leave the sensor — raw logs, source IPs, and payloads stay on it. Details in [`docs/operations.md`](docs/operations.md); pipeline in [`scripts/`](scripts/).
 
 ## Architecture
 
@@ -54,96 +56,34 @@ The sensor focuses on SSH interaction, operational reliability, careful data col
 *Internet → OCI edge → NSG → Sensor VM (Cowrie + localhost-bound monitor stack) → analyst via SSH tunnel. Grafana/Loki are never public; raw logs stay on sensor.*
 
 ![Data pipeline](diagrams/data-pipeline.png)
-*Same Cowrie JSONL feeds Loki dashboards and the reproducible offline parse. Sources: [`diagrams/architecture.dot`](diagrams/architecture.dot), [`diagrams/data-pipeline.dot`](diagrams/data-pipeline.dot) — re-render with `dot -Tpng -Gdpi=150`.*
+*Same Cowrie JSONL feeds Loki dashboards and the reproducible offline parse. Diagram sources render with `dot -Tpng -Gdpi=150`.*
 
-One OCI VM in a public subnet: SSH-only Cowrie plus localhost-bound logging and dashboard components (reached via SSH tunnel, never public). See [docs/architecture.md](docs/architecture.md).
-
-## Technology Stack
-
-| Layer | Technology |
-|---|---|
-| Cloud | Oracle Cloud Infrastructure Free Tier |
-| Region | `ap-hyderabad-1` |
-| Compute shape | `VM.Standard.E2.1.Micro` |
-| Operating system | `Canonical Ubuntu 24.04` |
-| Honeypot | Cowrie `3.0.13` (venv) |
-| Monitoring | `Docker`: Grafana + Loki + Promtail |
-| Collection | Cowrie JSONL (`job=cowrie` via Promtail/Loki; offline Python parse) |
-| Administration | `SSH restricted to private-key holders only` |
-| Time standard | UTC |
-
-## Resource-Constrained Design
-
-This is not a full-fledged all-services honeypot. The Free Tier VM imposes resource limitations that affect the design:
-
-- Limited memory for containers and analytical services
-- Limited CPU for simultaneous collection and visualization
-- Limited local storage for logs and downloaded artifacts
-- One public IP and one observation location
-- Possible service degradation during high-volume scanning
-
-To reduce resource pressure, the deployment prioritizes:
-
-- Cowrie SSH interaction
-- JSONL logging
-- Log rotation and retention
-- Offline analysis
-- Restricted dashboard access
-- Rebuildability over long-term local accumulation
+One Free Tier VM (`VM.Standard.E2.1.Micro`, Ubuntu 24.04, `ap-hyderabad-1`): SSH-only Cowrie `3.0.13`, plus Grafana + Loki + Promtail over Docker, all localhost-bound. Deliberately small instead of a full multi-service setup like T-Pot — one port, tight scope, rebuildable. See [docs/architecture.md](docs/architecture.md).
 
 ## Dashboard
 
 ![Dashboard overview](dashboard/dashboard.png)
 
-The dashboard displays (tables-only, matching `grafana-dashboard.json`):
-
-- Login attempts
-- Commands executed
-- Top attacking source IPs by volume
-- Top commands
-- Top usernames
-- Top passwords
-
-See [dashboard/README.md](dashboard/README.md).
-
-## Ethical Use
-
-This project is intended for defensive security research, education, and controlled observation.
-
-The sensor must not be used to attack, scan, exploit, or access systems without authorization. Published data must be redacted and should not expose credentials, private keys, personal information, malware samples, or unnecessary infrastructure identifiers.
+Live Grafana view of the same data (tables of logins, commands, top IPs, top credentials). See [dashboard/README.md](dashboard/README.md).
 
 ## Limitations
 
-This project uses one VM, one public IP, and one OCI region. Results are affected by sensor placement, Cowrie's emulation behavior, Internet scanning patterns, resource limits, logging gaps, and the observation period.
+One VM, one IP, one region — this is what hit *this* sensor, not the whole internet. A source IP never identifies the operator. Cowrie's emulation shapes what gets recorded. Full statement in [docs/limitations.md](docs/limitations.md).
 
-The project does not:
+The project does not identify attackers, attribute activity to any country or organization, stop attacks, or prove anything about who operates a source IP.
 
-- Identify attackers
-- Establish operator identity or intent
-- Attribute activity to a country or organization
-- Stop attacks
-- Represent all Internet activity
-- Prove that a source IP belongs to the person operating the activity
+## Ethical use
 
-A source IP does not establish the identity, physical location, or intent of the operator.
-
-See [docs/limitations.md](docs/limitations.md).
+Defensive research and education only. Published data is aggregate and redacted — no private keys, personal information, malware samples, or infrastructure identifiers.
 
 ## Documentation
 
-- [Architecture](docs/architecture.md)
-- [Deployment](docs/deployment.md)
-- [Hardening](docs/hardening.md)
-- [Operations](docs/operations.md)
-- [Incident response](docs/incident-response.md)
-- [Threat intelligence](docs/threat-intelligence.md)
+- [Threat intelligence](docs/threat-intelligence.md) — deep-dive findings per cutoff
 - [Research methodology](docs/research-methodology.md)
-- [Limitations](docs/limitations.md)
-- [Dashboard design](dashboard/README.md)
-- [Changelog](CHANGELOG.md)
+- [Deployment](docs/deployment.md) · [Hardening](docs/hardening.md) · [Operations](docs/operations.md) (incl. automation)
+- [Incident response](docs/incident-response.md) · [Limitations](docs/limitations.md)
+- [Dashboard design](dashboard/README.md) · [Changelog](CHANGELOG.md)
 
 ## Licensing
 
-No license file is included: this is a portfolio and research documentation project, all rights reserved by default.
-
-Third-party software, including Cowrie and its dependencies, retains its own licenses. This repository does not relicense Cowrie or any third-party component.
+No license file: portfolio and research documentation project, all rights reserved by default. Cowrie and dependencies keep their own licenses.
