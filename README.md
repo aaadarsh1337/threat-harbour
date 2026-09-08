@@ -80,9 +80,13 @@ Defensive research and education only. Published data is aggregate and redacted 
 
 - [Threat intelligence](docs/threat-intelligence.md) — deep-dive findings per cutoff
 - [Research methodology](docs/research-methodology.md)
-- [Deployment](docs/deployment.md) · [Hardening](docs/hardening.md) · [Operations](docs/operations.md) (incl. automation)
-- [Incident response](docs/incident-response.md) · [Limitations](docs/limitations.md)
-- [Dashboard design](dashboard/README.md) · [Changelog](CHANGELOG.md)
+- [Deployment](docs/deployment.md)
+- [Hardening](docs/hardening.md)
+- [Operations](docs/operations.md) (incl. automation)
+- [Incident response](docs/incident-response.md)
+- [Limitations](docs/limitations.md)
+- [Dashboard design](dashboard/README.md)
+- [Changelog](CHANGELOG.md)
 
 ## Acknowledgments
 
