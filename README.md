@@ -17,28 +17,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `06-09-2026 UTC`)
+## Collected Data — refreshed every 24 hours (last run `08-09-2026 UTC`)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `87,059` | `1,876` | `17,102` | `7,404` / 81 failed | `6,521` (+67 failed) | `66` (+5) |
+| `174,877` | `2,112` | `28,494` | `18,337` / 138 failed | `16,926` (+109 failed) | `101` (+12) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (3,311) | `123456` (461) | `uname -s -v -n -r -m` (4,692) |
-| 2 | `admin` (342) | `1234` (234) | `hostname` (249) |
-| 3 | `user` (230) | `123` (230) | `uname -a` (151) |
-| 4 | `ubuntu` (191) | `12345678` (130) | `whoami` (122) |
-| 5 | `test` (138) | `admin` (117) | `pwd` (101) |
+| 1 | `root` (9,795) | `123456` (960) | `uname -s -v -n -r -m` (12,396) |
+| 2 | `admin` (761) | `1234` (470) | `hostname` (721) |
+| 3 | `user` (446) | `123` (465) | `uname -a` (356) |
+| 4 | `ubuntu` (415) | `12345678` (271) | `/bin/./uname -s -v -n -r -m` (336) |
+| 5 | `deploy` (248) | `admin` (259) | `whoami` (315) |
 
 Key findings:
 
-- Median session `8.4s` (52% under 10s) — mostly automated scanning, not humans.
-- `91%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
+- Median session `2.3s` (71% under 10s) — mostly automated scanning, not humans.
+- `93%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44…`, content withheld).
-- Busiest /16 by volume: `91.92.0.0/16` (36,956 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (62,784 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
