@@ -23,12 +23,12 @@ No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `174,877` | `2,112` | `28,494` | `18,337` / 138 failed | `16,926` (+109 failed) | `101` (+12) |
+| `174,927` | `2,112` | `28,501` | `18,343` / 138 failed | `16,931` (+109 failed) | `101` (+12) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (9,795) | `123456` (960) | `uname -s -v -n -r -m` (12,396) |
-| 2 | `admin` (761) | `1234` (470) | `hostname` (721) |
+| 1 | `root` (9,801) | `123456` (960) | `uname -s -v -n -r -m` (12,396) |
+| 2 | `admin` (761) | `1234` (470) | `hostname` (722) |
 | 3 | `user` (446) | `123` (465) | `uname -a` (356) |
 | 4 | `ubuntu` (415) | `12345678` (271) | `/bin/./uname -s -v -n -r -m` (336) |
 | 5 | `deploy` (248) | `admin` (259) | `whoami` (315) |
@@ -83,6 +83,13 @@ Defensive research and education only. Published data is aggregate and redacted 
 - [Deployment](docs/deployment.md) · [Hardening](docs/hardening.md) · [Operations](docs/operations.md) (incl. automation)
 - [Incident response](docs/incident-response.md) · [Limitations](docs/limitations.md)
 - [Dashboard design](dashboard/README.md) · [Changelog](CHANGELOG.md)
+
+## Acknowledgments
+
+Sensor design, cloud deployment, hardening, and analysis direction are my own
+work. AI assistance was used for documentation drafting and the automation
+scripts (`scripts/`, workflow) — every metric published here comes from real
+sensor logs, not generated content.
 
 ## Licensing
 

@@ -11,8 +11,11 @@
 
 ## Network Controls
 
-Public exposure should be limited to the Cowrie listener ports. Administrative and analytical services must remain private or localhost-bound.
- 
+Public exposure should be limited to the Cowrie listener ports. Grafana and
+Loki must remain localhost-bound (SSH tunnel only). Admin SSH is key-only
+on a non-standard port with a restricted automation account — see the
+tradeoff documented in `operations.md`.
+
 Validate the effective rules from both OCI and the host firewall.
 
 ## Host Controls

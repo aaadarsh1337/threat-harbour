@@ -46,9 +46,9 @@ Key rotation: `ssh-keygen -t ed25519`, replace the pubkey in
 ## What to watch
 
 - All three monitor containers up: `grafana`, `loki`, `promtail`
-- Cowrie daily log file growing; per-day counts logged to
-  `analysis/metrics.json` at each interim cutoff
-- Disk: `50M` of Cowrie JSON at 2026-09-06 cutoff — plan rotation before
+- Cowrie daily log file growing; per-day counts refresh in
+  `analysis/metrics.json` with each daily run
+- Cowrie JSON grows daily — watch `du -sh` on the log dir and rotate before
   Free Tier disk pressure; never delete without recording hashes/counts
 - Resource limits in `honeypot-monitor/docker-compose.yml`
   (loki 280M, grafana 220M, promtail 80M)
@@ -56,5 +56,5 @@ Key rotation: `ssh-keygen -t ed25519`, replace the pubkey in
 ## Change control
 
 Record Cowrie version (`3.0.13`), config rev, and compose rev in
-`CHANGELOG.md` at each interim analysis. Raw logs stay on sensor;
+`CHANGELOG.md` on any infra or config change. Raw logs stay on sensor;
 publish aggregates only.

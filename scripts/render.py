@@ -157,13 +157,25 @@ def summary_md(m):
         f"{k[5:]}: {fmt(v)}" for k, v in sorted(per_day.items()))
     lok, cmd, dur = m["logins"], m["commands"], m["sessions"]["session_duration_seconds"]
     cats = m["behavioral_command_categories"]
-    top_u = ", ".join(f"`{u['value']}` ({fmt(u['count'])})" for u in lok["top_usernames"][:5])
-    top_p = ", ".join(f"`{p['value']}` ({fmt(p['count'])})" for p in lok["top_passwords"][:5])
-    top_c = ", ".join(f"`{c['input'][:40]}` ({fmt(c['count'])})" for c in cmd["top_commands"][:5])
-    return f"""# Analysis summary (interim, cutoff {cutoff})
+    per_day = m["collection"]["per_day_utc"]
+    day_rows = "\n".join(
+        f"| `{d}` | {fmt(c)} |" for d, c in sorted(per_day.items()))
+    last_day = sorted(per_day)[-1]
+    top_tables = []
+    for title, items, key in (("Top usernames", lok["top_usernames"], "value"),
+                              ("Top passwords", lok["top_passwords"], "value"),
+                              ("Top commands", cmd["top_commands"], "input")):
+        rows = "\n".join(
+            f"| {i} | `{it[key][:60]}` | {fmt(it['count'])} |"
+            for i, it in enumerate(items[:10], 1))
+        top_tables.append(
+            f"### {title}\n\n| # | Value | Tries |\n|---|---|---|\n{rows}")
+    cat_rows = "\n".join(
+        f"| `{k}` | {fmt(v)} |" for k, v in sorted(cats.items()))
+    return f"""# Analysis summary (rolling snapshot, cutoff {cutoff})
 
-Sensor is **still running**. This is an interim analysis, not a closed study.
-Observation: `2026-08-27` → `ongoing`. Numbers below are frozen at
+Sensor is **still running** — this file regenerates every 24 hours.
+Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 `{cutoff}` ({fmt(m['totals']['total_events'])} events).
 
 ## Source
@@ -188,14 +200,27 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are frozen at
 | Command-input events | {fmt(cmd['input_events'])} (+{fmt(cmd['failed_command_events'])} `command.failed`) |
 | File-download events | {fmt(m['downloads_uploads']['file_download_events'])} |
 | File-upload events | {fmt(m['downloads_uploads']['file_upload_events'])} |
-| Session duration median (n={fmt(dur['n_closed_matched'])} matched close) | {dur['median']:.1f}s; {fmt(dur['under_10s'])} < 10s; max ~{dur['max']:.0f}s |
+| Session duration median (n={fmt(dur['n_closed_matched'])} matched close) | {dur['median']:.1f}s; {fmt(dur['under_10s'])} < 10s; max ~{dur['max']:,.0f}s |
 
-Per-day UTC: {day_str} (last day partial at cutoff — do not annualize).
+## Events per UTC day
 
-Top usernames: {top_u}.
-Top passwords: {top_p}.
-Top commands: {top_c}.
-Command categories: {", ".join(f"{k} {v}" for k, v in sorted(cats.items()))}.
+| Day (UTC) | Events |
+|---|---|
+{day_rows}
+
+`{last_day}` is partial at cutoff — do not annualize.
+
+{top_tables[0]}
+
+{top_tables[1]}
+
+{top_tables[2]}
+
+### Command categories
+
+| Category | Events |
+|---|---|
+{cat_rows}
 
 ## Limitations that shape these numbers
 
@@ -203,15 +228,15 @@ Command categories: {", ".join(f"{k} {v}" for k, v in sorted(cats.items()))}.
 - Cowrie emulation + Free Tier resource limits bias what is recorded.
 - Geo/attribution claims are out of scope (see `docs/limitations.md`).
 
-Full tables: `metrics.json`. Loki equivalents in `dashboard/README.md`.
+Full tables: `metrics.json`. Loki equivalents in `../dashboard/README.md`.
 """
 
 
 def manifest_md(m, payload):
     files = payload["collection"]["file_lines"]
-    file_list = "\n".join(
-        f"  `{name}` ({fmt(n)} lines)" for name, n in sorted(files.items()))
-    return f"""# Evidence manifest (interim, cutoff {m['analysis_cutoff_utc']})
+    file_rows = "\n".join(
+        f"| `{name}` | {fmt(n)} |" for name, n in sorted(files.items()))
+    return f"""# Evidence manifest (rolling snapshot, cutoff {m['analysis_cutoff_utc']})
 
 Raw Cowrie logs are **retained on the sensor only** and are not published.
 This manifest lets a reviewer re-derive `analysis/metrics.json`.
@@ -219,10 +244,15 @@ This manifest lets a reviewer re-derive `analysis/metrics.json`.
 ## Dataset
 
 - Host path: `{SENSOR_LOG_PATH}` ({payload['collection']['files']} files)
-- Total lines: {fmt(m['totals']['total_events'])} ({m['totals']['bad_json_lines']} malformed). Per-file:
-{file_list}
+- Total lines: {fmt(m['totals']['total_events'])} ({m['totals']['bad_json_lines']} malformed)
 - Cowrie: `{STACK['cowrie']}`
 - Collector: Promtail `{STACK['promtail']}` → Loki `{STACK['loki']}` (`job="cowrie"`), Grafana `{STACK['grafana']}`
+
+### Lines per file
+
+| File | Lines |
+|---|---|
+{file_rows}
 
 ## What is / is not in this repo
 
@@ -234,11 +264,9 @@ This manifest lets a reviewer re-derive `analysis/metrics.json`.
 
 ## Re-derivation
 
-```bash
-# automated daily: .github/workflows/daily-metrics.yml
-# manual equivalent (read-only on sensor):
-python3 scripts/render.py <(ssh metrics@<SENSOR> "sudo /usr/bin/python3 ..." )
-```
+Automated daily via `.github/workflows/daily-metrics.yml` (manual trigger:
+Actions → daily-metrics → Run workflow). Manual equivalent is documented in
+`docs/operations.md`.
 
 ## Health / continuity
 

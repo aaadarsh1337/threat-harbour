@@ -1,11 +1,14 @@
 # Incident Response
 
-## Observation-period disposition (interim, 2026-09-06)
+## Standing disposition (last check 2026-09-08)
 
-No host-compromise indicators observed in this window. All observed
-activity (logins, commands, `authorized_keys` writes) stayed inside Cowrie
-emulation. `authorized_keys` writes are expected honeypot persistence-probe
-behavior, not host compromise. Continued monitoring per `docs/operations.md`.
+No host-compromise indicators: expected users only, no new `authorized_keys`
+entries, only the three monitor containers running, listeners limited to
+Cowrie (`22`), admin SSH (`1337`), and localhost-bound analytics
+(`3000`/`3100`). All observed attacker activity (logins, commands,
+`authorized_keys` writes) stayed inside Cowrie emulation — those writes are
+expected honeypot persistence-probe behavior, not host compromise.
+Reconfirm on any alert; procedure below stays current per `docs/operations.md`.
 
 ## Expected Honeypot Activity
 

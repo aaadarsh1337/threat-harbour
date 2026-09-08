@@ -1,5 +1,13 @@
 # Changelog
 
+## Rolling daily operation (from 08-09-2026)
+
+- First automated run green: README, `analysis/`, `evidence/`, and charts
+  now refresh every 24 hours from live sensor data.
+- `analysis/summary.md` and `evidence/manifest.md` reformatted as proper
+  tables; all numbers carry thousands separators; fixed relative link.
+- `docs/threat-intelligence.md` refreshed to the 08-09-2026 cutoff.
+
 ## Unreleased: daily automation + README repositioning
 
 - README reframed around the project's purpose: a leaderboard of

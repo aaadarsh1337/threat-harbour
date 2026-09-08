@@ -45,5 +45,5 @@ grafana-dashboard.json
 ```
 
 Import via Grafana → Dashboards → Import. Screenshot: `dashboard.png`
-(interim data; regenerate after each analysis cutoff if panels change).
+(refresh when panels change, not on data updates).
 Current dashboard UID: `b3f714e8-54fc-420f-b0ea-1aabea9d4858`.
