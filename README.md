@@ -17,26 +17,26 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `08-09-2026 UTC`)
+## Collected Data — refreshed every 24 hours (last run `09-09-2026 UTC`)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `174,927` | `2,112` | `28,501` | `18,343` / 138 failed | `16,931` (+109 failed) | `101` (+12) |
+| `181,361` | `2,155` | `29,401` | `19,124` / 147 failed | `17,627` (+112 failed) | `102` (+16) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (9,801) | `123456` (960) | `uname -s -v -n -r -m` (12,396) |
-| 2 | `admin` (761) | `1234` (470) | `hostname` (722) |
-| 3 | `user` (446) | `123` (465) | `uname -a` (356) |
-| 4 | `ubuntu` (415) | `12345678` (271) | `/bin/./uname -s -v -n -r -m` (336) |
-| 5 | `deploy` (248) | `admin` (259) | `whoami` (315) |
+| 1 | `root` (10,223) | `123456` (1,013) | `uname -s -v -n -r -m` (12,641) |
+| 2 | `admin` (811) | `1234` (484) | `hostname` (836) |
+| 3 | `user` (463) | `123` (476) | `/bin/./uname -s -v -n -r -m` (432) |
+| 4 | `ubuntu` (429) | `admin` (278) | `uname -a` (383) |
+| 5 | `deploy` (251) | `12345678` (273) | `whoami` (331) |
 
 Key findings:
 
 - Median session `2.3s` (71% under 10s) — mostly automated scanning, not humans.
-- `93%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
+- `92%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44…`, content withheld).
 - Busiest /16 by volume: `109.160.0.0/16` (62,784 events) — volume only, never attribution.
 

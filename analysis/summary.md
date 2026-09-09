@@ -1,13 +1,13 @@
-# Analysis summary (rolling snapshot, cutoff 2026-09-08T19:08:28Z)
+# Analysis summary (rolling snapshot, cutoff 2026-09-09T03:31:39Z)
 
 Sensor is **still running** — this file regenerates every 24 hours.
 Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
-`2026-09-08T19:08:28Z` (174,927 events).
+`2026-09-09T03:31:39Z` (181,361 events).
 
 ## Source
 
 - Cowrie JSONL on sensor: `/home/jack/honeypot/var/log/cowrie/cowrie.json*`
-  (13 files, 0 malformed lines) — the same files Promtail ships to Loki
+  (14 files, 0 malformed lines) — the same files Promtail ships to Loki
   (`job="cowrie"`).
 - Parser: `scripts/parse_remote.py` (stdlib only, deployed fresh each run);
   renderer: `scripts/render.py`. Aggregates only. Raw logs stay on the
@@ -17,16 +17,16 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Metric | Value |
 |---|---|
-| Total events | 174,927 |
-| Unique source IPs | 2,112 |
-| Sessions (`cowrie.session.connect`) | 28,501 |
-| SSH events | 174,927 (100%) |
-| Fake successful logins (`cowrie.login.success`) | 18,343 |
-| Failed logins | 138 |
-| Command-input events | 16,931 (+109 `command.failed`) |
-| File-download events | 101 |
-| File-upload events | 12 |
-| Session duration median (n=28,401 matched close) | 2.3s; 20,055 < 10s; max ~9,614s |
+| Total events | 181,361 |
+| Unique source IPs | 2,155 |
+| Sessions (`cowrie.session.connect`) | 29,401 |
+| SSH events | 181,361 (100%) |
+| Fake successful logins (`cowrie.login.success`) | 19,124 |
+| Failed logins | 147 |
+| Command-input events | 17,627 (+112 `command.failed`) |
+| File-download events | 102 |
+| File-upload events | 16 |
+| Session duration median (n=29,301 matched close) | 2.3s; 20,940 < 10s; max ~9,614s |
 
 ## Events per UTC day
 
@@ -44,65 +44,66 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-09-05` | 3,592 |
 | `2026-09-06` | 24,144 |
 | `2026-09-07` | 39,684 |
-| `2026-09-08` | 42,402 |
+| `2026-09-08` | 44,543 |
+| `2026-09-09` | 4,293 |
 
-`2026-09-08` is partial at cutoff — do not annualize.
+`2026-09-09` is partial at cutoff — do not annualize.
 
 ### Top usernames
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `root` | 9,801 |
-| 2 | `admin` | 761 |
-| 3 | `user` | 446 |
-| 4 | `ubuntu` | 415 |
-| 5 | `deploy` | 248 |
-| 6 | `test` | 242 |
-| 7 | `user1` | 139 |
+| 1 | `root` | 10,223 |
+| 2 | `admin` | 811 |
+| 3 | `user` | 463 |
+| 4 | `ubuntu` | 429 |
+| 5 | `deploy` | 251 |
+| 6 | `test` | 248 |
+| 7 | `user1` | 141 |
 | 8 | `debian` | 127 |
-| 9 | `claude` | 124 |
+| 9 | `claude` | 125 |
 | 10 | `support` | 108 |
 
 ### Top passwords
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `123456` | 960 |
-| 2 | `1234` | 470 |
-| 3 | `123` | 465 |
-| 4 | `12345678` | 271 |
-| 5 | `admin` | 259 |
-| 6 | `password` | 223 |
-| 7 | `root` | 206 |
-| 8 | `1` | 204 |
-| 9 | `12345` | 167 |
-| 10 | `123456789` | 149 |
+| 1 | `123456` | 1,013 |
+| 2 | `1234` | 484 |
+| 3 | `123` | 476 |
+| 4 | `admin` | 278 |
+| 5 | `12345678` | 273 |
+| 6 | `password` | 236 |
+| 7 | `root` | 209 |
+| 8 | `1` | 208 |
+| 9 | `12345` | 170 |
+| 10 | `123456789` | 150 |
 
 ### Top commands
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `uname -s -v -n -r -m` | 12,396 |
-| 2 | `hostname` | 722 |
-| 3 | `uname -a` | 356 |
-| 4 | `/bin/./uname -s -v -n -r -m` | 336 |
-| 5 | `whoami` | 315 |
-| 6 | `pwd` | 259 |
-| 7 | `ls -la /` | 220 |
-| 8 | `history | tail -5` | 205 |
-| 9 | `netstat -tulpn | head -10` | 201 |
+| 1 | `uname -s -v -n -r -m` | 12,641 |
+| 2 | `hostname` | 836 |
+| 3 | `/bin/./uname -s -v -n -r -m` | 432 |
+| 4 | `uname -a` | 383 |
+| 5 | `whoami` | 331 |
+| 6 | `pwd` | 273 |
+| 7 | `ls -la /` | 238 |
+| 8 | `history | tail -5` | 220 |
+| 9 | `netstat -tulpn | head -10` | 213 |
 
 ### Command categories
 
 | Category | Events |
 |---|---|
 | `destructive` | 8 |
-| `discovery` | 15,679 |
-| `downloader` | 4 |
+| `discovery` | 16,286 |
+| `downloader` | 6 |
 | `empty` | 4 |
-| `other` | 424 |
+| `other` | 437 |
 | `persistence-privilege` | 3 |
-| `shell-exec` | 809 |
+| `shell-exec` | 883 |
 
 ## Limitations that shape these numbers
 
