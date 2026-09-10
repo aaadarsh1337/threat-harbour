@@ -17,28 +17,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `09-09-2026 UTC`)
+## Collected Data — refreshed every 24 hours (last run `10-09-2026 UTC`)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `181,361` | `2,155` | `29,401` | `19,124` / 147 failed | `17,627` (+112 failed) | `102` (+16) |
+| `205,285` | `2,272` | `32,605` | `22,077` / 162 failed | `20,314` (+144 failed) | `128` (+27) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (10,223) | `123456` (1,013) | `uname -s -v -n -r -m` (12,641) |
-| 2 | `admin` (811) | `1234` (484) | `hostname` (836) |
-| 3 | `user` (463) | `123` (476) | `/bin/./uname -s -v -n -r -m` (432) |
-| 4 | `ubuntu` (429) | `admin` (278) | `uname -a` (383) |
-| 5 | `deploy` (251) | `12345678` (273) | `whoami` (331) |
+| 1 | `root` (10,998) | `123456` (1,129) | `uname -s -v -n -r -m` (14,592) |
+| 2 | `admin` (918) | `1234` (587) | `hostname` (992) |
+| 3 | `user` (498) | `123` (535) | `uname -a` (438) |
+| 4 | `ubuntu` (444) | `admin` (355) | `/bin/./uname -s -v -n -r -m` (434) |
+| 5 | `test` (252) | `12345678` (307) | `whoami` (375) |
 
 Key findings:
 
-- Median session `2.3s` (71% under 10s) — mostly automated scanning, not humans.
+- Median session `2.3s` (74% under 10s) — mostly automated scanning, not humans.
 - `92%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44…`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (62,784 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (78,408 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
