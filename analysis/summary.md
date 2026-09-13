@@ -1,13 +1,13 @@
-# Analysis summary (rolling snapshot, cutoff 2026-09-11T18:20:09Z)
+# Analysis summary (rolling snapshot, cutoff 2026-09-13T12:09:26Z)
 
 Sensor is **still running** — this file regenerates every 24 hours.
 Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
-`2026-09-11T18:20:09Z` (247,715 events).
+`2026-09-13T12:09:26Z` (254,642 events).
 
 ## Source
 
 - Cowrie JSONL on sensor: `/home/jack/honeypot/var/log/cowrie/cowrie.json*`
-  (16 files, 0 malformed lines) — the same files Promtail ships to Loki
+  (18 files, 0 malformed lines) — the same files Promtail ships to Loki
   (`job="cowrie"`).
 - Parser: `scripts/parse_remote.py` (stdlib only, deployed fresh each run);
   renderer: `scripts/render.py`. Aggregates only. Raw logs stay on the
@@ -17,16 +17,16 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Metric | Value |
 |---|---|
-| Total events | 247,715 |
-| Unique source IPs | 2,476 |
-| Sessions (`cowrie.session.connect`) | 38,622 |
-| SSH events | 247,715 (100%) |
-| Fake successful logins (`cowrie.login.success`) | 27,090 |
+| Total events | 254,642 |
+| Unique source IPs | 2,734 |
+| Sessions (`cowrie.session.connect`) | 40,766 |
+| SSH events | 254,642 (100%) |
+| Fake successful logins (`cowrie.login.success`) | 27,190 |
 | Failed logins | 173 |
-| Command-input events | 25,072 (+184 `command.failed`) |
+| Command-input events | 25,142 (+184 `command.failed`) |
 | File-download events | 156 |
 | File-upload events | 33 |
-| Session duration median (n=38,522 matched close) | 2.3s; 28,890 < 10s; max ~9,614s |
+| Session duration median (n=40,572 matched close) | 2.4s; 29,351 < 10s; max ~9,614s |
 
 ## Events per UTC day
 
@@ -47,18 +47,20 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-09-08` | 44,543 |
 | `2026-09-09` | 23,409 |
 | `2026-09-10` | 44,701 |
-| `2026-09-11` | 2,537 |
+| `2026-09-11` | 3,711 |
+| `2026-09-12` | 3,333 |
+| `2026-09-13` | 2,420 |
 
-`2026-09-11` is partial at cutoff — do not annualize.
+`2026-09-13` is partial at cutoff — do not annualize.
 
 ### Top usernames
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `root` | 12,712 |
-| 2 | `admin` | 1,013 |
-| 3 | `user` | 529 |
-| 4 | `ubuntu` | 490 |
+| 1 | `root` | 12,763 |
+| 2 | `admin` | 1,022 |
+| 3 | `user` | 532 |
+| 4 | `ubuntu` | 491 |
 | 5 | `test` | 259 |
 | 6 | `deploy` | 254 |
 | 7 | `avelychko` | 213 |
@@ -70,14 +72,14 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `123456` | 1,289 |
-| 2 | `1234` | 654 |
-| 3 | `123` | 578 |
-| 4 | `admin` | 404 |
-| 5 | `12345678` | 341 |
+| 1 | `123456` | 1,292 |
+| 2 | `1234` | 660 |
+| 3 | `123` | 581 |
+| 4 | `admin` | 409 |
+| 5 | `12345678` | 343 |
 | 6 | `1` | 286 |
-| 7 | `password` | 282 |
-| 8 | `12345` | 277 |
+| 7 | `password` | 283 |
+| 8 | `12345` | 279 |
 | 9 | `root` | 258 |
 | 10 | `123456789` | 210 |
 
@@ -86,26 +88,26 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | # | Value | Tries |
 |---|---|---|
 | 1 | `uname -s -v -n -r -m` | 18,641 |
-| 2 | `hostname` | 1,075 |
-| 3 | `/bin/./uname -s -v -n -r -m` | 646 |
-| 4 | `uname -a` | 468 |
+| 2 | `hostname` | 1,081 |
+| 3 | `/bin/./uname -s -v -n -r -m` | 681 |
+| 4 | `uname -a` | 472 |
 | 5 | `whoami` | 402 |
-| 6 | `pwd` | 314 |
-| 7 | `ls -la /` | 280 |
-| 8 | `history | tail -5` | 260 |
-| 9 | `netstat -tulpn | head -10` | 257 |
+| 6 | `pwd` | 315 |
+| 7 | `ls -la /` | 283 |
+| 8 | `history | tail -5` | 262 |
+| 9 | `netstat -tulpn | head -10` | 258 |
 
 ### Command categories
 
 | Category | Events |
 |---|---|
 | `destructive` | 18 |
-| `discovery` | 23,188 |
+| `discovery` | 23,245 |
 | `downloader` | 6 |
 | `empty` | 4 |
-| `other` | 605 |
+| `other` | 606 |
 | `persistence-privilege` | 4 |
-| `shell-exec` | 1,247 |
+| `shell-exec` | 1,259 |
 
 ## Limitations that shape these numbers
 

@@ -17,28 +17,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `11-09-2026 UTC`)
+## Collected Data — refreshed every 24 hours (last run `13-09-2026 UTC`)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `247,715` | `2,476` | `38,622` | `27,090` / 173 failed | `25,072` (+184 failed) | `156` (+33) |
+| `254,642` | `2,734` | `40,766` | `27,190` / 173 failed | `25,142` (+184 failed) | `156` (+33) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (12,712) | `123456` (1,289) | `uname -s -v -n -r -m` (18,641) |
-| 2 | `admin` (1,013) | `1234` (654) | `hostname` (1,075) |
-| 3 | `user` (529) | `123` (578) | `/bin/./uname -s -v -n -r -m` (646) |
-| 4 | `ubuntu` (490) | `admin` (404) | `uname -a` (468) |
-| 5 | `test` (259) | `12345678` (341) | `whoami` (402) |
+| 1 | `root` (12,763) | `123456` (1,292) | `uname -s -v -n -r -m` (18,641) |
+| 2 | `admin` (1,022) | `1234` (660) | `hostname` (1,081) |
+| 3 | `user` (532) | `123` (581) | `/bin/./uname -s -v -n -r -m` (681) |
+| 4 | `ubuntu` (491) | `admin` (409) | `uname -a` (472) |
+| 5 | `test` (259) | `12345678` (343) | `whoami` (402) |
 
 Key findings:
 
-- Median session `2.3s` (75% under 10s) — mostly automated scanning, not humans.
+- Median session `2.4s` (72% under 10s) — mostly automated scanning, not humans.
 - `92%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44…`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (110,846 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (110,866 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
