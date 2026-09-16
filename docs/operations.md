@@ -52,10 +52,10 @@ action itself is correct — the E2.Micro sensor wedges under memory pressure
 (Cowrie + Loki/Grafana/Promtail on ~1 GB RAM) and `sshd` stops answering.
 A dashboard reboot fixes it because it reboots out-of-band via the
 hypervisor; an in-band `ssh ... "sudo reboot"` cannot work once `sshd` is
-dead. The workflow therefore issues an OCI `SOFTREBOOT` (the API equivalent
-of Console → Compute → Instances → Reboot, safe graceful reboot) on every run,
-waits up to ~10 min for SSH to return, then does the collect with 3× retries
-per `scp`/`ssh` step.
+dead. The workflow therefore issues an OCI `RESET` (force reboot, the API
+equivalent of Console → Compute → Instances → Reboot with "Force reboot"
+checked) on every run, waits up to ~10 min for SSH to return, then does
+the collect with 3× retries per `scp`/`ssh` step.
 
 One-time setup (OCI console):
 
@@ -72,16 +72,27 @@ One-time setup (OCI console):
 4. Principle of least privilege: create a dedicated OCI user (or group +
    policy limited to `manage instances` on this one compartment/instance)
    for the workflow; do not reuse your admin API key.
-5. Test: Actions → daily-metrics → Run workflow. Expect `SOFTREBOOT
+5. Test: Actions → daily-metrics → Run workflow. Expect `RESET
    issued` → `SSH is back` → collect → commit. If SSH never returns, check
    the instance state in the console and the serial console / boot volume.
 
 Notes:
 
-- The workflow uses safe `SOFTREBOOT` (graceful). Never switch it to hard
-  `REBOOT` power-cycle — it risks Cowrie log corruption.
+- The workflow uses force `RESET` (immediate power off, then power back
+  on) deliberately. There is no `SOFTREBOOT` action in the OCI API/CLI —
+  valid `--action` values are `STOP`, `START`, `SOFTRESET`, `RESET`,
+  `SOFTSTOP`, etc. — so the previous `SOFTREBOOT` value failed every run.
+  `SOFTRESET` (graceful) was not chosen because a wedged sensor may never
+  answer the OS shutdown signal, and `SOFTRESET` then waits up to 15 min
+  before power-cycling anyway; `RESET` recovers immediately and works even
+  when the OS/`sshd` is fully dead.
+- Tradeoff of a force reboot: at most the in-flight Cowrie JSON line being
+  written at power-off can truncate. The collector tolerates this (the
+  parser skips/counts malformed lines), ext4 journaling recovers the
+  filesystem, and the next run re-parses the full log set — so worst case
+  is one lost event, versus a stuck pipeline with no run at all.
 - Local equivalent of one run: `oci compute instance action
-  --instance-id <OCID> --action SOFTREBOOT`, wait for `ssh` to answer,
+  --instance-id <OCID> --action RESET`, wait for `ssh` to answer,
   then the manual collect in `evidence/manifest.md`.
 
 ## What to watch

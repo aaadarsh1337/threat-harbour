@@ -4,11 +4,16 @@
 # Only aggregates cross the wire (parse_remote.py runs ON the sensor);
 # raw logs, IPs, payloads and keys never leave it.
 #
-# Flow: OCI SOFTREBOOT (control-plane, same as dashboard soft reboot) →
-# wait-for-SSH → scp/ssh collect with retries → render → commit.
+# Flow: OCI RESET (control-plane hard reboot, same as dashboard Reboot
+# with "Force reboot" checked) → wait-for-SSH → scp/ssh collect with
+# retries → render → commit.
 # The reboot is needed because the E2.Micro sensor wedges sshd/scp under
 # memory pressure; in-band `ssh ... reboot` cannot work when sshd is dead,
 # so we reboot out-of-band via the OCI API before touching SSH.
+# RESET is used (not SOFTRESET) because a wedged OS may never answer the
+# graceful shutdown signal — RESET power-cycles immediately via the
+# hypervisor. Valid --action values are STOP, START, SOFTRESET, RESET,
+# SOFTSTOP, ... — there is no SOFTREBOOT.
 #
 # Required repo secrets (Settings → Secrets and variables → Actions):
 #   SSH_HOST         sensor admin-SSH hostname/IP
@@ -66,7 +71,7 @@ jobs:
           printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-      - name: Reboot sensor via OCI API (SOFTREBOOT)
+      - name: Reboot sensor via OCI API (RESET, force reboot)
         env:
           OCI_TENANCY_OCID: ${{ secrets.OCI_TENANCY_OCID }}
           OCI_USER_OCID: ${{ secrets.OCI_USER_OCID }}
@@ -92,11 +97,14 @@ jobs:
           key_file=$HOME/.oci/oci_api_key.pem
           EOF
           chmod 600 ~/.oci/config
-          # Safe (graceful OS reboot via hypervisor, same as dashboard Reboot).
+          # Force reboot (immediate power-cycle via hypervisor, same as
+          # dashboard Reboot with "Force reboot" checked). Chosen over
+          # SOFTRESET because the wedged sensor may ignore a graceful
+          # shutdown signal.
           oci compute instance action \
             --instance-id "$OCI_INSTANCE_OCID" \
-            --action SOFTREBOOT
-          echo "SOFTREBOOT issued; sshd will drop during reboot — expected."
+            --action RESET
+          echo "RESET issued; sshd will drop during reboot — expected."
 
       - name: Wait for SSH after reboot
         run: |
@@ -112,7 +120,7 @@ jobs:
             echo "SSH not ready (attempt $i/30) — waiting 20s..."
             sleep 20
           done
-          echo "ERROR: SSH did not come back within ~10 min of SOFTREBOOT" >&2
+          echo "ERROR: SSH did not come back within ~10 min of RESET" >&2
           exit 1
 
       - name: Collect metrics from sensor
