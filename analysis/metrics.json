@@ -1,20 +1,20 @@
 {
- "analysis_cutoff_utc": "2026-09-15T19:41:52Z",
+ "analysis_cutoff_utc": "2026-09-16T13:24:18Z",
  "observation_period": {
   "start": "2026-08-27",
   "end": "ongoing",
-  "interim_cutoff": "2026-09-15"
+  "interim_cutoff": "2026-09-16"
  },
  "totals": {
-  "total_events": 263759,
+  "total_events": 278837,
   "bad_json_lines": 1
  },
  "sources": {
-  "unique_source_ips": 2943,
+  "unique_source_ips": 3068,
   "top_source_net16_by_event_volume": [
    {
     "cidr": "109.160.0.0/16",
-    "events": 110879
+    "events": 122359
    },
    {
     "cidr": "91.92.0.0/16",
@@ -22,11 +22,11 @@
    },
    {
     "cidr": "138.68.0.0/16",
-    "events": 15653
+    "events": 16180
    },
    {
     "cidr": "103.214.0.0/16",
-    "events": 14271
+    "events": 14551
    },
    {
     "cidr": "139.59.0.0/16",
@@ -34,58 +34,58 @@
    },
    {
     "cidr": "179.61.0.0/16",
-    "events": 8687
+    "events": 9015
    },
    {
     "cidr": "2.57.0.0/16",
-    "events": 5214
+    "events": 5720
    },
    {
     "cidr": "45.148.0.0/16",
-    "events": 4868
+    "events": 4945
    }
   ]
  },
  "sessions": {
-  "unique_session_ids": 42974,
-  "session_connect_events": 42973,
+  "unique_session_ids": 45222,
+  "session_connect_events": 45221,
   "session_duration_seconds": {
-   "n_closed_matched": 42720,
-   "median": 2.410289,
+   "n_closed_matched": 45019,
+   "median": 2.413667,
    "max": 18022.218617,
-   "under_10s": 30075
+   "under_10s": 32026
   }
  },
  "protocols": {
-  "ssh": 263759
+  "ssh": 278837
  },
  "logins": {
-  "success_fake": 27787,
-  "failed": 191,
+  "success_fake": 29503,
+  "failed": 201,
   "top_usernames": [
    {
     "value": "root",
-    "count": 13293
+    "count": 13976
    },
    {
     "value": "admin",
-    "count": 1043
+    "count": 1110
    },
    {
     "value": "user",
-    "count": 541
+    "count": 595
    },
    {
     "value": "ubuntu",
-    "count": 495
-   },
-   {
-    "value": "test",
-    "count": 260
+    "count": 558
    },
    {
     "value": "deploy",
-    "count": 254
+    "count": 288
+   },
+   {
+    "value": "test",
+    "count": 288
    },
    {
     "value": "avelychko",
@@ -97,7 +97,7 @@
    },
    {
     "value": "vyos",
-    "count": 191
+    "count": 194
    },
    {
     "value": "dell",
@@ -107,100 +107,100 @@
   "top_passwords": [
    {
     "value": "123456",
-    "count": 1300
+    "count": 1406
    },
    {
     "value": "1234",
-    "count": 675
+    "count": 731
    },
    {
     "value": "123",
-    "count": 588
+    "count": 640
    },
    {
     "value": "admin",
-    "count": 423
+    "count": 453
    },
    {
     "value": "12345678",
-    "count": 349
+    "count": 375
    },
    {
     "value": "1",
-    "count": 288
-   },
-   {
-    "value": "12345",
-    "count": 286
+    "count": 315
    },
    {
     "value": "password",
-    "count": 285
+    "count": 306
+   },
+   {
+    "value": "12345",
+    "count": 300
    },
    {
     "value": "root",
-    "count": 260
+    "count": 284
    },
    {
     "value": "123456789",
-    "count": 216
+    "count": 230
    }
   ]
  },
  "commands": {
-  "input_events": 25633,
-  "failed_command_events": 190,
+  "input_events": 27220,
+  "failed_command_events": 196,
   "top_commands": [
    {
     "input": "uname -s -v -n -r -m",
-    "count": 18641
+    "count": 20073
    },
    {
     "input": "hostname",
-    "count": 1140
+    "count": 1156
    },
    {
     "input": "/bin/./uname -s -v -n -r -m",
-    "count": 715
+    "count": 772
    },
    {
     "input": "uname -a",
-    "count": 516
+    "count": 527
    },
    {
     "input": "whoami",
-    "count": 426
+    "count": 433
    },
    {
     "input": "pwd",
-    "count": 337
+    "count": 343
    },
    {
     "input": "ls -la /",
-    "count": 312
+    "count": 318
    },
    {
-    "input": "history | tail -5",
-    "count": 282
+    "input": "netstat -tulpn | head -10",
+    "count": 287
    }
   ]
  },
  "behavioral_command_categories": {
-  "discovery": 23569,
-  "shell-exec": 1394,
-  "other": 638,
+  "discovery": 25133,
+  "other": 652,
+  "shell-exec": 1403,
   "destructive": 18,
   "empty": 4,
   "persistence-privilege": 4,
   "downloader": 6
  },
  "downloads_uploads": {
-  "file_download_events": 163,
-  "file_upload_events": 33,
+  "file_download_events": 168,
+  "file_upload_events": 34,
   "top_destfiles": [
    {
     "value": "/root/.ssh/authorized_keys",
-    "count": 62
+    "count": 66
    },
    {
     "value": "/tmp/sshcfg",
@@ -222,7 +222,7 @@
   "top_shasums": [
    {
     "value": "a8460f446be540410004b1a8db4083773fa46f7fe76fa84219c93daa1669f8f2",
-    "count": 144
+    "count": 149
    },
    {
     "value": "00b6f15c2274420217ed3098a9f5f00545bf1793d7a324fd18a7809cbbf5b12b",
@@ -235,30 +235,30 @@
   ]
  },
  "event_ids": {
-  "cowrie.session.closed": 42773,
-  "cowrie.session.connect": 42973,
-  "cowrie.client.version": 38073,
-  "cowrie.client.kex": 32405,
-  "cowrie.login.success": 27787,
-  "cowrie.direct-tcpip.request": 1133,
-  "cowrie.direct-tcpip.ja4": 400,
-  "cowrie.direct-tcpip.data": 546,
-  "cowrie.session.params": 25617,
-  "cowrie.command.input": 25633,
-  "cowrie.log.closed": 25615,
-  "cowrie.command.failed": 190,
-  "cowrie.session.file_download": 163,
-  "cowrie.login.failed": 191,
-  "cowrie.direct-tcpip.ja4h": 137,
+  "cowrie.session.connect": 45221,
+  "cowrie.session.closed": 45020,
+  "cowrie.client.version": 40045,
+  "cowrie.client.kex": 34256,
+  "cowrie.login.success": 29503,
+  "cowrie.direct-tcpip.request": 1240,
+  "cowrie.direct-tcpip.data": 652,
+  "cowrie.direct-tcpip.ja4": 448,
+  "cowrie.session.params": 27204,
+  "cowrie.command.input": 27220,
+  "cowrie.log.closed": 27202,
+  "cowrie.command.failed": 196,
+  "cowrie.session.file_download": 168,
+  "cowrie.login.failed": 201,
+  "cowrie.session.file_upload": 34,
   "cowrie.client.size": 9,
   "cowrie.client.var": 25,
   "cowrie.command.chpasswd": 3,
-  "cowrie.session.file_upload": 33,
   "cowrie.client.fingerprint": 51,
-  "cowrie.client.malformed_packet": 2
+  "cowrie.client.malformed_packet": 2,
+  "cowrie.direct-tcpip.ja4h": 137
  },
  "collection": {
-  "files": 20,
+  "files": 21,
   "log_path_on_sensor": "/home/jack/honeypot/var/log/cowrie/cowrie.json*",
   "per_day_utc": {
    "2026-08-27": 964,
@@ -280,9 +280,10 @@
    "2026-09-12": 3333,
    "2026-09-13": 6459,
    "2026-09-14": 3525,
-   "2026-09-15": 1553
+   "2026-09-15": 2779,
+   "2026-09-16": 13852
   },
-  "sensor_uptime_note": "Continuous daily log files 2026-08-27 through 2026-09-15, no missing days observed",
+  "sensor_uptime_note": "Continuous daily log files 2026-08-27 through 2026-09-16, no missing days observed",
   "bad_json_lines": 1
  },
  "stack": {

@@ -1,12 +1,12 @@
-# Evidence manifest (rolling snapshot, cutoff 2026-09-15T19:41:52Z)
+# Evidence manifest (rolling snapshot, cutoff 2026-09-16T13:24:18Z)
 
 Raw Cowrie logs are **retained on the sensor only** and are not published.
 This manifest lets a reviewer re-derive `analysis/metrics.json`.
 
 ## Dataset
 
-- Host path: `/home/jack/honeypot/var/log/cowrie/cowrie.json*` (20 files)
-- Total lines: 263,759 (1 malformed)
+- Host path: `/home/jack/honeypot/var/log/cowrie/cowrie.json*` (21 files)
+- Total lines: 278,837 (1 malformed)
 - Cowrie: `3.0.13`
 - Collector: Promtail `2.9.4` → Loki `2.9.4` (`job="cowrie"`), Grafana `10.2.3`
 
@@ -14,7 +14,7 @@ This manifest lets a reviewer re-derive `analysis/metrics.json`.
 
 | File | Lines |
 |---|---|
-| `cowrie.json` | 1,553 |
+| `cowrie.json` | 13,852 |
 | `cowrie.json.2026-08-27` | 964 |
 | `cowrie.json.2026-08-28` | 15,483 |
 | `cowrie.json.2026-08-29` | 17,457 |
@@ -34,6 +34,7 @@ This manifest lets a reviewer re-derive `analysis/metrics.json`.
 | `cowrie.json.2026-09-12` | 3,333 |
 | `cowrie.json.2026-09-13` | 6,459 |
 | `cowrie.json.2026-09-14` | 3,525 |
+| `cowrie.json.2026-09-15` | 2,779 |
 
 ## What is / is not in this repo
 
