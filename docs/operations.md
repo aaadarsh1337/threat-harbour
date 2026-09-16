@@ -31,7 +31,9 @@ then auto-commit + push when numbers changed.
   `/usr/bin/python3 /tmp/th-parse-*.py` (`/etc/sudoers.d/metrics-read`).
   It cannot run anything else as root — verified (`sudo whoami` denied).
 - Secrets (repo Settings → Secrets → Actions): `SSH_HOST`, `SSH_PORT`,
-  `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`.
+  `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`, plus the OCI API
+  set below (`OCI_TENANCY_OCID`, `OCI_USER_OCID`, `OCI_FINGERPRINT`,
+  `OCI_PRIVATE_KEY`, `OCI_REGION`, `OCI_INSTANCE_OCID`).
 - Workflow needs Settings → Actions → General → Workflow permissions →
   "Read and write permissions".
 - The admin SSH port must be reachable from GitHub-hosted runners, so the
@@ -42,6 +44,45 @@ then auto-commit + push when numbers changed.
 
 Key rotation: `ssh-keygen -t ed25519`, replace the pubkey in
 `/home/metrics/.ssh/authorized_keys`, update the `SSH_PRIVATE_KEY` secret.
+
+## Pre-run reboot (why + setup)
+
+Symptom: `scp`/`ssh` from the workflow times out or resets even though the
+action itself is correct — the E2.Micro sensor wedges under memory pressure
+(Cowrie + Loki/Grafana/Promtail on ~1 GB RAM) and `sshd` stops answering.
+A dashboard reboot fixes it because it reboots out-of-band via the
+hypervisor; an in-band `ssh ... "sudo reboot"` cannot work once `sshd` is
+dead. The workflow therefore issues an OCI `SOFTREBOOT` (the API equivalent
+of Console → Compute → Instances → Reboot, safe graceful reboot) on every run,
+waits up to ~10 min for SSH to return, then does the collect with 3× retries
+per `scp`/`ssh` step.
+
+One-time setup (OCI console):
+
+1. Identity → Users → your user → API Keys → Add API Key → generate a pair.
+   Download the private key; note the fingerprint.
+2. Collect: tenancy OCID (Profile → Tenancy), user OCID (Users → details),
+   region (e.g. `ap-hyderabad-1`), instance OCID (Compute → Instances →
+   sensor → details).
+3. Repo → Settings → Secrets and variables → Actions → New repository
+   secret, one each for: `OCI_TENANCY_OCID`, `OCI_USER_OCID`,
+   `OCI_FINGERPRINT`, `OCI_PRIVATE_KEY` (paste the full PEM including
+   `-----BEGIN/END PRIVATE KEY-----` — this is the API key, not the SSH
+   key), `OCI_REGION`, `OCI_INSTANCE_OCID`.
+4. Principle of least privilege: create a dedicated OCI user (or group +
+   policy limited to `manage instances` on this one compartment/instance)
+   for the workflow; do not reuse your admin API key.
+5. Test: Actions → daily-metrics → Run workflow. Expect `SOFTREBOOT
+   issued` → `SSH is back` → collect → commit. If SSH never returns, check
+   the instance state in the console and the serial console / boot volume.
+
+Notes:
+
+- The workflow uses safe `SOFTREBOOT` (graceful). Never switch it to hard
+  `REBOOT` power-cycle — it risks Cowrie log corruption.
+- Local equivalent of one run: `oci compute instance action
+  --instance-id <OCID> --action SOFTREBOOT`, wait for `ssh` to answer,
+  then the manual collect in `evidence/manifest.md`.
 
 ## What to watch
 

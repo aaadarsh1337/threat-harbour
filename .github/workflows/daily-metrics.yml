@@ -4,12 +4,25 @@
 # Only aggregates cross the wire (parse_remote.py runs ON the sensor);
 # raw logs, IPs, payloads and keys never leave it.
 #
+# Flow: OCI SOFTREBOOT (control-plane, same as dashboard soft reboot) →
+# wait-for-SSH → scp/ssh collect with retries → render → commit.
+# The reboot is needed because the E2.Micro sensor wedges sshd/scp under
+# memory pressure; in-band `ssh ... reboot` cannot work when sshd is dead,
+# so we reboot out-of-band via the OCI API before touching SSH.
+#
 # Required repo secrets (Settings → Secrets and variables → Actions):
 #   SSH_HOST         sensor admin-SSH hostname/IP
 #   SSH_PORT         admin SSH port
 #   SSH_USER         restricted user (metrics)
 #   SSH_PRIVATE_KEY  dedicated ed25519 private key (threat-harbour-metrics)
 #   SSH_KNOWN_HOSTS  `ssh-keyscan -p <port> -t ed25519 <host>` output
+#   OCI_TENANCY_OCID  tenancy OCID (OCI console → Profile → Tenancy)
+#   OCI_USER_OCID     user OCID (Identity → Users → your user → OCID)
+#   OCI_FINGERPRINT   API key fingerprint (Users → API Keys → Add API Key)
+#   OCI_PRIVATE_KEY   API private key PEM (NOT the SSH key; keep the
+#                     matching public key registered on the OCI user)
+#   OCI_REGION       e.g. ap-hyderabad-1
+#   OCI_INSTANCE_OCID sensor instance OCID (Compute → Instances → details)
 #
 # The workflow needs write access: Settings → Actions → General →
 # Workflow permissions → "Read and write permissions".
@@ -31,7 +44,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -42,7 +55,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install matplotlib
+        run: pip install matplotlib oci-cli
 
       - name: Set up SSH
         run: |
@@ -53,22 +66,84 @@ jobs:
           printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
+      - name: Reboot sensor via OCI API (SOFTREBOOT)
+        env:
+          OCI_TENANCY_OCID: ${{ secrets.OCI_TENANCY_OCID }}
+          OCI_USER_OCID: ${{ secrets.OCI_USER_OCID }}
+          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+          OCI_REGION: ${{ secrets.OCI_REGION }}
+          OCI_INSTANCE_OCID: ${{ secrets.OCI_INSTANCE_OCID }}
+        run: |
+          set -euo pipefail
+          for v in OCI_TENANCY_OCID OCI_USER_OCID OCI_FINGERPRINT OCI_PRIVATE_KEY OCI_REGION OCI_INSTANCE_OCID; do
+            if [ -z "${!v:-}" ]; then echo "ERROR: secret $v is not set" >&2; exit 1; fi
+          done
+          mkdir -p ~/.oci
+          chmod 700 ~/.oci
+          printf '%s\n' "$OCI_PRIVATE_KEY" > ~/.oci/oci_api_key.pem
+          chmod 600 ~/.oci/oci_api_key.pem
+          cat > ~/.oci/config <<EOF
+          [DEFAULT]
+          user=$OCI_USER_OCID
+          fingerprint=$OCI_FINGERPRINT
+          tenancy=$OCI_TENANCY_OCID
+          region=$OCI_REGION
+          key_file=$HOME/.oci/oci_api_key.pem
+          EOF
+          chmod 600 ~/.oci/config
+          # Safe (graceful OS reboot via hypervisor, same as dashboard Reboot).
+          oci compute instance action \
+            --instance-id "$OCI_INSTANCE_OCID" \
+            --action SOFTREBOOT
+          echo "SOFTREBOOT issued; sshd will drop during reboot — expected."
+
+      - name: Wait for SSH after reboot
+        run: |
+          set -euo pipefail
+          SSH_OPTS="-p ${{ secrets.SSH_PORT }} -i ~/.ssh/metrics_key -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3"
+          # shellcheck disable=SC2086
+          for i in $(seq 1 30); do
+            # NB: unquoted $SSH_OPTS is intentional (word-splitting into flags).
+            if ssh $SSH_OPTS "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" "echo ok" 2>/dev/null; then
+              echo "SSH is back (attempt $i)."
+              exit 0
+            fi
+            echo "SSH not ready (attempt $i/30) — waiting 20s..."
+            sleep 20
+          done
+          echo "ERROR: SSH did not come back within ~10 min of SOFTREBOOT" >&2
+          exit 1
+
       - name: Collect metrics from sensor
         run: |
+          set -euo pipefail
+          SSH_OPTS="-p ${{ secrets.SSH_PORT }} -i ~/.ssh/metrics_key -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=20 -o ServerAliveInterval=15 -o ServerAliveCountMax=3"
+          SCP_OPTS="-P ${{ secrets.SSH_PORT }} -i ~/.ssh/metrics_key -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=20"
+          retry() { # retry <n> <delay_s> <cmd...>
+            local n=$1 delay=$2; shift 2
+            local i
+            for i in $(seq 1 "$n"); do
+              if "$@"; then return 0; fi
+              echo "attempt $i/$n failed: $* — retrying in ${delay}s..." >&2
+              sleep "$delay"
+            done
+            return 1
+          }
           TS=$(date +%s)
-          scp -P "${{ secrets.SSH_PORT }}" \
-            -i ~/.ssh/metrics_key -o BatchMode=yes \
+          # shellcheck disable=SC2086
+          retry 3 20 scp $SCP_OPTS \
             scripts/parse_remote.py \
             "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}":/tmp/th-parse-$TS.py
-          ssh -p "${{ secrets.SSH_PORT }}" \
-            -i ~/.ssh/metrics_key -o BatchMode=yes \
+          # shellcheck disable=SC2086
+          retry 3 20 ssh $SSH_OPTS \
             "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" \
             "sudo -n /usr/bin/python3 /tmp/th-parse-$TS.py > /tmp/th-payload.json && rm -f /tmp/th-parse-$TS.py"
-          scp -P "${{ secrets.SSH_PORT }}" \
-            -i ~/.ssh/metrics_key -o BatchMode=yes \
+          # shellcheck disable=SC2086
+          retry 3 20 scp $SCP_OPTS \
             "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}":/tmp/th-payload.json payload.json
-          ssh -p "${{ secrets.SSH_PORT }}" \
-            -i ~/.ssh/metrics_key -o BatchMode=yes \
+          # shellcheck disable=SC2086
+          retry 3 20 ssh $SSH_OPTS \
             "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" \
             "rm -f /tmp/th-payload.json"
 
