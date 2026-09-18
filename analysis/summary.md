@@ -1,8 +1,8 @@
-# Analysis summary (rolling snapshot, cutoff 2026-09-17T03:52:21Z)
+# Analysis summary (rolling snapshot, cutoff 2026-09-18T03:38:54Z)
 
 Sensor is **still running** — this file regenerates every 24 hours.
 Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
-`2026-09-17T03:52:21Z` (328,523 events).
+`2026-09-18T03:38:54Z` (353,909 events).
 
 ## Source
 
@@ -17,16 +17,16 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Metric | Value |
 |---|---|
-| Total events | 328,523 |
-| Unique source IPs | 3,134 |
-| Sessions (`cowrie.session.connect`) | 51,592 |
-| SSH events | 328,523 (100%) |
-| Fake successful logins (`cowrie.login.success`) | 35,652 |
-| Failed logins | 224 |
-| Command-input events | 33,204 (+214 `command.failed`) |
-| File-download events | 186 |
+| Total events | 353,909 |
+| Unique source IPs | 3,178 |
+| Sessions (`cowrie.session.connect`) | 54,850 |
+| SSH events | 353,909 (100%) |
+| Fake successful logins (`cowrie.login.success`) | 38,795 |
+| Failed logins | 238 |
+| Command-input events | 36,239 (+222 `command.failed`) |
+| File-download events | 195 |
 | File-upload events | 43 |
-| Session duration median (n=51,389 matched close) | 2.4s; 38,007 < 10s; max ~18,022s |
+| Session duration median (n=54,646 matched close) | 2.4s; 41,104 < 10s; max ~18,022s |
 
 ## Events per UTC day
 
@@ -53,7 +53,7 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-09-14` | 3,525 |
 | `2026-09-15` | 2,779 |
 | `2026-09-16` | 62,682 |
-| `2026-09-17` | 856 |
+| `2026-09-17` | 26,242 |
 
 `2026-09-17` is partial at cutoff — do not annualize.
 
@@ -61,56 +61,56 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `root` | 16,294 |
-| 2 | `admin` | 1,327 |
-| 3 | `ubuntu` | 798 |
-| 4 | `user` | 776 |
-| 5 | `deploy` | 423 |
-| 6 | `test` | 396 |
-| 7 | `avelychko` | 213 |
-| 8 | `user1` | 211 |
-| 9 | `claude` | 208 |
-| 10 | `vyos` | 203 |
+| 1 | `root` | 17,508 |
+| 2 | `admin` | 1,467 |
+| 3 | `ubuntu` | 916 |
+| 4 | `user` | 876 |
+| 5 | `deploy` | 491 |
+| 6 | `test` | 448 |
+| 7 | `user1` | 239 |
+| 8 | `claude` | 238 |
+| 9 | `debian` | 227 |
+| 10 | `avelychko` | 213 |
 
 ### Top passwords
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `123456` | 1,817 |
-| 2 | `1234` | 916 |
-| 3 | `123` | 837 |
-| 4 | `admin` | 535 |
-| 5 | `12345678` | 479 |
-| 6 | `1` | 423 |
-| 7 | `password` | 393 |
-| 8 | `root` | 362 |
-| 9 | `12345` | 360 |
-| 10 | `123456789` | 290 |
+| 1 | `123456` | 2,028 |
+| 2 | `1234` | 1,024 |
+| 3 | `123` | 940 |
+| 4 | `admin` | 586 |
+| 5 | `12345678` | 536 |
+| 6 | `1` | 478 |
+| 7 | `password` | 440 |
+| 8 | `root` | 401 |
+| 9 | `12345` | 395 |
+| 10 | `123456789` | 323 |
 
 ### Top commands
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `uname -s -v -n -r -m` | 25,790 |
-| 2 | `hostname` | 1,171 |
+| 1 | `uname -s -v -n -r -m` | 28,654 |
+| 2 | `hostname` | 1,185 |
 | 3 | `/bin/./uname -s -v -n -r -m` | 856 |
-| 4 | `uname -a` | 544 |
-| 5 | `whoami` | 443 |
-| 6 | `pwd` | 348 |
-| 7 | `ls -la /` | 325 |
-| 8 | `netstat -tulpn | head -10` | 293 |
+| 4 | `uname -a` | 556 |
+| 5 | `whoami` | 450 |
+| 6 | `pwd` | 350 |
+| 7 | `ls -la /` | 328 |
+| 8 | `ps aux | head -10` | 297 |
 
 ### Command categories
 
 | Category | Events |
 |---|---|
 | `destructive` | 18 |
-| `discovery` | 31,019 |
+| `discovery` | 33,940 |
 | `downloader` | 6 |
 | `empty` | 4 |
-| `other` | 691 |
+| `other` | 706 |
 | `persistence-privilege` | 6 |
-| `shell-exec` | 1,460 |
+| `shell-exec` | 1,559 |
 
 ## Limitations that shape these numbers
 

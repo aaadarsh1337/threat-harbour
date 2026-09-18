@@ -17,28 +17,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `17-09-2026 UTC`)
+## Collected Data — refreshed every 24 hours (last run `18-09-2026 UTC`)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `328,523` | `3,134` | `51,592` | `35,652` / 224 failed | `33,204` (+214 failed) | `186` (+43) |
+| `353,909` | `3,178` | `54,850` | `38,795` / 238 failed | `36,239` (+222 failed) | `195` (+43) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (16,294) | `123456` (1,817) | `uname -s -v -n -r -m` (25,790) |
-| 2 | `admin` (1,327) | `1234` (916) | `hostname` (1,171) |
-| 3 | `ubuntu` (798) | `123` (837) | `/bin/./uname -s -v -n -r -m` (856) |
-| 4 | `user` (776) | `admin` (535) | `uname -a` (544) |
-| 5 | `deploy` (423) | `12345678` (479) | `whoami` (443) |
+| 1 | `root` (17,508) | `123456` (2,028) | `uname -s -v -n -r -m` (28,654) |
+| 2 | `admin` (1,467) | `1234` (1,024) | `hostname` (1,185) |
+| 3 | `ubuntu` (916) | `123` (940) | `/bin/./uname -s -v -n -r -m` (856) |
+| 4 | `user` (876) | `admin` (586) | `uname -a` (556) |
+| 5 | `deploy` (491) | `12345678` (536) | `whoami` (450) |
 
 Key findings:
 
-- Median session `2.4s` (74% under 10s) — mostly automated scanning, not humans.
-- `93%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
+- Median session `2.4s` (75% under 10s) — mostly automated scanning, not humans.
+- `94%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44…`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (168,194 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (191,154 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
