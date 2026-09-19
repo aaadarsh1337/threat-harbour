@@ -15,41 +15,100 @@ Requires stdlib only.
 import collections
 import datetime
 import glob
+import gzip
 import json
 import os
+import re
 import sys
 
 LOG_GLOB = "/home/jack/honeypot/var/log/cowrie/cowrie.json*"
-COWRIE_VERSION_FILE = "/home/jack/honeypot/cowrie-env/lib/python3.12/site-packages/cowrie/__init__.py"
+
+# Split chained shell commands so `echo hi; rm -rf /` is still seen as
+# destructive, not just shell-exec. Covers ; && || | & newlines.
+_CHAIN_SPLIT = re.compile(r"&&|\|\||[;|&\n]+")
+# Miner indicators matched on word boundaries so `exminer` etc. don't match.
+_MINER_RE = re.compile(
+    r"\b(xmrig|minerd|mining|cryptonight|stratum\+tcp|\bminer\b)")
+_DOWNLOADER_BINS = {"wget", "curl", "tftp", "ftp", "scp", "aria2c"}
+_PERSIST_BINS = {"chmod", "chpasswd", "passwd", "useradd", "adduser",
+                 "usermod", "crontab", "systemctl", "service", "iptables"}
+_DESTRUCTIVE_BINS = {"rm", "dd", "mkfs", "shutdown", "reboot", "kill",
+                     "pkill"}
+_DISCOVERY_BINS = {"uname", "hostname", "whoami", "id", "pwd", "arch",
+                   "ls", "cat", "ps", "netstat", "ss", "ifconfig", "ip",
+                   "mount", "df", "uptime", "history"}
+_SHELL_BINS = {"sh", "bash", "python", "python3", "perl", "busybox",
+               "export", "echo", "ssh"}
+
+
+def _tokens(cmd):
+    """Yield normalized binary names for every command in a chain."""
+    c = (cmd or "").strip().lower()
+    if not c:
+        return
+    for chunk in _CHAIN_SPLIT.split(c):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        # strip sudo/nohup/env prefixes: `sudo rm -rf /` -> rm
+        parts = chunk.split()
+        while parts and parts[0] in ("sudo", "nohup", "env", "nice"):
+            parts = parts[1:]
+        if not parts:
+            continue
+        # `sh -c 'rm ...'` -> look at the rest too, not just `sh`
+        first = parts[0].split("/")[-1]
+        yield first
+        # also surface binaries later in the chunk (e.g. `sh -c rm`)
+        for p in parts[1:]:
+            yield p.split("/")[-1].strip("'\"")
 
 
 def cmd_category(cmd):
     c = (cmd or "").strip().lower()
     if not c:
         return "empty"
-    first = c.split()[0].split("/")[-1].split(";")[0]
-    if first in ("uname", "hostname", "whoami", "id", "pwd", "arch"):
-        return "discovery"
-    if first in ("ls", "cat", "ps", "netstat", "ss", "ifconfig", "ip",
-                 "mount", "df", "uptime", "history"):
-        return "discovery"
-    if first in ("wget", "curl", "tftp", "ftp", "scp", "aria2c"):
-        return "downloader"
-    if first in ("chmod", "chpasswd", "passwd", "useradd", "adduser",
-                 "usermod", "crontab", "systemctl", "service", "iptables"):
-        return "persistence-privilege"
-    if first in ("rm", "dd", "mkfs", "shutdown", "reboot", "kill", "pkill"):
+    toks = set(_tokens(cmd))
+    if not toks:
+        return "empty"
+    # Highest severity wins so chained attacks aren't masked by `echo`/`sh`.
+    if toks & _DESTRUCTIVE_BINS:
         return "destructive"
-    if "xmrig" in c or "miner" in c:
+    if toks & _PERSIST_BINS:
+        return "persistence-privilege"
+    if toks & _DOWNLOADER_BINS:
+        return "downloader"
+    if _MINER_RE.search(c):
         return "miner-indicator"
-    if first in ("sh", "bash", "python", "python3", "perl", "busybox",
-                 "export", "echo", "ssh"):
+    if toks & _DISCOVERY_BINS:
+        return "discovery"
+    if toks & _SHELL_BINS:
         return "shell-exec"
     return "other"
 
 
+def _median(sorted_vals):
+    n = len(sorted_vals)
+    if n == 0:
+        return 0
+    mid = n // 2
+    if n % 2 == 1:
+        return sorted_vals[mid]
+    return (sorted_vals[mid - 1] + sorted_vals[mid]) / 2
+
+
+def _open_log(path):
+    if path.endswith(".gz"):
+        return gzip.open(path, "rt", encoding="utf-8", errors="replace")
+    return open(path, "r", encoding="utf-8", errors="replace")
+
+
 def main():
     files = sorted(glob.glob(LOG_GLOB))
+    # Cowrie rotates to .gz eventually; read those too instead of
+    # miscounting them as bad lines. Ignore unrelated suffixes.
+    files = [p for p in files
+             if os.path.basename(p).startswith("cowrie.json")]
     if not files:
         print(json.dumps({"error": "no log files matched " + LOG_GLOB}))
         return 1
@@ -69,19 +128,28 @@ def main():
     cmd_events = 0
     cmd_failed = 0
     downloads = 0
+    downloads_failed = 0
     uploads = 0
     destfiles = collections.Counter()
     shasums = collections.Counter()
     connects = 0
+    unmatched_closes = 0
+    ipv6_events = 0
     per_day = collections.Counter()
     net16 = collections.Counter()
     starts = {}
     durations = []
     file_lines = {}
+    file_open_errors = {}
 
     for path in files:
         n = 0
-        with open(path, "r", encoding="utf-8", errors="replace") as fh:
+        try:
+            fh = _open_log(path)
+        except OSError as exc:
+            file_open_errors[os.path.basename(path)] = str(exc)
+            continue
+        with fh:
             for line in fh:
                 line = line.strip()
                 if not line:
@@ -100,27 +168,44 @@ def main():
                     per_day[ts[:10]] += 1
                 ip = e.get("src_ip")
                 if ip:
-                    srcips.add(ip)
-                    parts = ip.split(".")
-                    if len(parts) == 4:
-                        net16[parts[0] + "." + parts[1] + ".0.0/16"] += 1
+                    if ":" in ip:
+                        # IPv6: counted, not bucketed into /16.
+                        ipv6_events += 1
+                        srcips.add(ip)
+                    else:
+                        srcips.add(ip)
+                        parts = ip.split(".")
+                        if len(parts) == 4:
+                            net16[parts[0] + "." + parts[1] + ".0.0/16"] += 1
                 if e.get("session"):
                     sessions.add(e["session"])
                 if e.get("protocol"):
                     protocols[e["protocol"]] += 1
                 if eid == "cowrie.session.connect":
                     connects += 1
-                    if e.get("session"):
+                    # First start wins: duplicate session IDs must not
+                    # overwrite the original connect timestamp.
+                    if e.get("session") and e["session"] not in starts:
                         starts[e["session"]] = ts
-                elif eid == "cowrie.session.closed" and e.get("session") in starts:
-                    try:
-                        t0 = datetime.datetime.fromisoformat(
-                            starts[e["session"]].replace("Z", "+00:00"))
-                        t1 = datetime.datetime.fromisoformat(
-                            ts.replace("Z", "+00:00"))
-                        durations.append((t1 - t0).total_seconds())
-                    except (ValueError, KeyError):
-                        pass
+                elif eid == "cowrie.session.closed":
+                    if e.get("session") in starts:
+                        try:
+                            t0 = datetime.datetime.fromisoformat(
+                                starts[e["session"]].replace("Z", "+00:00"))
+                            t1 = datetime.datetime.fromisoformat(
+                                ts.replace("Z", "+00:00"))
+                            delta = (t1 - t0).total_seconds()
+                            # Negative deltas come from clock skew or the
+                            # force-reboot truncating an in-flight line.
+                            if delta >= 0:
+                                durations.append(delta)
+                        except (ValueError, KeyError):
+                            pass
+                        finally:
+                            # Bound memory: drop the start once matched.
+                            del starts[e["session"]]
+                    else:
+                        unmatched_closes += 1
                 elif eid == "cowrie.login.success":
                     login_success += 1
                     usernames[e.get("username", "?")] += 1
@@ -135,24 +220,27 @@ def main():
                     cmdcat[cmd_category(e.get("input", ""))] += 1
                 elif eid == "cowrie.command.failed":
                     cmd_failed += 1
-                elif eid in ("cowrie.session.file_download",
-                             "cowrie.session.file_download.failed"):
+                elif eid == "cowrie.session.file_download":
                     downloads += 1
                     if e.get("destfile"):
                         destfiles[e["destfile"]] += 1
                     if e.get("shasum"):
                         shasums[e["shasum"]] += 1
+                elif eid == "cowrie.session.file_download.failed":
+                    downloads_failed += 1
                 elif eid == "cowrie.session.file_upload":
                     uploads += 1
+        # file_lines = valid JSON lines per file; sum(file_lines) == total.
+        # Malformed lines are counted globally in bad_json_lines.
         file_lines[os.path.basename(path)] = n
 
     durations_sorted = sorted(durations)
     dur_stats = {
         "n_closed_matched": len(durations),
-        "median": (durations_sorted[len(durations_sorted) // 2]
-                   if durations_sorted else 0),
+        "median": _median(durations_sorted),
         "max": max(durations) if durations else 0,
         "under_10s": sum(1 for d in durations if d < 10),
+        "unmatched_closes": unmatched_closes,
     }
 
     payload = {
@@ -161,6 +249,7 @@ def main():
         "totals": {"total_events": total, "bad_json_lines": bad},
         "sources": {
             "unique_source_ips": len(srcips),
+            "ipv6_events": ipv6_events,
             "top_source_net16_by_event_volume": [
                 {"cidr": k, "events": v}
                 for k, v in net16.most_common(8)
@@ -183,13 +272,15 @@ def main():
         "commands": {
             "input_events": cmd_events,
             "failed_command_events": cmd_failed,
+            # No length filter here: truncation is a render concern so
+            # counts in metrics.json always reconcile with input_events.
             "top_commands": [{"input": k, "count": v}
-                             for k, v in commands.most_common(10)
-                             if len(k) < 120],
+                             for k, v in commands.most_common(10)],
         },
         "behavioral_command_categories": dict(cmdcat),
         "downloads_uploads": {
             "file_download_events": downloads,
+            "file_download_failed_events": downloads_failed,
             "file_upload_events": uploads,
             "top_destfiles": [{"value": k, "count": v}
                               for k, v in destfiles.most_common(5)],
@@ -200,6 +291,7 @@ def main():
         "collection": {
             "files": len(files),
             "file_lines": file_lines,
+            "file_open_errors": file_open_errors,
             "per_day_utc": dict(sorted(per_day.items())),
         },
     }

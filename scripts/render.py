@@ -26,11 +26,34 @@ import json
 import os
 import re
 import sys
+import tempfile
 
 STACK = {"cowrie": "3.0.13", "grafana": "10.2.3", "loki": "2.9.4",
          "promtail": "2.9.4"}
 SENSOR_LOG_PATH = "/home/jack/honeypot/var/log/cowrie/cowrie.json*"
 OBS_START = "2026-08-27"
+
+# Timeline stays daily up to this many days, then switches to weekly
+# buckets so 100+ days don't collapse into unreadable 100-bar charts.
+TIMELINE_DAILY_LIMIT = 45
+# Days shown inline in summary.md before older days collapse into <details>.
+SUMMARY_INLINE_DAYS = 30
+# Bars at/above this are highlighted amber; the max is always amber.
+# Tokyo Night (matches aaadarsh1337.github.io/intel + css/tokens.css).
+# Site chart reference: base bars #7aa2f7 @0.75, peak #f7768e, latest #7dcfff,
+# grid #292e42, values #a9b1d6, axis labels #7d86b0, Mono for numbers.
+T_BG = "#1a1b26"      # --bg-elev (.panel background)
+T_FIG_EDGE = "#16161e"  # --bg (figure edge / bar outlines)
+T_GRID = "#292e42"    # --line
+T_INK = "#c0caf5"     # --ink (titles, values)
+T_MUTED = "#a9b1d6"   # --muted (subtitles, bar labels)
+T_FAINT = "#7d86b0"   # --faint (axis ticks, footers)
+T_BLUE = "#7aa2f7"    # --accent-2 (base bars)
+T_CYAN = "#7dcfff"    # --accent (latest / partial bucket)
+T_PINK = "#f7768e"    # --danger (peak)
+T_PURPLE = "#bb9af7"  # kpi-3 accent (funnel stage 3)
+T_MONO = "monospace"
+T_SANS = "sans-serif"
 
 
 def fmt(n):
@@ -38,25 +61,103 @@ def fmt(n):
 
 
 def short_date(ts):
-    # "2026-09-06T20:36:00Z" -> "06-09-2026"
+    # "2026-09-06T20:36:00Z" -> "2026-09-06" (ISO, unambiguous).
     d = datetime.datetime.strptime(ts[:10], "%Y-%m-%d")
-    return d.strftime("%d-%m-%Y")
+    return d.strftime("%Y-%m-%d")
 
 
-def top5_table_rows(items, key):
-    rows = []
-    for i, it in enumerate(items[:5], 1):
-        rows.append(f"| {i} | `{it[key]}` ({fmt(it['count'])}) |")
-    return rows
+def obs_start_display():
+    return datetime.datetime.strptime(OBS_START, "%Y-%m-%d").strftime(
+        "%Y-%m-%d")
+
+
+def md_cell(value, max_len=60):
+    """Escape attacker-controlled strings for markdown tables."""
+    s = str(value).replace("`", "'").replace("|", "\\|")
+    s = re.sub(r"[\x00-\x08\x0b-\x1f\x7f]", "", s).replace("\n", " ")
+    s = " ".join(s.split())
+    if len(s) > max_len:
+        s = s[:max_len] + "…"
+    return s or "?"
+
+
+def atomic_write(path, text):
+    d = os.path.dirname(os.path.abspath(path))
+    fd, tmp = tempfile.mkstemp(dir=d, prefix=".tmp-")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def _require(payload, *keys):
+    missing = [k for k in keys if k not in payload]
+    if missing:
+        raise ValueError(f"payload missing keys: {', '.join(missing)}")
+
+
+def validate_payload(payload):
+    """Fail fast with a clear message instead of a raw KeyError."""
+    if not isinstance(payload, dict):
+        raise ValueError("payload must be a JSON object")
+    _require(payload, "collected_at_utc", "totals", "sources", "sessions",
+             "protocols", "logins", "commands", "behavioral_command_categories",
+             "downloads_uploads", "event_ids", "collection")
+    _require(payload["totals"], "total_events", "bad_json_lines")
+    _require(payload["logins"], "success_fake", "failed",
+             "top_usernames", "top_passwords")
+    _require(payload["commands"], "input_events", "failed_command_events",
+             "top_commands")
+    _require(payload["collection"], "files", "file_lines", "per_day_utc")
+    datetime.datetime.strptime(payload["collected_at_utc"][:10], "%Y-%m-%d")
+
+
+def missing_days(per_day, cutoff_day):
+    """Days in OBS_START..cutoff with no events (true collection gaps)."""
+    try:
+        start = datetime.datetime.strptime(OBS_START, "%Y-%m-%d").date()
+        end = datetime.datetime.strptime(cutoff_day, "%Y-%m-%d").date()
+    except ValueError:
+        return []
+    if end < start:
+        return []
+    missing = []
+    d = start
+    while d <= end:
+        if per_day.get(d.isoformat(), 0) == 0:
+            missing.append(d.isoformat())
+        d += datetime.timedelta(days=1)
+    return missing
 
 
 def build_metrics(payload):
     """Merge the remote payload into the repo's metrics.json schema."""
+    validate_payload(payload)
     per_day = payload["collection"]["per_day_utc"]
+    cutoff_day = payload["collected_at_utc"][:10]
+    gaps = missing_days(per_day, cutoff_day)
+    if gaps:
+        uptime_note = (
+            f"Daily log files {OBS_START} through {cutoff_day}; "
+            f"{len(gaps)} day(s) with zero events "
+            f"({', '.join(gaps[:5])}"
+            f"{'…' if len(gaps) > 5 else ''}) — see per-day table"
+        )
+    else:
+        uptime_note = (
+            f"Continuous daily log files {OBS_START} through {cutoff_day}, "
+            "no missing days observed"
+        )
     return {
         "analysis_cutoff_utc": payload["collected_at_utc"],
         "observation_period": {"start": OBS_START, "end": "ongoing",
-                               "interim_cutoff": payload["collected_at_utc"][:10]},
+                               "interim_cutoff": cutoff_day},
         "totals": payload["totals"],
         "sources": payload["sources"],
         "sessions": payload["sessions"],
@@ -70,10 +171,7 @@ def build_metrics(payload):
             "files": payload["collection"]["files"],
             "log_path_on_sensor": SENSOR_LOG_PATH,
             "per_day_utc": per_day,
-            "sensor_uptime_note": (
-                f"Continuous daily log files {OBS_START} through "
-                f"{payload['collected_at_utc'][:10]}, no missing days observed"
-            ),
+            "sensor_uptime_note": uptime_note,
             "bad_json_lines": payload["totals"]["bad_json_lines"],
         },
         "stack": STACK,
@@ -99,41 +197,47 @@ def readme_block(m):
     under_pct = (round(100 * dur["under_10s"] / dur["n_closed_matched"])
                  if dur["n_closed_matched"] else 0)
     shas = dl.get("top_shasums", [])
-    sha_note = (f" (hash `{shas[0]['value'][:8]}…`, content withheld)"
+    sha_note = (f" (hash `{md_cell(shas[0]['value'], 8)}…`, content withheld)"
                 if shas else " (content withheld)")
     top16 = m["sources"]["top_source_net16_by_event_volume"]
     net_note = (f"Busiest /16 by volume: `{top16[0]['cidr']}` "
                 f"({fmt(top16[0]['events'])} events)"
                 if top16 else "")
 
-    user_rows, pass_rows, cmd_rows = [], [], []
-    for i, (u, p, c) in enumerate(zip(lok["top_usernames"][:5],
-                                      lok["top_passwords"][:5],
-                                      cmd["top_commands"][:5]), 1):
-        user_rows.append(f"| {i} | `{u['value']}` ({fmt(u['count'])}) |")
-        pass_rows.append(f"| {i} | `{p['value']}` ({fmt(p['count'])}) |")
-        short_cmd = c["input"] if len(c["input"]) <= 40 else c["input"][:40] + "…"
-        cmd_rows.append(f"| {i} | `{short_cmd}` ({fmt(c['count'])}) |")
+    # Pad the shortest list so unequal top-N lengths never drop rows.
+    users = lok["top_usernames"][:5]
+    passes = lok["top_passwords"][:5]
+    cmds = cmd["top_commands"][:5]
+    nrows = max(len(users), len(passes), len(cmds), 1)
+    rows = []
+    for i in range(nrows):
+        u = (f"`{md_cell(users[i]['value'])}` ({fmt(users[i]['count'])})"
+             if i < len(users) else "—")
+        p = (f"`{md_cell(passes[i]['value'])}` ({fmt(passes[i]['count'])})"
+             if i < len(passes) else "—")
+        if i < len(cmds):
+            short_cmd = md_cell(cmds[i]["input"], 40)
+            c = f"`{short_cmd}` ({fmt(cmds[i]['count'])})"
+        else:
+            c = "—"
+        rows.append(f"| {i + 1} | {u} | {p} | {c} |")
 
+    dl_failed = dl.get("file_download_failed_events", 0)
+    dl_label = (f"`{fmt(dl['file_download_events'])}` "
+                f"(+{fmt(dl['file_upload_events'])} uploads"
+                f"{f', +{fmt(dl_failed)} dl-failed' if dl_failed else ''})")
     lines = [
         f"## Collected Data — refreshed every 24 hours (last run `{cutoff} UTC`)",
         "",
-        f"`27-08-2026` → `ongoing` · Cowrie `{STACK['cowrie']}` · SSH-only · `ap-hyderabad-1`.",
+        f"`{obs_start_display()}` → `ongoing` · Cowrie `{STACK['cowrie']}` · SSH-only · `ap-hyderabad-1`.",
         "",
         "| Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |",
         "|---|---|---|---|---|---|",
-        f"| `{fmt(t)}` | `{fmt(ips)}` | `{fmt(sess)}` | `{fmt(lok['success_fake'])}` / {fmt(lok['failed'])} failed | `{fmt(cmd['input_events'])}` (+{fmt(cmd['failed_command_events'])} failed) | `{fmt(dl['file_download_events'])}` (+{fmt(dl['file_upload_events'])}) |",
+        f"| `{fmt(t)}` | `{fmt(ips)}` | `{fmt(sess)}` | `{fmt(lok['success_fake'])}` / {fmt(lok['failed'])} failed | `{fmt(cmd['input_events'])}` (+{fmt(cmd['failed_command_events'])} failed) | {dl_label} |",
         "",
         "| # | Top username | Top password | Top command |",
         "|---|---|---|---|",
-    ]
-    for u, p, c in zip(user_rows, pass_rows, cmd_rows):
-        # merge the three per-rank rows into one table row
-        ur = u.split("|")[2].strip()
-        pr = p.split("|")[2].strip()
-        cr = c.split("|")[2].strip()
-        lines.append(f"| {u.split('|')[1].strip()} | {ur} | {pr} | {cr} |")
-    lines += [
+        *rows,
         "",
         "Key findings:",
         "",
@@ -150,32 +254,44 @@ def readme_block(m):
     return "\n".join(lines) + "\n"
 
 
+def _per_day_table(per_day):
+    days = sorted(per_day.items())
+    if len(days) <= SUMMARY_INLINE_DAYS:
+        return "\n".join(f"| `{d}` | {fmt(c)} |" for d, c in days)
+    recent = days[-SUMMARY_INLINE_DAYS:]
+    older = days[:-SUMMARY_INLINE_DAYS]
+    recent_rows = "\n".join(f"| `{d}` | {fmt(c)} |" for d, c in recent)
+    older_rows = "\n".join(f"| `{d}` | {fmt(c)} |" for d, c in older)
+    return (recent_rows + "\n\n<details>\n<summary>Older days "
+            f"({len(older)} days, click to expand)</summary>\n\n"
+            "| Day (UTC) | Events |\n|---|---|\n" + older_rows + "\n\n</details>")
+
+
 def summary_md(m):
     cutoff = m["analysis_cutoff_utc"]
     per_day = m["collection"]["per_day_utc"]
-    day_str = " · ".join(
-        f"{k[5:]}: {fmt(v)}" for k, v in sorted(per_day.items()))
     lok, cmd, dur = m["logins"], m["commands"], m["sessions"]["session_duration_seconds"]
     cats = m["behavioral_command_categories"]
-    per_day = m["collection"]["per_day_utc"]
-    day_rows = "\n".join(
-        f"| `{d}` | {fmt(c)} |" for d, c in sorted(per_day.items()))
-    last_day = sorted(per_day)[-1]
+    day_table = _per_day_table(per_day) if per_day else "_No per-day data._"
+    last_day = sorted(per_day)[-1] if per_day else "?"
     top_tables = []
     for title, items, key in (("Top usernames", lok["top_usernames"], "value"),
                               ("Top passwords", lok["top_passwords"], "value"),
                               ("Top commands", cmd["top_commands"], "input")):
         rows = "\n".join(
-            f"| {i} | `{it[key][:60]}` | {fmt(it['count'])} |"
-            for i, it in enumerate(items[:10], 1))
+            f"| {i} | `{md_cell(it[key])}` | {fmt(it['count'])} |"
+            for i, it in enumerate(items[:10], 1)) or "_none_"
         top_tables.append(
             f"### {title}\n\n| # | Value | Tries |\n|---|---|---|\n{rows}")
     cat_rows = "\n".join(
-        f"| `{k}` | {fmt(v)} |" for k, v in sorted(cats.items()))
+        f"| `{k}` | {fmt(v)} |" for k, v in sorted(cats.items())) or "_none_"
+    dl_failed = m["downloads_uploads"].get("file_download_failed_events", 0)
+    dl_extra = (f"\n| File-download failures | {fmt(dl_failed)} |"
+                if dl_failed else "")
     return f"""# Analysis summary (rolling snapshot, cutoff {cutoff})
 
 Sensor is **still running** — this file regenerates every 24 hours.
-Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
+Observation: `{OBS_START}` → `ongoing`. Numbers below are a snapshot at
 `{cutoff}` ({fmt(m['totals']['total_events'])} events).
 
 ## Source
@@ -198,7 +314,7 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | Fake successful logins (`cowrie.login.success`) | {fmt(lok['success_fake'])} |
 | Failed logins | {fmt(lok['failed'])} |
 | Command-input events | {fmt(cmd['input_events'])} (+{fmt(cmd['failed_command_events'])} `command.failed`) |
-| File-download events | {fmt(m['downloads_uploads']['file_download_events'])} |
+| File-download events | {fmt(m['downloads_uploads']['file_download_events'])} |{dl_extra}
 | File-upload events | {fmt(m['downloads_uploads']['file_upload_events'])} |
 | Session duration median (n={fmt(dur['n_closed_matched'])} matched close) | {dur['median']:.1f}s; {fmt(dur['under_10s'])} < 10s; max ~{dur['max']:,.0f}s |
 
@@ -206,7 +322,7 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Day (UTC) | Events |
 |---|---|
-{day_rows}
+{day_table}
 
 `{last_day}` is partial at cutoff — do not annualize.
 
@@ -228,14 +344,22 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 - Cowrie emulation + Free Tier resource limits bias what is recorded.
 - Geo/attribution claims are out of scope (see `docs/limitations.md`).
 
-Full tables: `metrics.json`. Loki equivalents in `../dashboard/README.md`.
+Full tables: `metrics.json`. Loki equivalents in `dashboard/README.md`.
 """
 
 
 def manifest_md(m, payload):
     files = payload["collection"]["file_lines"]
     file_rows = "\n".join(
-        f"| `{name}` | {fmt(n)} |" for name, n in sorted(files.items()))
+        f"| `{md_cell(name, 80)}` | {fmt(n)} |" for name, n in sorted(files.items()))
+    open_errs = payload["collection"].get("file_open_errors", {})
+    err_section = ""
+    if open_errs:
+        err_rows = "\n".join(
+            f"| `{md_cell(k, 80)}` | `{md_cell(v, 120)}` |"
+            for k, v in sorted(open_errs.items()))
+        err_section = ("\n### File open errors\n\n| File | Error |\n"
+                       "|---|---|\n" + err_rows + "\n")
     return f"""# Evidence manifest (rolling snapshot, cutoff {m['analysis_cutoff_utc']})
 
 Raw Cowrie logs are **retained on the sensor only** and are not published.
@@ -248,12 +372,12 @@ This manifest lets a reviewer re-derive `analysis/metrics.json`.
 - Cowrie: `{STACK['cowrie']}`
 - Collector: Promtail `{STACK['promtail']}` → Loki `{STACK['loki']}` (`job="cowrie"`), Grafana `{STACK['grafana']}`
 
-### Lines per file
+### Lines per file (valid JSON lines; sum equals total events)
 
 | File | Lines |
 |---|---|
 {file_rows}
-
+{err_section}
 ## What is / is not in this repo
 
 - IN REPO: aggregates (`analysis/`), redacted hashes/destfile patterns,
@@ -275,35 +399,110 @@ Actions → daily-metrics → Run workflow). Manual equivalent is documented in
 """
 
 
+def _bucket_weekly(per_day):
+    weeks = {}
+    for day, count in per_day.items():
+        d = datetime.datetime.strptime(day, "%Y-%m-%d").date()
+        start = d - datetime.timedelta(days=d.weekday())  # Monday
+        weeks[start] = weeks.get(start, 0) + count
+    return sorted(weeks.items())
+
+
 def draw_timeline(m, path):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    BG, NAVY, TEAL, AMBER, SLATE = "#f4f6f9", "#1b2a4a", "#0e7c7b", "#c67c1b", "#5b6b82"
-    plt.rcParams.update({"font.family": "sans-serif"})
+    BG, INK, MUTED, FAINT, GRID = T_BG, T_INK, T_MUTED, T_FAINT, T_GRID
+    plt.rcParams.update({"font.family": T_SANS})
     per_day = m["collection"]["per_day_utc"]
+
+    def _empty(msg):
+        fig, ax = plt.subplots(figsize=(13, 4))
+        fig.patch.set_facecolor(BG)
+        ax.set_facecolor(BG)
+        ax.set_title("Threat Harbour — Events per UTC day (SSH-only)",
+                     fontsize=14, weight="bold", color=INK, loc="left",
+                     fontfamily=T_SANS)
+        ax.text(0.5, 0.5, msg, ha="center", va="center", color=MUTED)
+        ax.axis("off")
+        fig.savefig(path, dpi=150, bbox_inches="tight", facecolor=BG)
+        plt.close(fig)
+
+    if not per_day:
+        _empty("No per-day data at this cutoff.")
+        return
     days = sorted(per_day)
-    counts = [per_day[d] for d in days]
-    labels = [d[5:].replace("-", "-") + ("*" if d == days[-1] else "") for d in days]
-    fig, ax = plt.subplots(figsize=(13, 5.8))
+    weekly = len(days) > TIMELINE_DAILY_LIMIT
+    if weekly:
+        buckets = _bucket_weekly(per_day)
+        labels = [s.strftime("%b %d") for s, _ in buckets]
+        counts = [c for _, c in buckets]
+        xlabel = (f"Week starting (Monday) — {len(days)} days shown as "
+                  f"{len(buckets)} weekly buckets; daily counts in "
+                  "analysis/summary.md")
+        title = "Threat Harbour — Events per week (SSH-only)"
+    else:
+        labels = [d[5:] for d in days]
+        counts = [per_day[d] for d in days]
+        xlabel = None
+        title = "Threat Harbour — Events per UTC day (SSH-only)"
+    peak = max(counts)
+    width = max(13, min(20, 6 + len(counts) * 0.35))
+    fig, ax = plt.subplots(figsize=(width, 5.8))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(BG)
-    ax.set_title("Threat Harbour — Events per UTC day (SSH-only)", fontsize=14,
-                 weight="bold", color=NAVY, loc="left", pad=12)
-    bars = ax.bar(labels,
-                  counts,
-                  color=[AMBER if c == max(counts) else TEAL if c > 10000 else NAVY
-                         for c in counts],
-                  edgecolor="white")
-    ax.bar_label(bars, labels=[f"{c:,}" for c in counts], fontsize=8.5, color=NAVY, padding=3)
-    ax.set_ylabel("events", color=SLATE)
-    ax.tick_params(colors=SLATE, labelsize=9)
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.text(0.01, -0.22,
-            f"* {labels[-1].rstrip('*')} is a partial day at cutoff ({counts[-1]:,}) — do not annualize. "
-            f"Total {sum(counts):,}.",
-            transform=ax.transAxes, fontsize=9, color=SLATE, style="italic")
-    fig.savefig(path, dpi=150, bbox_inches="tight")
+    ax.set_title(title, fontsize=14, weight="bold", color=INK, loc="left",
+                 pad=12, fontfamily=T_SANS)
+    # Site semantics: peak = pink, latest/partial = cyan, rest = blue.
+    # HIGH_VOLUME_THRESHOLD no longer drives colour (kept for compat).
+    last_idx = len(counts) - 1
+    colors = []
+    for i, c in enumerate(counts):
+        if c == peak:
+            colors.append(T_PINK)
+        elif i == last_idx:
+            colors.append(T_CYAN)
+        else:
+            colors.append(T_BLUE)
+    bars = ax.bar(labels, counts, color=colors, edgecolor=T_FIG_EDGE,
+                  linewidth=1.0, alpha=0.92, zorder=3)
+    ax.yaxis.grid(True, color=GRID, linestyle=(0, (4, 4)), linewidth=1,
+                   alpha=1.0, zorder=0)
+    ax.set_axisbelow(True)
+    # Label every bar only when readable; otherwise label just the peak.
+    if len(counts) <= 30:
+        ax.bar_label(bars, labels=[f"{c:,}" for c in counts], fontsize=8.5,
+                     color=MUTED, padding=3, fontfamily=T_MONO)
+    else:
+        idx = counts.index(peak)
+        ax.bar_label([bars[idx]], labels=[f"{peak:,}"], fontsize=9,
+                     color=MUTED, padding=3, fontfamily=T_MONO)
+    ax.set_ylabel("events", color=FAINT)
+    if xlabel:
+        ax.set_xlabel(xlabel, color=FAINT, fontsize=9, style="italic")
+    ax.tick_params(colors=FAINT, labelsize=9)
+    for lbl in ax.get_xticklabels():
+        lbl.set_fontfamily(T_MONO)
+    for lbl in ax.get_yticklabels():
+        lbl.set_fontfamily(T_MONO)
+    if len(counts) > 12:
+        plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    for sp in ("left", "bottom"):
+        ax.spines[sp].set_color(GRID)
+    day_range = f"{days[0]} → {days[-1]}"
+    if weekly:
+        footer = (f"Weeks of {day_range} ({sum(counts):,} events). "
+                  f"Weekly buckets keep 100+ days readable; "
+                  f"last week may be partial — do not annualize.")
+    else:
+        footer = (f"* {days[-1]} is a partial day at cutoff "
+                  f"({counts[-1]:,}) — do not annualize. "
+                  f"{day_range}, total {sum(counts):,}.")
+    ax.text(0.01, -0.24, footer, transform=ax.transAxes, fontsize=9,
+            color=FAINT, style="italic")
+    fig.savefig(path, dpi=150, bbox_inches="tight", facecolor=BG)
     plt.close(fig)
 
 
@@ -311,8 +510,8 @@ def draw_funnel(m, path):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    BG, NAVY, TEAL, AMBER, SLATE = "#f4f6f9", "#1b2a4a", "#0e7c7b", "#c67c1b", "#5b6b82"
-    plt.rcParams.update({"font.family": "sans-serif"})
+    BG, INK, MUTED, FAINT, GRID = T_BG, T_INK, T_MUTED, T_FAINT, T_GRID
+    plt.rcParams.update({"font.family": T_SANS})
     cutoff = m["analysis_cutoff_utc"][:10]
     sess = m["sessions"]["session_connect_events"]
     lok, cmd = m["logins"]["success_fake"], m["commands"]["input_events"]
@@ -320,41 +519,59 @@ def draw_funnel(m, path):
     dur = m["sessions"]["session_duration_seconds"]
     under_pct = round(100 * dur["under_10s"] / dur["n_closed_matched"]) if dur["n_closed_matched"] else 0
     shas = m["downloads_uploads"].get("top_shasums", [])
-    sha = shas[0]["value"][:8] + "…" if shas else "…"
+    sha = md_cell(shas[0]["value"], 8) + "…" if shas else "…"
     fig, ax = plt.subplots(figsize=(12, 6.8))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(BG)
-    ax.set_title(f"Threat Harbour — SSH Session Funnel (interim {cutoff} UTC)",
-                 fontsize=15, weight="bold", color=NAVY, loc="left", pad=28)
-    ax.text(0.01, 1.02,
+    ax.set_title(f"Threat Harbour — SSH Session Funnel (rolling {cutoff} UTC)",
+                 fontsize=15, weight="bold", color=INK, loc="left", pad=38,
+                 fontfamily=T_SANS)
+    ax.text(0.01, 1.06,
             f"{sess:,} connects → {lok:,} fake logins → {cmd:,} command sessions → {dl:,} download events"
             f"  ·  median session {dur['median']:.1f}s, {under_pct}% < 10s",
-            transform=ax.transAxes, fontsize=10, color=SLATE, va="bottom")
+            transform=ax.transAxes, fontsize=10, color=MUTED, va="bottom",
+            fontfamily=T_SANS)
     stages = ["Session\nconnect", "Fake login\nsuccess", "Command\ninput", "File\n-download"]
     vals = [sess, lok, cmd, dl]
-    bars = ax.bar(stages, vals, color=[NAVY, TEAL, AMBER, "#b3372f"],
-                  edgecolor="white", linewidth=1.5, width=0.55)
+    # Log scale can't render 0; floor at 0.5 for the bar but label the truth.
+    plot_vals = [max(v, 0.5) for v in vals]
+    bars = ax.bar(stages, plot_vals,
+                  color=[T_BLUE, T_CYAN, T_PURPLE, T_PINK],
+                  edgecolor=T_FIG_EDGE, linewidth=1.5, width=0.55,
+                  alpha=0.92, zorder=3)
     ax.set_yscale("log")
-    for b, v, o in zip(bars, vals, [1.18, 1.3, 1.3, 2.2]):
-        ax.text(b.get_x() + b.get_width() / 2, v * o, f"{v:,}",
-                ha="center", va="bottom", fontsize=12, weight="bold", color=NAVY)
-    ax.set_ylabel("events (log scale)", color=SLATE)
-    ax.tick_params(colors=SLATE)
-    ax.spines[["top", "right"]].set_visible(False)
+    ax.set_ylim(bottom=0.5)
+    ax.yaxis.grid(True, color=GRID, linestyle=(0, (4, 4)), linewidth=1,
+                   alpha=1.0, zorder=0, which="major")
+    for b, v, pv in zip(bars, vals, plot_vals):
+        y = pv * (1.3 if v > 0 else 2.2)
+        ax.text(b.get_x() + b.get_width() / 2, y, f"{v:,}",
+                ha="center", va="bottom", fontsize=12, weight="bold",
+                color=INK, fontfamily=T_MONO)
+    ax.set_ylabel("events (log scale)", color=FAINT)
+    ax.tick_params(colors=FAINT)
+    for lbl in ax.get_xticklabels():
+        lbl.set_fontfamily(T_SANS)
+    for lbl in ax.get_yticklabels():
+        lbl.set_fontfamily(T_MONO)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    for sp in ("left", "bottom"):
+        ax.spines[sp].set_color(GRID)
     cats = m["behavioral_command_categories"]
     disc_pct = round(100 * cats.get("discovery", 0) / cmd) if cmd else 0
     fig.text(0.5, 0.02,
              f"Plus: {m['logins']['failed']:,} failed logins · {m['commands']['failed_command_events']:,} failed commands · "
              f"{m['downloads_uploads']['file_upload_events']:,} uploads · discovery = {disc_pct}% of commands · "
              f"persistence probes → authorized_keys (hash {sha})",
-             ha="center", fontsize=8.5, color=SLATE, style="italic")
-    fig.savefig(path, dpi=150, bbox_inches="tight")
+             ha="center", fontsize=8.5, color=FAINT, style="italic")
+    fig.savefig(path, dpi=150, bbox_inches="tight", facecolor=BG)
     plt.close(fig)
 
 
 def replace_readme_block(root, block):
     path = os.path.join(root, "README.md")
-    with open(path) as fh:
+    with open(path, encoding="utf-8") as fh:
         text = fh.read()
     pattern = re.compile(r"<!-- METRICS:START -->\n.*?\n<!-- METRICS:END -->",
                          re.DOTALL)
@@ -362,8 +579,7 @@ def replace_readme_block(root, block):
         print("ERROR: METRICS markers not found in README.md", file=sys.stderr)
         return False
     text = pattern.sub("<!-- METRICS:START -->\n" + block + "<!-- METRICS:END -->", text)
-    with open(path, "w") as fh:
-        fh.write(text)
+    atomic_write(path, text)
     return True
 
 
@@ -373,33 +589,39 @@ def main():
     ap.add_argument("--root", default=".", help="repo root")
     args = ap.parse_args()
 
-    with open(args.payload) as fh:
+    with open(args.payload, encoding="utf-8") as fh:
         payload = json.load(fh)
     if "error" in payload:
         print(f"ERROR from sensor: {payload['error']}", file=sys.stderr)
         return 1
+    try:
+        validate_payload(payload)
+    except ValueError as exc:
+        print(f"ERROR: invalid payload: {exc}", file=sys.stderr)
+        return 1
 
     m = build_metrics(payload)
 
-    with open(os.path.join(args.root, "analysis/metrics.json"), "w") as fh:
-        json.dump(m, fh, indent=1)
-        fh.write("\n")
-    with open(os.path.join(args.root, "analysis/summary.md"), "w") as fh:
-        fh.write(summary_md(m))
-    with open(os.path.join(args.root, "evidence/manifest.md"), "w") as fh:
-        fh.write(manifest_md(m, payload))
+    atomic_write(os.path.join(args.root, "analysis/metrics.json"),
+                 json.dumps(m, indent=1) + "\n")
+    atomic_write(os.path.join(args.root, "analysis/summary.md"), summary_md(m))
+    atomic_write(os.path.join(args.root, "evidence/manifest.md"),
+                 manifest_md(m, payload))
     if not replace_readme_block(args.root, readme_block(m)):
         return 1
     draw_timeline(m, os.path.join(args.root, "diagrams/activity-timeline.png"))
     draw_funnel(m, os.path.join(args.root, "diagrams/session-funnel.png"))
 
-    eids = m["event_ids"]
-    gap_days = [d for d, c in m["collection"]["per_day_utc"].items() if c == 0]
+    per_day = m["collection"]["per_day_utc"]
+    zero_days = sorted(d for d, c in per_day.items() if c == 0)
+    gaps = missing_days(per_day, m["analysis_cutoff_utc"][:10])
     print(f"cutoff={m['analysis_cutoff_utc']} total={m['totals']['total_events']:,} "
           f"sessions={m['sessions']['session_connect_events']:,} "
           f"ips={m['sources']['unique_source_ips']:,}")
-    if gap_days:
-        print(f"WARNING: zero-event days (possible gap): {gap_days}")
+    if gaps:
+        print(f"WARNING: missing/zero-event days (possible gap): {gaps}")
+    elif zero_days:
+        print(f"WARNING: zero-event days (possible gap): {zero_days}")
     return 0
 
 
