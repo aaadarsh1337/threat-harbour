@@ -1,23 +1,27 @@
 // Source for diagrams/data-pipeline.png — render with:
 //   dot -Tpng -Gdpi=150 diagrams/data-pipeline.dot -o diagrams/data-pipeline.png
+// Theme: Tokyo Night (matches aaadarsh1337.github.io/intel + css/tokens.css).
+// NOTE: node labels stay count-free so the diagram never goes stale;
+// live numbers live in analysis/metrics.json, not in the image.
 digraph pipeline {
   rankdir=LR;
-  bgcolor="#f4f6f9";
+  bgcolor="#1a1b26";
   pad=0.6;
   nodesep=0.7;
   ranksep=1.0;
-  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#1b2a4a", penwidth=2];
-  edge [fontname="Helvetica", fontsize=10, fontcolor="#5b6b82", color="#5b6b82", penwidth=2, arrowsize=0.9];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11,
+        fillcolor="#24283b", fontcolor="#c0caf5", color="#3b4261", penwidth=2];
+  edge [fontname="Helvetica", fontsize=10, fontcolor="#7d86b0", color="#7d86b0", penwidth=2, arrowsize=0.9];
 
-  cowrie [label="Cowrie 3.0.13\ncowrie.json* · 11 files\n87,059 events · 0 bad lines", fillcolor="#e9f5f0", color="#0e7c7b"];
-  promtail [label="Promtail 2.9.4\njob=\"cowrie\"\nread-only mount", fillcolor="white"];
-  loki [label="Loki 2.9.4\n:3100 localhost\nLogQL · 6 table panels", fillcolor="#eef4ff"];
-  grafana [label="Grafana 10.2.3\n:3000 via tunnel\nlogins · commands · tops", fillcolor="white"];
-  repo [label="Repo (published)\nanalysis/metrics.json\nanalysis/summary.md\nevidence/manifest.md", fillcolor="#fff7e8", color="#c67c1b"];
+  cowrie [label="Cowrie 3.0.13\ncowrie.json* · JSONL\nPromtail source of truth", color="#7dcfff"];
+  promtail [label="Promtail 2.9.4\njob=\"cowrie\"\nread-only mount"];
+  loki [label="Loki 2.9.4\n:3100 localhost\nLogQL · 6 table panels", color="#7aa2f7"];
+  grafana [label="Grafana 10.2.3\n:3000 via tunnel\nlogins · commands · tops"];
+  repo [label="Repo (published)\nanalysis/metrics.json\nanalysis/summary.md\nevidence/manifest.md", color="#7dcfff"];
 
   cowrie -> promtail;
   promtail -> loki;
   loki -> grafana;
   grafana -> repo;
-  cowrie -> repo [label="offline Python parse", style=dashed, color="#0e7c7b", fontcolor="#0e7c7b", constraint=false];
+  cowrie -> repo [label="offline Python parse", style=dashed, color="#7dcfff", fontcolor="#7dcfff", constraint=false];
 }
