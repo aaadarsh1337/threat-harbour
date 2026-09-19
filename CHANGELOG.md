@@ -19,9 +19,13 @@
   `Live stats (public)` section, `dashboard/README.md` disambiguates
   operator-only Grafana, methodology/architecture distinguish the two —
   all pointing at [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel).
-- Added `dashboard/intel-overview.png` (1600px, captured 2026-09-19,
-  layout reference only) under README `Live stats`; refresh on site-layout
-  change, not on data updates — same policy as Grafana `dashboard.png`.
+- Added `dashboard/intel-*.png` (8 section shots, 1600px, captured
+  2026-09-19, layout reference only) under README `Live stats`; refresh on
+  site-layout change, not on data updates — same policy as Grafana
+  `dashboard.png`.
+- Promoted the public stats site to the top: README opens with a live-site
+  banner (above the fold, outside the auto-rendered metrics block) and
+  `docs/architecture.md` leads with it; gallery stays under `Live stats`.
 
 ## Rolling daily operation (from 08-09-2026)
 

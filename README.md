@@ -3,6 +3,8 @@
 
 > A Cowrie SSH honeypot on Oracle Cloud Free Tier that publishes a **fresh leaderboard of real attacker credentials every 24 hours** — the usernames, passwords, and commands bots actually try against SSH servers in the wild.
 
+> **Live site: [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)** — interactive charts + credential leaderboard, refreshed daily. No login required. Start there; this README is the data + method behind it.
+
 ## Why this exists
 
 Every exposed SSH port on the internet gets knocked on thousands of times a day by bots working through credential lists. Most people still pick passwords from exactly the pool those bots try first. This repo closes that gap with live evidence: **if a password appears in the table below, bots are already trying it against your servers too.**
@@ -64,8 +66,16 @@ One Free Tier VM (`VM.Standard.E2.1.Micro`, Ubuntu 24.04, `ap-hyderabad-1`): SSH
 
 Public stats site: [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel) — charts + credential leaderboard from the same aggregates. Separate from the operator Grafana below; no login required.
 
-![Public stats site overview](dashboard/intel-overview.png)
-*Layout reference captured 2026-09-19 — numbers refresh daily on the site itself; this shot refreshes only when the site layout changes.*
+*Layout reference captured 2026-09-19 — numbers refresh daily on the site itself; shots below refresh only when the site layout changes.*
+
+![Hero + KPIs](dashboard/intel-hero.png)
+![Event volume](dashboard/intel-activity.png)
+![Credential leaderboard](dashboard/intel-credentials.png)
+![Top commands + categories](dashboard/intel-commands.png)
+![Sources + sessions + event mix](dashboard/intel-sources.png)
+![Takeaways + file operations](dashboard/intel-takeaways.png)
+![Session funnel](dashboard/intel-funnel.png)
+![Method + footer](dashboard/intel-method.png)
 
 ## Local dashboard (Grafana, operator-only)
 

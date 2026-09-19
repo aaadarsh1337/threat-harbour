@@ -1,5 +1,7 @@
 # Architecture
 
+> Live output of this setup: **[aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)** (public stats site, refreshed daily). What follows is how it is built.
+
 ## Overview
 
 One OCI Free Tier VM (`VM.Standard.E2.1.Micro`, Ubuntu 24.04, `ap-hyderabad-1`)
