@@ -1,20 +1,20 @@
 {
- "analysis_cutoff_utc": "2026-09-18T03:38:54Z",
+ "analysis_cutoff_utc": "2026-09-19T03:36:26Z",
  "observation_period": {
   "start": "2026-08-27",
   "end": "ongoing",
-  "interim_cutoff": "2026-09-18"
+  "interim_cutoff": "2026-09-19"
  },
  "totals": {
-  "total_events": 353909,
-  "bad_json_lines": 2
+  "total_events": 357922,
+  "bad_json_lines": 3
  },
  "sources": {
-  "unique_source_ips": 3178,
+  "unique_source_ips": 3302,
   "top_source_net16_by_event_volume": [
    {
     "cidr": "109.160.0.0/16",
-    "events": 191154
+    "events": 191836
    },
    {
     "cidr": "91.92.0.0/16",
@@ -22,11 +22,11 @@
    },
    {
     "cidr": "138.68.0.0/16",
-    "events": 17098
+    "events": 17390
    },
    {
     "cidr": "103.214.0.0/16",
-    "events": 14785
+    "events": 15510
    },
    {
     "cidr": "139.59.0.0/16",
@@ -34,42 +34,42 @@
    },
    {
     "cidr": "179.61.0.0/16",
-    "events": 9525
+    "events": 9760
    },
    {
     "cidr": "2.57.0.0/16",
-    "events": 6292
+    "events": 6430
    },
    {
     "cidr": "45.148.0.0/16",
-    "events": 5654
+    "events": 5929
    }
   ]
  },
  "sessions": {
-  "unique_session_ids": 54852,
-  "session_connect_events": 54850,
+  "unique_session_ids": 55975,
+  "session_connect_events": 55973,
   "session_duration_seconds": {
-   "n_closed_matched": 54646,
-   "median": 2.378606,
+   "n_closed_matched": 55757,
+   "median": 2.40632,
    "max": 18022.218617,
-   "under_10s": 41104
+   "under_10s": 41259
   }
  },
  "protocols": {
-  "ssh": 353909
+  "ssh": 357922
  },
  "logins": {
-  "success_fake": 38795,
-  "failed": 238,
+  "success_fake": 38938,
+  "failed": 240,
   "top_usernames": [
    {
     "value": "root",
-    "count": 17508
+    "count": 17586
    },
    {
     "value": "admin",
-    "count": 1467
+    "count": 1482
    },
    {
     "value": "ubuntu",
@@ -77,19 +77,19 @@
    },
    {
     "value": "user",
-    "count": 876
+    "count": 883
    },
    {
     "value": "deploy",
-    "count": 491
+    "count": 492
    },
    {
     "value": "test",
-    "count": 448
+    "count": 451
    },
    {
     "value": "user1",
-    "count": 239
+    "count": 240
    },
    {
     "value": "claude",
@@ -107,31 +107,31 @@
   "top_passwords": [
    {
     "value": "123456",
-    "count": 2028
+    "count": 2037
    },
    {
     "value": "1234",
-    "count": 1024
+    "count": 1032
    },
    {
     "value": "123",
-    "count": 940
+    "count": 944
    },
    {
     "value": "admin",
-    "count": 586
+    "count": 591
    },
    {
     "value": "12345678",
-    "count": 536
+    "count": 538
    },
    {
     "value": "1",
-    "count": 478
+    "count": 482
    },
    {
     "value": "password",
-    "count": 440
+    "count": 441
    },
    {
     "value": "root",
@@ -139,21 +139,21 @@
    },
    {
     "value": "12345",
-    "count": 395
+    "count": 398
    },
    {
     "value": "123456789",
-    "count": 323
+    "count": 325
    }
   ]
  },
  "commands": {
-  "input_events": 36239,
+  "input_events": 36360,
   "failed_command_events": 222,
   "top_commands": [
    {
     "input": "uname -s -v -n -r -m",
-    "count": 28654
+    "count": 28737
    },
    {
     "input": "hostname",
@@ -165,11 +165,11 @@
    },
    {
     "input": "uname -a",
-    "count": 556
+    "count": 559
    },
    {
     "input": "whoami",
-    "count": 450
+    "count": 452
    },
    {
     "input": "pwd",
@@ -181,14 +181,14 @@
    },
    {
     "input": "ps aux | head -10",
-    "count": 297
+    "count": 298
    }
   ]
  },
  "behavioral_command_categories": {
-  "discovery": 33940,
-  "other": 706,
-  "shell-exec": 1559,
+  "discovery": 34031,
+  "other": 708,
+  "shell-exec": 1587,
   "destructive": 18,
   "empty": 4,
   "persistence-privilege": 6,
@@ -196,7 +196,7 @@
  },
  "downloads_uploads": {
   "file_download_events": 195,
-  "file_upload_events": 43,
+  "file_upload_events": 44,
   "top_destfiles": [
    {
     "value": "/root/.ssh/authorized_keys",
@@ -215,7 +215,7 @@
     "count": 5
    },
    {
-    "value": "/home/admin/.ssh/authorized_keys",
+    "value": "/home/test/.ssh/authorized_keys",
     "count": 3
    }
   ],
@@ -235,30 +235,30 @@
   ]
  },
  "event_ids": {
-  "cowrie.session.connect": 54850,
-  "cowrie.client.version": 49522,
-  "cowrie.client.kex": 43675,
-  "cowrie.login.success": 38795,
-  "cowrie.session.closed": 54648,
-  "cowrie.session.params": 36223,
-  "cowrie.command.input": 36239,
-  "cowrie.log.closed": 36219,
-  "cowrie.direct-tcpip.request": 1398,
-  "cowrie.direct-tcpip.ja4": 593,
-  "cowrie.direct-tcpip.data": 809,
-  "cowrie.command.failed": 222,
-  "cowrie.session.file_download": 195,
-  "cowrie.login.failed": 238,
-  "cowrie.direct-tcpip.ja4h": 149,
+  "cowrie.session.closed": 55767,
+  "cowrie.session.connect": 55973,
+  "cowrie.client.version": 50371,
+  "cowrie.client.kex": 44061,
+  "cowrie.login.success": 38938,
+  "cowrie.session.params": 36344,
+  "cowrie.command.input": 36360,
+  "cowrie.log.closed": 36340,
   "cowrie.client.size": 9,
   "cowrie.client.var": 25,
+  "cowrie.command.failed": 222,
+  "cowrie.direct-tcpip.request": 1407,
+  "cowrie.direct-tcpip.ja4": 602,
+  "cowrie.direct-tcpip.data": 818,
+  "cowrie.session.file_download": 195,
+  "cowrie.login.failed": 240,
   "cowrie.command.chpasswd": 3,
-  "cowrie.session.file_upload": 43,
+  "cowrie.session.file_upload": 44,
   "cowrie.client.fingerprint": 52,
-  "cowrie.client.malformed_packet": 2
+  "cowrie.client.malformed_packet": 2,
+  "cowrie.direct-tcpip.ja4h": 149
  },
  "collection": {
-  "files": 22,
+  "files": 24,
   "log_path_on_sensor": "/home/jack/honeypot/var/log/cowrie/cowrie.json*",
   "per_day_utc": {
    "2026-08-27": 964,
@@ -282,10 +282,12 @@
    "2026-09-14": 3525,
    "2026-09-15": 2779,
    "2026-09-16": 62682,
-   "2026-09-17": 26242
+   "2026-09-17": 26242,
+   "2026-09-18": 3279,
+   "2026-09-19": 734
   },
-  "sensor_uptime_note": "Continuous daily log files 2026-08-27 through 2026-09-18, no missing days observed",
-  "bad_json_lines": 2
+  "sensor_uptime_note": "Continuous daily log files 2026-08-27 through 2026-09-19, no missing days observed",
+  "bad_json_lines": 3
  },
  "stack": {
   "cowrie": "3.0.13",

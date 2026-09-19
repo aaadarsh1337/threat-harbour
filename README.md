@@ -17,28 +17,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `18-09-2026 UTC`)
+## Collected Data — refreshed every 24 hours (last run `19-09-2026 UTC`)
 
 `27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `353,909` | `3,178` | `54,850` | `38,795` / 238 failed | `36,239` (+222 failed) | `195` (+43) |
+| `357,922` | `3,302` | `55,973` | `38,938` / 240 failed | `36,360` (+222 failed) | `195` (+44) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (17,508) | `123456` (2,028) | `uname -s -v -n -r -m` (28,654) |
-| 2 | `admin` (1,467) | `1234` (1,024) | `hostname` (1,185) |
-| 3 | `ubuntu` (916) | `123` (940) | `/bin/./uname -s -v -n -r -m` (856) |
-| 4 | `user` (876) | `admin` (586) | `uname -a` (556) |
-| 5 | `deploy` (491) | `12345678` (536) | `whoami` (450) |
+| 1 | `root` (17,586) | `123456` (2,037) | `uname -s -v -n -r -m` (28,737) |
+| 2 | `admin` (1,482) | `1234` (1,032) | `hostname` (1,185) |
+| 3 | `ubuntu` (916) | `123` (944) | `/bin/./uname -s -v -n -r -m` (856) |
+| 4 | `user` (883) | `admin` (591) | `uname -a` (559) |
+| 5 | `deploy` (492) | `12345678` (538) | `whoami` (452) |
 
 Key findings:
 
-- Median session `2.4s` (75% under 10s) — mostly automated scanning, not humans.
+- Median session `2.4s` (74% under 10s) — mostly automated scanning, not humans.
 - `94%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44…`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (191,154 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (191,836 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
