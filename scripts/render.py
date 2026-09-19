@@ -33,12 +33,20 @@ STACK = {"cowrie": "3.0.13", "grafana": "10.2.3", "loki": "2.9.4",
 SENSOR_LOG_PATH = "/home/jack/honeypot/var/log/cowrie/cowrie.json*"
 OBS_START = "2026-08-27"
 
-# Timeline stays daily up to this many days, then switches to weekly
-# buckets so 100+ days don't collapse into unreadable 100-bar charts.
+# Timeline is fully daily up to this many days. Beyond it, the chart turns
+# hybrid (see RECENT_DAILY_DAYS): recent detail stays daily, only older
+# history is compressed — so day 46 looks like day 45 plus a small
+# aggregated tail instead of a jarring granularity switch.
 TIMELINE_DAILY_LIMIT = 45
+# In hybrid mode, the last N days always render as daily bars.
+RECENT_DAILY_DAYS = 30
+# Older history spans at most this many days before it buckets monthly
+# instead of weekly, keeping total bars bounded even after a year.
+WEEKLY_SPAN_LIMIT = 84
 # Days shown inline in summary.md before older days collapse into <details>.
 SUMMARY_INLINE_DAYS = 30
-# Bars at/above this are highlighted amber; the max is always amber.
+# Absolute-count highlight cutoff (currently unused for colour; kept so
+# archived payloads/metrics carrying it still validate conceptually).
 # Tokyo Night (matches aaadarsh1337.github.io/intel + css/tokens.css).
 # Site chart reference: base bars #7aa2f7 @0.75, peak #f7768e, latest #7dcfff,
 # grid #292e42, values #a9b1d6, axis labels #7d86b0, Mono for numbers.
@@ -408,6 +416,15 @@ def _bucket_weekly(per_day):
     return sorted(weeks.items())
 
 
+def _bucket_monthly(per_day):
+    months = {}
+    for day, count in per_day.items():
+        d = datetime.datetime.strptime(day, "%Y-%m-%d").date()
+        start = d.replace(day=1)
+        months[start] = months.get(start, 0) + count
+    return sorted(months.items())
+
+
 def draw_timeline(m, path):
     import matplotlib
     matplotlib.use("Agg")
@@ -432,20 +449,38 @@ def draw_timeline(m, path):
         _empty("No per-day data at this cutoff.")
         return
     days = sorted(per_day)
-    weekly = len(days) > TIMELINE_DAILY_LIMIT
-    if weekly:
-        buckets = _bucket_weekly(per_day)
-        labels = [s.strftime("%b %d") for s, _ in buckets]
-        counts = [c for _, c in buckets]
-        xlabel = (f"Week starting (Monday) — {len(days)} days shown as "
-                  f"{len(buckets)} weekly buckets; daily counts in "
-                  "analysis/summary.md")
-        title = "Threat Harbour — Events per week (SSH-only)"
-    else:
+    section_split = None  # index where the aggregated history ends
+    if len(days) <= TIMELINE_DAILY_LIMIT:
         labels = [d[5:] for d in days]
         counts = [per_day[d] for d in days]
         xlabel = None
-        title = "Threat Harbour — Events per UTC day (SSH-only)"
+    else:
+        # Hybrid: the last RECENT_DAILY_DAYS stay daily; only older days
+        # compress (weekly, or monthly once the older span is long). Each
+        # new day shifts one bar from daily into the aggregated tail, so
+        # the chart evolves smoothly instead of switching granularity
+        # overnight at the threshold.
+        recent = days[-RECENT_DAILY_DAYS:]
+        older = days[:-RECENT_DAILY_DAYS]
+        d0 = datetime.datetime.strptime(older[0], "%Y-%m-%d").date()
+        d1 = datetime.datetime.strptime(older[-1], "%Y-%m-%d").date()
+        sub = {d: per_day[d] for d in older}
+        if (d1 - d0).days + 1 <= WEEKLY_SPAN_LIMIT:
+            buckets = _bucket_weekly(sub)
+            agg_labels = [s.strftime("%b %d") for s, _ in buckets]
+            agg_kind = "weekly"
+        else:
+            buckets = _bucket_monthly(sub)
+            agg_labels = [s.strftime("%b '%y") for s, _ in buckets]
+            agg_kind = "monthly"
+        agg_counts = [c for _, c in buckets]
+        labels = agg_labels + [d[5:] for d in recent]
+        counts = agg_counts + [per_day[d] for d in recent]
+        section_split = len(agg_labels)
+        xlabel = (f"Dim bars: older history in {agg_kind} buckets · "
+                  f"bright bars: last {RECENT_DAILY_DAYS} days daily · "
+                  "full series in analysis/summary.md")
+    title = "Threat Harbour — Events per UTC day (SSH-only)"
     peak = max(counts)
     width = max(13, min(20, 6 + len(counts) * 0.35))
     fig, ax = plt.subplots(figsize=(width, 5.8))
@@ -454,18 +489,25 @@ def draw_timeline(m, path):
     ax.set_title(title, fontsize=14, weight="bold", color=INK, loc="left",
                  pad=12, fontfamily=T_SANS)
     # Site semantics: peak = pink, latest/partial = cyan, rest = blue.
+    # Aggregated-history bars are dimmed so the two sections read apart;
+    # highlights always render full-strength wherever they fall.
     # HIGH_VOLUME_THRESHOLD no longer drives colour (kept for compat).
+    from matplotlib.colors import to_rgba
     last_idx = len(counts) - 1
     colors = []
     for i, c in enumerate(counts):
+        in_agg = section_split is not None and i < section_split
         if c == peak:
-            colors.append(T_PINK)
+            colors.append(to_rgba(T_PINK, 0.92))
         elif i == last_idx:
-            colors.append(T_CYAN)
+            colors.append(to_rgba(T_CYAN, 0.92))
         else:
-            colors.append(T_BLUE)
+            colors.append(to_rgba(T_BLUE, 0.55 if in_agg else 0.92))
     bars = ax.bar(labels, counts, color=colors, edgecolor=T_FIG_EDGE,
-                  linewidth=1.0, alpha=0.92, zorder=3)
+                  linewidth=1.0, zorder=3)
+    if section_split:
+        ax.axvline(x=section_split - 0.5, color=GRID,
+                   linestyle=(0, (4, 4)), linewidth=1, zorder=2)
     ax.yaxis.grid(True, color=GRID, linestyle=(0, (4, 4)), linewidth=1,
                    alpha=1.0, zorder=0)
     ax.set_axisbelow(True)
@@ -475,8 +517,11 @@ def draw_timeline(m, path):
                      color=MUTED, padding=3, fontfamily=T_MONO)
     else:
         idx = counts.index(peak)
-        ax.bar_label([bars[idx]], labels=[f"{peak:,}"], fontsize=9,
-                     color=MUTED, padding=3, fontfamily=T_MONO)
+        ax.bar_label(bars,
+                     labels=[f"{peak:,}" if i == idx else ""
+                             for i in range(len(counts))],
+                     fontsize=9, color=MUTED, padding=3,
+                     fontfamily=T_MONO)
     ax.set_ylabel("events", color=FAINT)
     if xlabel:
         ax.set_xlabel(xlabel, color=FAINT, fontsize=9, style="italic")
@@ -492,10 +537,11 @@ def draw_timeline(m, path):
     for sp in ("left", "bottom"):
         ax.spines[sp].set_color(GRID)
     day_range = f"{days[0]} → {days[-1]}"
-    if weekly:
-        footer = (f"Weeks of {day_range} ({sum(counts):,} events). "
-                  f"Weekly buckets keep 100+ days readable; "
-                  f"last week may be partial — do not annualize.")
+    if section_split:
+        footer = (f"{day_range} ({sum(counts):,} events): older history in "
+                  f"buckets, last {RECENT_DAILY_DAYS} days daily. "
+                  f"* {days[-1]} is partial at cutoff "
+                  f"({counts[-1]:,}) — do not annualize.")
     else:
         footer = (f"* {days[-1]} is a partial day at cutoff "
                   f"({counts[-1]:,}) — do not annualize. "
