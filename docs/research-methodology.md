@@ -63,8 +63,8 @@ The sensor is intentionally exposed for defensive observation. Analysis must avo
 ## Publication
 
 Aggregates refresh every 24 hours through the automated pipeline
-(`.github/workflows/daily-metrics.yml` + `scripts/`): the public dashboard
-([aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)) and the
-README leaderboard are the live views, `analysis/` holds the machine-readable
-tables, and `docs/threat-intelligence.md` records the analyst deep-dive per
-cutoff.
+(`.github/workflows/daily-metrics.yml` + `scripts/`): the public stats site
+([aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel),
+separate static site, not Grafana) and the README leaderboard are the live
+views, `analysis/` holds the machine-readable tables, and
+`docs/threat-intelligence.md` records the analyst deep-dive per cutoff.

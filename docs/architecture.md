@@ -45,9 +45,9 @@ Cowrie cowrie.json* --read-only--> Promtail (job="cowrie")
   --> Loki :3100 --LogQL--> Grafana :3000 (6 table panels, via tunnel)
 Cowrie cowrie.json* --offline Python parse (scripts/parse_remote.py)-->
   aggregates only --> Repo: analysis/metrics.json, analysis/summary.md,
-  evidence/manifest.md --> README leaderboard + public dashboard
-  (https://aaadarsh1337.github.io/intel) + diagrams/activity-timeline.png,
-  diagrams/session-funnel.png
+  evidence/manifest.md --> README leaderboard + public stats site
+  (https://aaadarsh1337.github.io/intel, separate static site) +
+  diagrams/activity-timeline.png, diagrams/session-funnel.png
 ```
 
 Flow diagram source: `diagrams/data-pipeline.mmd` /
@@ -56,9 +56,11 @@ numbers live in `analysis/metrics.json`, not in the image.
 
 ## Published vs Local Views
 
-- Public, no login: [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)
-  + README leaderboard (both refreshed every 24h from the same aggregates)
-- Local, via tunnel: Grafana (`dashboard/grafana-dashboard.json`,
-  UID `b3f714e8-54fc-420f-b0ea-1aabea9d4858`) — see `dashboard/README.md`
+- Public stats site, no login: [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)
+  + README leaderboard (both refreshed every 24h from the same aggregates;
+  separate from Grafana)
+- Local Grafana, operator-only via tunnel: (`dashboard/grafana-dashboard.json`,
+  UID `b3f714e8-54fc-420f-b0ea-1aabea9d4858`) — see `dashboard/README.md`,
+  never public
 - Raw logs, source IPs, payloads, keys stay on the sensor; only aggregates,
   /16 volume buckets, and redacted hashes leave it.

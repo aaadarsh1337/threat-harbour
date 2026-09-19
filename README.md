@@ -60,13 +60,18 @@ A GitHub Actions job runs **every 24 hours**: it SSHes into the sensor as a rest
 
 One Free Tier VM (`VM.Standard.E2.1.Micro`, Ubuntu 24.04, `ap-hyderabad-1`): SSH-only Cowrie `3.0.13`, plus Grafana + Loki + Promtail over Docker, all localhost-bound. Deliberately small instead of a full multi-service setup like T-Pot — one port, tight scope, rebuildable. See [docs/architecture.md](docs/architecture.md).
 
-## Dashboard
+## Live stats (public)
 
-**Public dashboard:** [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel) — live charts + credential leaderboard, auto-refreshed daily from the same aggregates.
+Public stats site: [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel) — charts + credential leaderboard from the same aggregates. Separate from the operator Grafana below; no login required.
+
+![Public stats site overview](dashboard/intel-overview.png)
+*Layout reference captured 2026-09-19 — numbers refresh daily on the site itself; this shot refreshes only when the site layout changes.*
+
+## Local dashboard (Grafana, operator-only)
 
 ![Dashboard overview](dashboard/dashboard.png)
 
-Local Grafana view of the same data (tables of logins, commands, top IPs, top credentials, localhost-only via SSH tunnel). See [dashboard/README.md](dashboard/README.md).
+Local Grafana view (tables of logins, commands, top IPs, top credentials, localhost-only via SSH tunnel). Not public. See [dashboard/README.md](dashboard/README.md).
 
 ## Limitations
 

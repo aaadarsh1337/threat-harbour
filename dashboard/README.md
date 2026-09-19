@@ -1,8 +1,8 @@
-# Cowrie Dashboard
+# Cowrie Dashboard (local Grafana, operator-only)
 
 Grafana dashboard for visualizing SSH honeypot activity collected from Cowrie and stored in Loki.
 
-**Public dashboard:** [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel) — public, read-only view of the same aggregates (daily event volume, credential leaderboard, commands, /16s, sessions). No login required; raw IPs and payloads are never published there.
+Not to be confused with the public stats site ([aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)) — that is a separate static site showing aggregate stats. This directory is the localhost-only operator Grafana (tunnel required, never public).
 
 This is a subcomponent of the main project. Refer to the repository root `README.md` for overall setup, deployment, configuration, and security information.
 

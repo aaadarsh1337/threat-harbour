@@ -15,8 +15,13 @@
 - Added `configs/` redacted examples (`cowrie.cfg`, `docker-compose.yml`,
   `promtail-config.yml`, `sudoers.d-metrics-read`, `nsg-rules.md`) linked
   from deployment/operations/architecture docs.
-- Public dashboard linked: README, `dashboard/README.md`, methodology now
-  point at [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel).
+- Public stats site linked (separate from local Grafana): README gets a
+  `Live stats (public)` section, `dashboard/README.md` disambiguates
+  operator-only Grafana, methodology/architecture distinguish the two —
+  all pointing at [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel).
+- Added `dashboard/intel-overview.png` (1600px, captured 2026-09-19,
+  layout reference only) under README `Live stats`; refresh on site-layout
+  change, not on data updates — same policy as Grafana `dashboard.png`.
 
 ## Rolling daily operation (from 08-09-2026)
 
