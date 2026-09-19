@@ -1,0 +1,7 @@
+# Threat Harbour pinned dependencies.
+# Workflow uses Python 3.12 (see .github/workflows/daily-metrics.yml).
+# Pin to avoid overnight breakage from matplotlib/oci-cli API changes.
+matplotlib==3.10.1
+oci-cli==3.44.1
+# Test-only (CI + local `pytest`). Not installed on the sensor.
+pytest==8.3.4

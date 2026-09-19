@@ -1,0 +1,22 @@
+# Redacted example — live file: /home/jack/honeypot/etc/cowrie.cfg
+# Cowrie 3.0.13, SSH-only sensor. Copy to etc/cowrie.cfg and adjust hostname.
+# NEVER commit real sensor IPs, keys, or backend DB credentials.
+
+[cowrie]
+hostname = svr01
+# Fake sensor details shown to attackers; unrelated to the real host.
+ssh_version_string = SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6
+listen_endpoints = tcp:22:interface=0.0.0.0
+
+[ssh]
+# Honeypot listener only. Admin SSH runs as a separate host sshd on
+# <ADMIN_PORT> (key-only) — not here, not on port 22.
+auth_class = AuthRandom
+# Allow fake logins so bots proceed to command input (observed as
+# cowrie.login.success). Real host auth is unaffected.
+
+[output_jsonlog]
+enabled = true
+logfile = var/log/cowrie/cowrie.json
+# Rotated daily by Cowrie (cowrie.json.YYYY-MM-DD); raw logs stay on sensor.
+# Published aggregates only — see scripts/parse_remote.py.

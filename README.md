@@ -62,9 +62,11 @@ One Free Tier VM (`VM.Standard.E2.1.Micro`, Ubuntu 24.04, `ap-hyderabad-1`): SSH
 
 ## Dashboard
 
+**Public dashboard:** [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel) — live charts + credential leaderboard, auto-refreshed daily from the same aggregates.
+
 ![Dashboard overview](dashboard/dashboard.png)
 
-Live Grafana view of the same data (tables of logins, commands, top IPs, top credentials). See [dashboard/README.md](dashboard/README.md).
+Local Grafana view of the same data (tables of logins, commands, top IPs, top credentials, localhost-only via SSH tunnel). See [dashboard/README.md](dashboard/README.md).
 
 ## Limitations
 

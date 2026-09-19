@@ -10,7 +10,7 @@
 
 ## Study Design
 
-This is an observational study using one lightweight Cowrie sensor from `2026-08-27` through `ongoing` (interim cutoff `2026-09-06T20:36:00Z`).
+This is an observational study using one lightweight Cowrie sensor from `2026-08-27` through `ongoing` (rolling snapshot — see `analysis/metrics.json` `analysis_cutoff_utc` for the current cutoff).
 
 No external systems are scanned or accessed.
 
@@ -63,6 +63,8 @@ The sensor is intentionally exposed for defensive observation. Analysis must avo
 ## Publication
 
 Aggregates refresh every 24 hours through the automated pipeline
-(`.github/workflows/daily-metrics.yml` + `scripts/`): the README leaderboard
-is the live view, `analysis/` holds the machine-readable tables, and
-`docs/threat-intelligence.md` records the analyst deep-dive per cutoff.
+(`.github/workflows/daily-metrics.yml` + `scripts/`): the public dashboard
+([aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)) and the
+README leaderboard are the live views, `analysis/` holds the machine-readable
+tables, and `docs/threat-intelligence.md` records the analyst deep-dive per
+cutoff.

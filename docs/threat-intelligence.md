@@ -1,11 +1,11 @@
-# Threat Intelligence (analyst deep-dive, cutoff 2026-09-08 UTC)
+# Threat Intelligence (analyst deep-dive, ARCHIVED cutoff 2026-09-08 UTC)
 
-> Sensor is still running. Observation: `2026-08-27` → `ongoing`.
-> Figures below are a snapshot at `2026-09-08T19:08:28Z`. See `analysis/summary.md`
-> and `analysis/metrics.json` for method.
->
-> Live leaderboard: the README refreshes every 24 hours — this report is
-> the analyst deep-dive behind the numbers.
+> **ARCHIVED — not live.** Snapshot at `2026-09-08T19:08:28Z` (174,927 events).
+> For current numbers see the live views: public dashboard
+> [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel),
+> `analysis/summary.md`, and `analysis/metrics.json` (refreshed every 24h).
+> Sensor is still running (`2026-08-27` → `ongoing`); this report is kept as
+> the analyst deep-dive behind the numbers at that cutoff, not regenerated.
 
 ## Scope
 

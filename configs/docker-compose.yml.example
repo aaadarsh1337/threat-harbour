@@ -1,0 +1,43 @@
+# Redacted example — live file: /home/jack/honeypot-monitor/docker-compose.yml
+# Monitor stack: Loki 2.9.4 + Promtail 2.9.4 + Grafana 10.2.3.
+# All ports localhost-bound; reached via `ssh -L 3000:localhost:3000`.
+# Memory limits are required on the E2.Micro (~1 GB RAM) — see docs/operations.md.
+# NEVER expose 3000/3100 publicly. NEVER commit real passwords.
+
+services:
+  loki:
+    image: grafana/loki:2.9.4
+    ports:
+      - "127.0.0.1:3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    mem_limit: 280m
+    restart: unless-stopped
+
+  promtail:
+    image: grafana/promtail:2.9.4
+    volumes:
+      # Read-only mount of Cowrie JSONL — same files scripts/parse_remote.py reads.
+      - /home/jack/honeypot/var/log/cowrie:/var/log/cowrie:ro
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+    mem_limit: 80m
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.2.3
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      # Change on first login; do not commit the real password.
+      - GF_SECURITY_ADMIN_PASSWORD=<GRAFANA_ADMIN_PASSWORD>
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ../dashboard/grafana-dashboard.json:/var/lib/grafana/dashboards/cowrie.json:ro
+    mem_limit: 220m
+    restart: unless-stopped
+
+volumes:
+  loki-data:
+  grafana-data:

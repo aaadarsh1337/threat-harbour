@@ -2,6 +2,8 @@
 
 Grafana dashboard for visualizing SSH honeypot activity collected from Cowrie and stored in Loki.
 
+**Public dashboard:** [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel) — public, read-only view of the same aggregates (daily event volume, credential leaderboard, commands, /16s, sessions). No login required; raw IPs and payloads are never published there.
+
 This is a subcomponent of the main project. Refer to the repository root `README.md` for overall setup, deployment, configuration, and security information.
 
 ## Overview (tables-only, matching `grafana-dashboard.json`)

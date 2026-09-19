@@ -28,7 +28,8 @@ then auto-commit + push when numbers changed.
 
 - Sensor side: `metrics` user, key-only auth (`~/.ssh/threat-harbour-metrics`
   pubkey in `authorized_keys`), passwordless sudo limited to
-  `/usr/bin/python3 /tmp/th-parse-*.py` (`/etc/sudoers.d/metrics-read`).
+  `/usr/bin/python3 /tmp/th-parse-*.py` (`/etc/sudoers.d/metrics-read` —
+  redacted example: `configs/sudoers.d-metrics-read.example`).
   It cannot run anything else as root — verified (`sudo whoami` denied).
 - Secrets (repo Settings → Secrets → Actions): `SSH_HOST`, `SSH_PORT`,
   `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`, plus the OCI API

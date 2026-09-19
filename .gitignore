@@ -1,0 +1,7 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+# Daily job artifacts (never commit)
+payload.json
+/tmp/th-*.json

@@ -1,0 +1,21 @@
+# Redacted example — mounted into the Promtail container (see docker-compose.yml.example).
+# Ships Cowrie JSONL to Loki as job="cowrie" — the same source scripts/parse_remote.py parses.
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: cowrie
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: cowrie
+          __path__: /var/log/cowrie/cowrie.json*

@@ -1,0 +1,6 @@
+# Redacted example — live file: /etc/sudoers.d/metrics-read (0600, edit with visudo).
+# Restricted `metrics` user for .github/workflows/daily-metrics.yml.
+# Key-only auth; pubkey ~/.ssh/threat-harbour-metrics in /home/metrics/.ssh/authorized_keys.
+# It can run ONLY the freshly-scp'd parser, nothing else (verified: `sudo whoami` denied).
+
+metrics ALL=(root) NOPASSWD: /usr/bin/python3 /tmp/th-parse-*.py

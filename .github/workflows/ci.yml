@@ -1,0 +1,26 @@
+# CI — fast stdlib tests on push/PR. No sensor, no secrets, no matplotlib needed.
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test deps
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: python3 -m pytest tests/ -q

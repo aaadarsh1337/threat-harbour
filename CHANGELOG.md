@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased: tests + pinned deps + de-staled docs + redacted configs
+
+- Added `requirements.txt` (pinned `matplotlib`, `oci-cli`, `pytest`) and
+  `tests/test_parse_remote.py` + `tests/test_render.py` (22 tests: command
+  categorization, markdown sanitization, gap detection, metrics build).
+  New `ci.yml` runs them on push/PR; `daily-metrics.yml` installs from
+  `requirements.txt` and runs tests before render (fail loud).
+- De-staled docs: `threat-intelligence.md` marked ARCHIVED 2026-09-08 with
+  pointer to live dashboard/analysis; `data-pipeline.mmd` labels made
+  count-free (live numbers in `metrics.json` only); `architecture.md`
+  rewritten from `architecture.mmd`/README (sensor specs, network + data
+  flow, public vs local views); methodology now rolling snapshot.
+- Added `configs/` redacted examples (`cowrie.cfg`, `docker-compose.yml`,
+  `promtail-config.yml`, `sudoers.d-metrics-read`, `nsg-rules.md`) linked
+  from deployment/operations/architecture docs.
+- Public dashboard linked: README, `dashboard/README.md`, methodology now
+  point at [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel).
+
 ## Rolling daily operation (from 08-09-2026)
 
 - First automated run green: README, `analysis/`, `evidence/`, and charts

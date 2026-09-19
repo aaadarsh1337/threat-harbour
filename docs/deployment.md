@@ -41,7 +41,8 @@ Validate the effective rules from both OCI and the host firewall.
 ## 3. Install Cowrie (as deployed)
 
 - Python venv + Cowrie `3.0.13` under `/home/jack/honeypot/`
-- Config: `/home/jack/honeypot/etc/cowrie.cfg`; logs:
+- Config: `/home/jack/honeypot/etc/cowrie.cfg` (redacted example:
+  `configs/cowrie.cfg.example`); logs:
   `/home/jack/honeypot/var/log/cowrie/cowrie.json*` (rotated daily)
 - Artifacts: `var/lib/cowrie/downloads/`, `var/lib/cowrie/tty/`
 - Verify: `sudo wc -l /home/jack/honeypot/var/log/cowrie/cowrie.json*`
@@ -51,9 +52,11 @@ Validate the effective rules from both OCI and the host firewall.
 
 ## 4. Install monitoring (as deployed)
 
-- `docker-compose.yml` runs `loki`, `promtail` (read-only mount of the
-  Cowrie log dir, `job="cowrie"`), and `grafana`
+- `docker-compose.yml` (redacted example: `configs/docker-compose.yml.example`)
+  runs `loki`, `promtail` (read-only mount of the Cowrie log dir,
+  `job="cowrie"` — see `configs/promtail-config.yml.example`), and `grafana`
 - Promtail config maps `/var/log/cowrie/cowrie.json*`
+- Network rules reference: `configs/nsg-rules.md`
 - Verify: Loki `http://localhost:3100/ready`, Grafana
   `http://localhost:3000` via tunnel; import `dashboard/grafana-dashboard.json`
 
