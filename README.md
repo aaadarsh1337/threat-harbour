@@ -19,28 +19,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `19-09-2026 UTC`)
+## Collected Data — refreshed every 24 hours (last run `2026-09-20 UTC`)
 
-`27-08-2026` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
+`2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `357,922` | `3,302` | `55,973` | `38,938` / 240 failed | `36,360` (+222 failed) | `195` (+44) |
+| `394,916` | `3,423` | `60,801` | `43,476` / 267 failed | `40,711` (+263 failed) | `224` (+48 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (17,586) | `123456` (2,037) | `uname -s -v -n -r -m` (28,737) |
-| 2 | `admin` (1,482) | `1234` (1,032) | `hostname` (1,185) |
-| 3 | `ubuntu` (916) | `123` (944) | `/bin/./uname -s -v -n -r -m` (856) |
-| 4 | `user` (883) | `admin` (591) | `uname -a` (559) |
-| 5 | `deploy` (492) | `12345678` (538) | `whoami` (452) |
+| 1 | `root` (19,562) | `123456` (2,299) | `uname -s -v -n -r -m` (32,361) |
+| 2 | `admin` (1,635) | `1234` (1,191) | `hostname` (1,263) |
+| 3 | `ubuntu` (1,063) | `123` (1,075) | `/bin/./uname -s -v -n -r -m` (945) |
+| 4 | `user` (1,027) | `admin` (672) | `export PATH=/usr/local/sbin:/usr/local/b…` (722) |
+| 5 | `deploy` (572) | `12345678` (604) | `uname -a` (617) |
 
 Key findings:
 
-- Median session `2.4s` (74% under 10s) — mostly automated scanning, not humans.
+- Median session `2.4s` (75% under 10s) — mostly automated scanning, not humans.
 - `94%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
-- Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44…`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (191,836 events) — volume only, never attribution.
+- Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
+- Busiest /16 by volume: `109.160.0.0/16` (220,884 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
