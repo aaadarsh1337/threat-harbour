@@ -19,21 +19,21 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `2026-09-20 UTC`)
+## Collected Data — refreshed every 24 hours (last run `2026-09-21 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `394,916` | `3,423` | `60,801` | `43,476` / 267 failed | `40,711` (+263 failed) | `224` (+48 uploads) |
+| `399,041` | `3,546` | `61,851` | `43,667` / 271 failed | `40,852` (+263 failed) | `228` (+55 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (19,562) | `123456` (2,299) | `uname -s -v -n -r -m` (32,361) |
-| 2 | `admin` (1,635) | `1234` (1,191) | `hostname` (1,263) |
-| 3 | `ubuntu` (1,063) | `123` (1,075) | `/bin/./uname -s -v -n -r -m` (945) |
-| 4 | `user` (1,027) | `admin` (672) | `export PATH=/usr/local/sbin:/usr/local/b…` (722) |
-| 5 | `deploy` (572) | `12345678` (604) | `uname -a` (617) |
+| 1 | `root` (19,720) | `123456` (2,303) | `uname -s -v -n -r -m` (32,361) |
+| 2 | `admin` (1,653) | `1234` (1,202) | `hostname` (1,284) |
+| 3 | `ubuntu` (1,063) | `123` (1,077) | `/bin/./uname -s -v -n -r -m` (945) |
+| 4 | `user` (1,040) | `admin` (689) | `export PATH=/usr/local/sbin:/usr/local/b…` (722) |
+| 5 | `deploy` (572) | `12345678` (606) | `uname -a` (631) |
 
 Key findings:
 
