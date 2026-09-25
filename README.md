@@ -19,28 +19,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `2026-09-24 UTC`)
+## Collected Data — refreshed every 24 hours (last run `2026-09-25 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `496,133` | `3,772` | `74,794` | `55,450` / 329 failed | `52,225` (+263 failed) | `234` (+56 uploads) |
+| `504,014` | `3,826` | `76,101` | `56,232` / 344 failed | `52,929` (+268 failed) | `236` (+58 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (24,874) | `123456` (2,981) | `uname -s -v -n -r -m` (42,225) |
-| 2 | `admin` (2,033) | `1234` (1,531) | `hostname` (1,478) |
-| 3 | `ubuntu` (1,419) | `123` (1,417) | `/bin/./uname -s -v -n -r -m` (1,069) |
-| 4 | `user` (1,318) | `admin` (806) | `export PATH=/usr/local/sbin:/usr/local/b…` (826) |
-| 5 | `deploy` (779) | `12345678` (785) | `uname -a` (783) |
+| 1 | `root` (25,586) | `123456` (2,987) | `uname -s -v -n -r -m` (42,276) |
+| 2 | `admin` (2,074) | `1234` (1,542) | `hostname` (1,566) |
+| 3 | `ubuntu` (1,420) | `123` (1,423) | `/bin/./uname -s -v -n -r -m` (1,069) |
+| 4 | `user` (1,328) | `admin` (823) | `export PATH=/usr/local/sbin:/usr/local/b…` (923) |
+| 5 | `deploy` (781) | `12345678` (788) | `uname -a` (844) |
 
 Key findings:
 
 - Median session `2.4s` (77% under 10s) — mostly automated scanning, not humans.
 - `94%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (299,925 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (300,948 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)

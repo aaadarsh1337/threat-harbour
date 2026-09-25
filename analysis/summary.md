@@ -1,13 +1,13 @@
-# Analysis summary (rolling snapshot, cutoff 2026-09-24T03:36:28Z)
+# Analysis summary (rolling snapshot, cutoff 2026-09-25T03:53:21Z)
 
 Sensor is **still running** — this file regenerates every 24 hours.
 Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
-`2026-09-24T03:36:28Z` (496,133 events).
+`2026-09-25T03:53:21Z` (504,014 events).
 
 ## Source
 
 - Cowrie JSONL on sensor: `/home/jack/honeypot/var/log/cowrie/cowrie.json*`
-  (29 files, 3 malformed lines) — the same files Promtail ships to Loki
+  (30 files, 3 malformed lines) — the same files Promtail ships to Loki
   (`job="cowrie"`).
 - Parser: `scripts/parse_remote.py` (stdlib only, deployed fresh each run);
   renderer: `scripts/render.py`. Aggregates only. Raw logs stay on the
@@ -17,16 +17,16 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Metric | Value |
 |---|---|
-| Total events | 496,133 |
-| Unique source IPs | 3,772 |
-| Sessions (`cowrie.session.connect`) | 74,794 |
-| SSH events | 496,133 (100%) |
-| Fake successful logins (`cowrie.login.success`) | 55,450 |
-| Failed logins | 329 |
-| Command-input events | 52,225 (+263 `command.failed`) |
-| File-download events | 234 |
-| File-upload events | 56 |
-| Session duration median (n=74,583 matched close) | 2.4s; 57,739 < 10s; max ~18,022s |
+| Total events | 504,014 |
+| Unique source IPs | 3,826 |
+| Sessions (`cowrie.session.connect`) | 76,101 |
+| SSH events | 504,014 (100%) |
+| Fake successful logins (`cowrie.login.success`) | 56,232 |
+| Failed logins | 344 |
+| Command-input events | 52,929 (+268 `command.failed`) |
+| File-download events | 236 |
+| File-upload events | 58 |
+| Session duration median (n=75,886 matched close) | 2.4s; 58,410 < 10s; max ~18,022s |
 
 ## Events per UTC day
 
@@ -60,66 +60,67 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-09-21` | 40,240 |
 | `2026-09-22` | 24,315 |
 | `2026-09-23` | 30,768 |
-| `2026-09-24` | 2,172 |
+| `2026-09-24` | 9,616 |
+| `2026-09-25` | 437 |
 
-`2026-09-24` is partial at cutoff — do not annualize.
+`2026-09-25` is partial at cutoff — do not annualize.
 
 ### Top usernames
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `root` | 24,874 |
-| 2 | `admin` | 2,033 |
-| 3 | `ubuntu` | 1,419 |
-| 4 | `user` | 1,318 |
-| 5 | `deploy` | 779 |
+| 1 | `root` | 25,586 |
+| 2 | `admin` | 2,074 |
+| 3 | `ubuntu` | 1,420 |
+| 4 | `user` | 1,328 |
+| 5 | `deploy` | 781 |
 | 6 | `test` | 654 |
-| 7 | `user1` | 386 |
-| 8 | `claude` | 364 |
-| 9 | `debian` | 327 |
+| 7 | `user1` | 387 |
+| 8 | `claude` | 365 |
+| 9 | `debian` | 328 |
 | 10 | `postgres` | 274 |
 
 ### Top passwords
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `123456` | 2,981 |
-| 2 | `1234` | 1,531 |
-| 3 | `123` | 1,417 |
-| 4 | `admin` | 806 |
-| 5 | `12345678` | 785 |
-| 6 | `1` | 717 |
-| 7 | `password` | 630 |
-| 8 | `root` | 586 |
-| 9 | `12345` | 573 |
-| 10 | `123456789` | 466 |
+| 1 | `123456` | 2,987 |
+| 2 | `1234` | 1,542 |
+| 3 | `123` | 1,423 |
+| 4 | `admin` | 823 |
+| 5 | `12345678` | 788 |
+| 6 | `1` | 719 |
+| 7 | `password` | 634 |
+| 8 | `root` | 591 |
+| 9 | `12345` | 575 |
+| 10 | `123456789` | 468 |
 
 ### Top commands
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `uname -s -v -n -r -m` | 42,225 |
-| 2 | `hostname` | 1,478 |
+| 1 | `uname -s -v -n -r -m` | 42,276 |
+| 2 | `hostname` | 1,566 |
 | 3 | `/bin/./uname -s -v -n -r -m` | 1,069 |
-| 4 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 826 |
-| 5 | `uname -a` | 783 |
+| 4 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 923 |
+| 5 | `uname -a` | 844 |
 | 6 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 722 |
-| 7 | `whoami` | 621 |
-| 8 | `pwd` | 501 |
-| 9 | `ls -la /` | 471 |
-| 10 | `netstat -tulpn \| head -10` | 427 |
+| 7 | `whoami` | 687 |
+| 8 | `pwd` | 539 |
+| 9 | `ls -la /` | 511 |
+| 10 | `ps aux \| head -10` | 464 |
 
 ### Command categories
 
 | Category | Events |
 |---|---|
-| `destructive` | 1,787 |
-| `discovery` | 49,319 |
-| `downloader` | 24 |
+| `destructive` | 1,887 |
+| `discovery` | 49,848 |
+| `downloader` | 26 |
 | `empty` | 4 |
-| `other` | 569 |
+| `other` | 601 |
 | `persistence-privilege` | 17 |
-| `shell-exec` | 505 |
+| `shell-exec` | 546 |
 
 ## Limitations that shape these numbers
 
