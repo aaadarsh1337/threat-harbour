@@ -19,28 +19,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `2026-09-25 UTC`)
+## Collected Data — refreshed every 24 hours (last run `2026-09-26 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `504,014` | `3,826` | `76,101` | `56,232` / 344 failed | `52,929` (+268 failed) | `236` (+58 uploads) |
+| `533,302` | `3,875` | `79,869` | `59,872` / 375 failed | `56,451` (+269 failed) | `236` (+59 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (25,586) | `123456` (2,987) | `uname -s -v -n -r -m` (42,276) |
-| 2 | `admin` (2,074) | `1234` (1,542) | `hostname` (1,566) |
-| 3 | `ubuntu` (1,420) | `123` (1,423) | `/bin/./uname -s -v -n -r -m` (1,069) |
-| 4 | `user` (1,328) | `admin` (823) | `export PATH=/usr/local/sbin:/usr/local/b…` (923) |
-| 5 | `deploy` (781) | `12345678` (788) | `uname -a` (844) |
+| 1 | `root` (27,039) | `123456` (3,214) | `uname -s -v -n -r -m` (45,562) |
+| 2 | `admin` (2,197) | `1234` (1,651) | `hostname` (1,588) |
+| 3 | `ubuntu` (1,535) | `123` (1,534) | `/bin/./uname -s -v -n -r -m` (1,104) |
+| 4 | `user` (1,419) | `admin` (860) | `export PATH=/usr/local/sbin:/usr/local/b…` (993) |
+| 5 | `deploy` (851) | `12345678` (847) | `uname -a` (859) |
 
 Key findings:
 
-- Median session `2.4s` (77% under 10s) — mostly automated scanning, not humans.
+- Median session `2.3s` (78% under 10s) — mostly automated scanning, not humans.
 - `94%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (300,948 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (327,281 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
