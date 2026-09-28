@@ -19,28 +19,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `2026-09-27 UTC`)
+## Collected Data — refreshed every 24 hours (last run `2026-09-28 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `582,100` | `3,949` | `86,122` | `65,927` / 398 failed | `62,293` (+274 failed) | `240` (+63 uploads) |
+| `604,540` | `4,084` | `89,083` | `68,693` / 409 failed | `64,776` (+341 failed) | `308` (+66 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (29,315) | `123456` (3,593) | `uname -s -v -n -r -m` (51,016) |
-| 2 | `admin` (2,400) | `1234` (1,830) | `hostname` (1,598) |
-| 3 | `ubuntu` (1,740) | `123` (1,727) | `/bin/./uname -s -v -n -r -m` (1,267) |
-| 4 | `user` (1,569) | `12345678` (953) | `export PATH=/usr/local/sbin:/usr/local/b…` (1,094) |
-| 5 | `deploy` (966) | `admin` (926) | `uname -a` (871) |
+| 1 | `root` (30,390) | `123456` (3,749) | `uname -s -v -n -r -m` (53,222) |
+| 2 | `admin` (2,523) | `1234` (1,919) | `hostname` (1,613) |
+| 3 | `ubuntu` (1,820) | `123` (1,799) | `/bin/./uname -s -v -n -r -m` (1,267) |
+| 4 | `user` (1,650) | `12345678` (994) | `export PATH=/usr/local/sbin:/usr/local/b…` (1,116) |
+| 5 | `deploy` (1,012) | `admin` (986) | `uname -a` (884) |
 
 Key findings:
 
-- Median session `2.4s` (79% under 10s) — mostly automated scanning, not humans.
+- Median session `2.3s` (79% under 10s) — mostly automated scanning, not humans.
 - `95%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (371,028 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (388,708 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
