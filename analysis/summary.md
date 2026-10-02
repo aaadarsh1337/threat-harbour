@@ -1,13 +1,13 @@
-# Analysis summary (rolling snapshot, cutoff 2026-10-01T04:39:53Z)
+# Analysis summary (rolling snapshot, cutoff 2026-10-02T04:31:43Z)
 
 Sensor is **still running** — this file regenerates every 24 hours.
 Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
-`2026-10-01T04:39:53Z` (650,218 events).
+`2026-10-02T04:31:43Z` (652,629 events).
 
 ## Source
 
 - Cowrie JSONL on sensor: `/home/jack/honeypot/var/log/cowrie/cowrie.json*`
-  (36 files, 5 malformed lines) — the same files Promtail ships to Loki
+  (37 files, 5 malformed lines) — the same files Promtail ships to Loki
   (`job="cowrie"`).
 - Parser: `scripts/parse_remote.py` (stdlib only, deployed fresh each run);
   renderer: `scripts/render.py`. Aggregates only. Raw logs stay on the
@@ -17,22 +17,21 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Metric | Value |
 |---|---|
-| Total events | 650,218 |
-| Unique source IPs | 4,423 |
-| Sessions (`cowrie.session.connect`) | 95,600 |
-| SSH events | 650,218 (100%) |
-| Fake successful logins (`cowrie.login.success`) | 74,044 |
-| Failed logins | 424 |
-| Command-input events | 69,714 (+412 `command.failed`) |
+| Total events | 652,629 |
+| Unique source IPs | 4,554 |
+| Sessions (`cowrie.session.connect`) | 96,380 |
+| SSH events | 652,629 (100%) |
+| Fake successful logins (`cowrie.login.success`) | 74,064 |
+| Failed logins | 425 |
+| Command-input events | 69,732 (+413 `command.failed`) |
 | File-download events | 388 |
 | File-upload events | 77 |
-| Session duration median (n=95,309 matched close) | 2.3s; 75,683 < 10s; max ~18,022s |
+| Session duration median (n=96,161 matched close) | 2.3s; 75,777 < 10s; max ~18,022s |
 
 ## Events per UTC day
 
 | Day (UTC) | Events |
 |---|---|
-| `2026-09-02` | 4,684 |
 | `2026-09-03` | 4,970 |
 | `2026-09-04` | 4,309 |
 | `2026-09-05` | 3,592 |
@@ -61,10 +60,11 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-09-28` | 30,603 |
 | `2026-09-29` | 11,381 |
 | `2026-09-30` | 3,990 |
-| `2026-10-01` | 487 |
+| `2026-10-01` | 2,353 |
+| `2026-10-02` | 545 |
 
 <details>
-<summary>Older days (6 days, click to expand)</summary>
+<summary>Older days (7 days, click to expand)</summary>
 
 | Day (UTC) | Events |
 |---|---|
@@ -74,19 +74,20 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-08-30` | 6,980 |
 | `2026-08-31` | 6,317 |
 | `2026-09-01` | 3,941 |
+| `2026-09-02` | 4,684 |
 
 </details>
 
-`2026-10-01` is partial at cutoff — do not annualize.
+`2026-10-02` is partial at cutoff — do not annualize.
 
 ### Top usernames
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `root` | 32,561 |
-| 2 | `admin` | 2,726 |
+| 1 | `root` | 32,577 |
+| 2 | `admin` | 2,729 |
 | 3 | `ubuntu` | 1,982 |
-| 4 | `user` | 1,790 |
+| 4 | `user` | 1,792 |
 | 5 | `deploy` | 1,106 |
 | 6 | `test` | 887 |
 | 7 | `user1` | 556 |
@@ -99,14 +100,14 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | # | Value | Tries |
 |---|---|---|
 | 1 | `123456` | 4,058 |
-| 2 | `1234` | 2,091 |
-| 3 | `123` | 1,952 |
-| 4 | `12345678` | 1,074 |
-| 5 | `admin` | 1,070 |
-| 6 | `1` | 978 |
+| 2 | `1234` | 2,093 |
+| 3 | `123` | 1,953 |
+| 4 | `admin` | 1,074 |
+| 5 | `12345678` | 1,074 |
+| 6 | `1` | 979 |
 | 7 | `password` | 844 |
-| 8 | `root` | 801 |
-| 9 | `12345` | 773 |
+| 8 | `root` | 802 |
+| 9 | `12345` | 774 |
 | 10 | `123456789` | 625 |
 
 ### Top commands
@@ -116,11 +117,11 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | 1 | `uname -s -v -n -r -m` | 57,675 |
 | 2 | `hostname` | 1,646 |
 | 3 | `/bin/./uname -s -v -n -r -m` | 1,299 |
-| 4 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 1,232 |
-| 5 | `uname -a` | 905 |
+| 4 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 1,235 |
+| 5 | `uname -a` | 907 |
 | 6 | `whoami` | 722 |
 | 7 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 722 |
-| 8 | `pwd` | 578 |
+| 8 | `pwd` | 579 |
 | 9 | `ls -la /` | 556 |
 | 10 | `ps aux \| head -10` | 502 |
 
@@ -128,13 +129,13 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Category | Events |
 |---|---|
-| `destructive` | 2,340 |
-| `discovery` | 65,956 |
+| `destructive` | 2,343 |
+| `discovery` | 65,969 |
 | `downloader` | 32 |
 | `empty` | 7 |
-| `other` | 768 |
+| `other` | 769 |
 | `persistence-privilege` | 21 |
-| `shell-exec` | 590 |
+| `shell-exec` | 591 |
 
 ## Limitations that shape these numbers
 
