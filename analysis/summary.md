@@ -1,13 +1,13 @@
-# Analysis summary (rolling snapshot, cutoff 2026-10-03T04:14:14Z)
+# Analysis summary (rolling snapshot, cutoff 2026-10-04T04:46:05Z)
 
 Sensor is **still running** — this file regenerates every 24 hours.
 Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
-`2026-10-03T04:14:14Z` (683,446 events).
+`2026-10-04T04:46:05Z` (721,245 events).
 
 ## Source
 
 - Cowrie JSONL on sensor: `/home/jack/honeypot/var/log/cowrie/cowrie.json*`
-  (38 files, 5 malformed lines) — the same files Promtail ships to Loki
+  (39 files, 6 malformed lines) — the same files Promtail ships to Loki
   (`job="cowrie"`).
 - Parser: `scripts/parse_remote.py` (stdlib only, deployed fresh each run);
   renderer: `scripts/render.py`. Aggregates only. Raw logs stay on the
@@ -17,22 +17,21 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 | Metric | Value |
 |---|---|
-| Total events | 683,446 |
-| Unique source IPs | 4,684 |
-| Sessions (`cowrie.session.connect`) | 100,541 |
-| SSH events | 683,446 (100%) |
-| Fake successful logins (`cowrie.login.success`) | 77,787 |
-| Failed logins | 435 |
-| Command-input events | 73,298 (+454 `command.failed`) |
-| File-download events | 434 |
-| File-upload events | 78 |
-| Session duration median (n=100,322 matched close) | 2.4s; 79,176 < 10s; max ~18,022s |
+| Total events | 721,245 |
+| Unique source IPs | 4,800 |
+| Sessions (`cowrie.session.connect`) | 105,497 |
+| SSH events | 721,245 (100%) |
+| Fake successful logins (`cowrie.login.success`) | 82,471 |
+| Failed logins | 451 |
+| Command-input events | 77,723 (+492 `command.failed`) |
+| File-download events | 472 |
+| File-upload events | 90 |
+| Session duration median (n=105,278 matched close) | 2.4s; 83,553 < 10s; max ~18,022s |
 
 ## Events per UTC day
 
 | Day (UTC) | Events |
 |---|---|
-| `2026-09-04` | 4,309 |
 | `2026-09-05` | 3,592 |
 | `2026-09-06` | 24,144 |
 | `2026-09-07` | 39,684 |
@@ -61,10 +60,11 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-09-30` | 3,990 |
 | `2026-10-01` | 2,353 |
 | `2026-10-02` | 18,424 |
-| `2026-10-03` | 12,938 |
+| `2026-10-03` | 41,555 |
+| `2026-10-04` | 9,182 |
 
 <details>
-<summary>Older days (8 days, click to expand)</summary>
+<summary>Older days (9 days, click to expand)</summary>
 
 | Day (UTC) | Events |
 |---|---|
@@ -76,67 +76,68 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 | `2026-09-01` | 3,941 |
 | `2026-09-02` | 4,684 |
 | `2026-09-03` | 4,970 |
+| `2026-09-04` | 4,309 |
 
 </details>
 
-`2026-10-03` is partial at cutoff — do not annualize.
+`2026-10-04` is partial at cutoff — do not annualize.
 
 ### Top usernames
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `root` | 32,941 |
-| 2 | `admin` | 2,802 |
-| 3 | `ubuntu` | 1,988 |
-| 4 | `user` | 1,812 |
-| 5 | `deploy` | 1,108 |
-| 6 | `test` | 889 |
-| 7 | `user1` | 559 |
-| 8 | `claude` | 509 |
-| 9 | `debian` | 456 |
-| 10 | `postgres` | 407 |
+| 1 | `root` | 33,703 |
+| 2 | `admin` | 2,888 |
+| 3 | `ubuntu` | 2,029 |
+| 4 | `user` | 1,865 |
+| 5 | `deploy` | 1,133 |
+| 6 | `test` | 913 |
+| 7 | `user1` | 572 |
+| 8 | `claude` | 521 |
+| 9 | `debian` | 466 |
+| 10 | `postgres` | 417 |
 
 ### Top passwords
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `123456` | 4,074 |
-| 2 | `1234` | 2,122 |
-| 3 | `123` | 1,961 |
-| 4 | `admin` | 1,117 |
-| 5 | `12345678` | 1,082 |
-| 6 | `1` | 982 |
-| 7 | `password` | 855 |
-| 8 | `root` | 807 |
-| 9 | `12345` | 786 |
-| 10 | `123456789` | 633 |
+| 1 | `123456` | 4,166 |
+| 2 | `1234` | 2,187 |
+| 3 | `123` | 2,009 |
+| 4 | `admin` | 1,168 |
+| 5 | `12345678` | 1,112 |
+| 6 | `1` | 1,005 |
+| 7 | `password` | 878 |
+| 8 | `root` | 830 |
+| 9 | `12345` | 810 |
+| 10 | `123456789` | 651 |
 
 ### Top commands
 
 | # | Value | Tries |
 |---|---|---|
-| 1 | `uname -s -v -n -r -m` | 60,828 |
-| 2 | `hostname` | 1,659 |
-| 3 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 1,394 |
-| 4 | `/bin/./uname -s -v -n -r -m` | 1,329 |
-| 5 | `uname -a` | 917 |
-| 6 | `whoami` | 727 |
+| 1 | `uname -s -v -n -r -m` | 64,924 |
+| 2 | `hostname` | 1,668 |
+| 3 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 1,511 |
+| 4 | `/bin/./uname -s -v -n -r -m` | 1,364 |
+| 5 | `uname -a` | 924 |
+| 6 | `whoami` | 738 |
 | 7 | `export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bi…` | 722 |
-| 8 | `pwd` | 582 |
-| 9 | `ls -la /` | 563 |
-| 10 | `ps aux \| head -10` | 514 |
+| 8 | `pwd` | 591 |
+| 9 | `ls -la /` | 568 |
+| 10 | `ps aux \| head -10` | 522 |
 
 ### Command categories
 
 | Category | Events |
 |---|---|
-| `destructive` | 2,545 |
-| `discovery` | 69,266 |
-| `downloader` | 32 |
+| `destructive` | 2,700 |
+| `discovery` | 73,480 |
+| `downloader` | 34 |
 | `empty` | 7 |
-| `other` | 824 |
-| `persistence-privilege` | 28 |
-| `shell-exec` | 596 |
+| `other` | 862 |
+| `persistence-privilege` | 29 |
+| `shell-exec` | 611 |
 
 ## Limitations that shape these numbers
 
