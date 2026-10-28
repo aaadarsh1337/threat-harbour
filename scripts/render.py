@@ -624,7 +624,11 @@ def replace_readme_block(root, block):
     if not pattern.search(text):
         print("ERROR: METRICS markers not found in README.md", file=sys.stderr)
         return False
-    text = pattern.sub("<!-- METRICS:START -->\n" + block + "<!-- METRICS:END -->", text)
+    # Pass a function, not a string: re.sub parses backslashes in a string
+    # replacement as escapes, and the block carries attacker-typed commands
+    # (e.g. `echo -e "\x41"`), which crashed the render with "bad escape \x".
+    new = "<!-- METRICS:START -->\n" + block + "<!-- METRICS:END -->"
+    text = pattern.sub(lambda _m: new, text, count=1)
     atomic_write(path, text)
     return True
 

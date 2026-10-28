@@ -156,3 +156,16 @@ def test_bucket_weekly_monthly():
     months = r._bucket_monthly(per_day)
     assert sum(c for _, c in months) == 35
     assert len(months) == 2  # Sep + Oct
+
+
+def test_replace_readme_block_keeps_backslashes_literal(tmp_path):
+    # Regression: an attacker command containing "\x" crashed re.sub
+    # ("bad escape \x") when it was passed as a string replacement.
+    readme = tmp_path / "README.md"
+    readme.write_text("intro\n<!-- METRICS:START -->\nold\n<!-- METRICS:END -->\nend\n", encoding="utf-8")
+    block = '| `echo -e "\\x41\\x42"; printf "\\1\\n"` | 3 |\n'
+    assert r.replace_readme_block(str(tmp_path), block) is True
+    text = readme.read_text(encoding="utf-8")
+    assert block in text
+    assert "old" not in text
+    assert text.startswith("intro\n") and text.endswith("end\n")
