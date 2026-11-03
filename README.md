@@ -19,28 +19,28 @@ Use it to:
 No attribution, no hype — just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data — refreshed every 24 hours (last run `2026-11-02 UTC`)
+## Collected Data — refreshed every 24 hours (last run `2026-11-03 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `2,771,876` | `8,037` | `367,734` | `329,322` / 1,134 failed | `253,383` (+5,805 failed) | `2,171` (+1,006 uploads) |
+| `2,850,962` | `8,131` | `377,140` | `338,501` / 1,158 failed | `266,431` (+6,380 failed) | `2,236` (+1,134 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (123,129) | `123456` (7,829) | `uname -s -v -n -r -m` (161,851) |
-| 2 | `ubuntu` (36,179) | `1234` (4,063) | `echo -e "\x6F\x6B"` (10,574) |
-| 3 | `admin` (19,126) | `123` (3,998) | `hostname` (5,392) |
-| 4 | `user` (13,861) | `12345678` (2,206) | `uname -a` (3,890) |
-| 5 | `y2unix` (12,707) | `admin` (2,093) | `export PATH=/usr/local/sbin:/usr/local/b…` (3,672) |
+| 1 | `root` (126,729) | `123456` (8,304) | `uname -s -v -n -r -m` (169,225) |
+| 2 | `ubuntu` (36,421) | `123` (4,252) | `echo -e "\x6F\x6B"` (10,574) |
+| 3 | `admin` (19,359) | `1234` (4,251) | `hostname` (5,462) |
+| 4 | `user` (14,013) | `12345678` (2,342) | `uname -a` (3,938) |
+| 5 | `y2unix` (13,084) | `admin` (2,137) | `export PATH=/usr/local/sbin:/usr/local/b…` (3,672) |
 
 Key findings:
 
 - Median session `2.3s` (91% under 10s) — mostly automated scanning, not humans.
-- `76%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
+- `75%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (1,126,810 events) — volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (1,176,345 events) — volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
