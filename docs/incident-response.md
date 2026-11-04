@@ -6,7 +6,7 @@ No host-compromise indicators: expected users only, no new `authorized_keys`
 entries, only the three monitor containers running, listeners limited to
 Cowrie (`22`), admin SSH (`1337`), and localhost-bound analytics
 (`3000`/`3100`). All observed attacker activity (logins, commands,
-`authorized_keys` writes) stayed inside Cowrie emulation — those writes are
+`authorized_keys` writes) stayed inside Cowrie emulation: those writes are
 expected honeypot persistence-probe behavior, not host compromise.
 Reconfirm on any alert; procedure below stays current per `docs/operations.md`.
 
@@ -57,7 +57,7 @@ Escalate when there is evidence of:
 9. Rotate any potentially exposed credentials or keys.
 10. Conduct a post-incident review.
 
-## Evidence Record (template — copy when needed; no incident filed in this window)
+## Evidence Record (template: copy when needed; no incident filed in this window)
 
 ```text
 Incident ID: <INCIDENT\_ID>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Threat Harbour remote parser — runs ON the sensor via passwordless sudo.
+"""Threat Harbour remote parser: runs ON the sensor via passwordless sudo.
 
 Deployed fresh each run (scp to /tmp/th-parse-<ts>.py, executed, deleted),
 so the sensor carries no agent and there is no version drift.

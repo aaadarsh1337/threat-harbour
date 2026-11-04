@@ -2,7 +2,7 @@
 
 Grafana dashboard for visualizing SSH honeypot activity collected from Cowrie and stored in Loki.
 
-Not to be confused with the public stats site ([aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)) — that is a separate static site showing aggregate stats. This directory is the localhost-only operator Grafana (tunnel required, never public).
+Not to be confused with the public stats site ([aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)): that is a separate static site showing aggregate stats. This directory is the localhost-only operator Grafana (tunnel required, never public).
 
 This is a subcomponent of the main project. Refer to the repository root `README.md` for overall setup, deployment, configuration, and security information.
 
@@ -37,7 +37,7 @@ ssh -p <ADMIN_PORT> -i <PRIVATE_KEY> -L 3000:localhost:3000 <ADMIN_USER>@<REDACT
 ```
 
 Grafana default in `honeypot-monitor/docker-compose.yml` is
-`admin / admin` — change it on first login and do not commit the new
+`admin / admin`: change it on first login and do not commit the new
 password. Never expose port 3000/3100 publicly.
 
 ## Dashboard location

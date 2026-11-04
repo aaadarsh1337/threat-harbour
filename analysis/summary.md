@@ -1,13 +1,13 @@
 # Analysis summary (rolling snapshot, cutoff 2026-11-04T05:16:44Z)
 
-Sensor is **still running** — this file regenerates every 24 hours.
+Sensor is **still running**: this file regenerates every 24 hours.
 Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 `2026-11-04T05:16:44Z` (2,925,425 events).
 
 ## Source
 
 - Cowrie JSONL on sensor: `/home/jack/honeypot/var/log/cowrie/cowrie.json*`
-  (70 files, 32 malformed lines) — the same files Promtail ships to Loki
+  (70 files, 32 malformed lines): the same files Promtail ships to Loki
   (`job="cowrie"`).
 - Parser: `scripts/parse_remote.py` (stdlib only, deployed fresh each run);
   renderer: `scripts/render.py`. Aggregates only. Raw logs stay on the
@@ -111,7 +111,7 @@ Observation: `2026-08-27` → `ongoing`. Numbers below are a snapshot at
 
 </details>
 
-`2026-11-04` is partial at cutoff — do not annualize.
+`2026-11-04` is partial at cutoff: do not annualize.
 
 ### Top usernames
 

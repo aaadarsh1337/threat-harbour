@@ -2,7 +2,7 @@
 
 Rebuild reference for the single-node sensor described in
 `docs/architecture.md` + `docs/deployment.md`. Values match the live sensor;
-secrets are replaced with `<PLACEHOLDERS>` — copy, fill in, never commit real
+secrets are replaced with `<PLACEHOLDERS>`: copy, fill in, never commit real
 keys, IPs, or OCIDs.
 
 | File | Live path | Purpose |

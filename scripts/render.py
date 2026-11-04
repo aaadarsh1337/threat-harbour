@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Threat Harbour renderer — metrics payload -> repo files.
+"""Threat Harbour renderer: metrics payload -> repo files.
 
 Single source of truth: the JSON payload produced by scripts/parse_remote.py
 (collected on the sensor). Everything derived is regenerated deterministically
@@ -16,7 +16,7 @@ Regenerates:
     diagrams/activity-timeline.png
     diagrams/session-funnel.png
 
-Flow diagrams (graphviz) are infra, not data — re-rendered only on
+Flow diagrams (graphviz) are infra, not data: re-rendered only on
 infrastructure change, never by the daily job.
 """
 
@@ -35,7 +35,7 @@ OBS_START = "2026-08-27"
 
 # Timeline is fully daily up to this many days. Beyond it, the chart turns
 # hybrid (see RECENT_DAILY_DAYS): recent detail stays daily, only older
-# history is compressed — so day 46 looks like day 45 plus a small
+# history is compressed, so day 46 looks like day 45 plus a small
 # aggregated tail instead of a jarring granularity switch.
 TIMELINE_DAILY_LIMIT = 45
 # In hybrid mode, the last N days always render as daily bars.
@@ -155,7 +155,7 @@ def build_metrics(payload):
             f"Daily log files {OBS_START} through {cutoff_day}; "
             f"{len(gaps)} day(s) with zero events "
             f"({', '.join(gaps[:5])}"
-            f"{'…' if len(gaps) > 5 else ''}) — see per-day table"
+            f"{'…' if len(gaps) > 5 else ''}): see per-day table"
         )
     else:
         uptime_note = (
@@ -220,14 +220,14 @@ def readme_block(m):
     rows = []
     for i in range(nrows):
         u = (f"`{md_cell(users[i]['value'])}` ({fmt(users[i]['count'])})"
-             if i < len(users) else "—")
+             if i < len(users) else "-")
         p = (f"`{md_cell(passes[i]['value'])}` ({fmt(passes[i]['count'])})"
-             if i < len(passes) else "—")
+             if i < len(passes) else "-")
         if i < len(cmds):
             short_cmd = md_cell(cmds[i]["input"], 40)
             c = f"`{short_cmd}` ({fmt(cmds[i]['count'])})"
         else:
-            c = "—"
+            c = "-"
         rows.append(f"| {i + 1} | {u} | {p} | {c} |")
 
     dl_failed = dl.get("file_download_failed_events", 0)
@@ -235,7 +235,7 @@ def readme_block(m):
                 f"(+{fmt(dl['file_upload_events'])} uploads"
                 f"{f', +{fmt(dl_failed)} dl-failed' if dl_failed else ''})")
     lines = [
-        f"## Collected Data — refreshed every 24 hours (last run `{cutoff} UTC`)",
+        f"## Collected Data: refreshed every 24 hours (last run `{cutoff} UTC`)",
         "",
         f"`{obs_start_display()}` → `ongoing` · Cowrie `{STACK['cowrie']}` · SSH-only · `ap-hyderabad-1`.",
         "",
@@ -249,10 +249,10 @@ def readme_block(m):
         "",
         "Key findings:",
         "",
-        f"- Median session `{dur['median']:.1f}s` ({under_pct}% under 10s) — mostly automated scanning, not humans.",
+        f"- Median session `{dur['median']:.1f}s` ({under_pct}% under 10s): mostly automated scanning, not humans.",
         f"- `{disc_pct}%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).",
         f"- Repeated persistence probes writing toward `authorized_keys`{sha_note}.",
-        f"- {net_note} — volume only, never attribution.",
+        f"- {net_note}: volume only, never attribution.",
         "",
         "![Session funnel](diagrams/session-funnel.png)",
         "![Activity timeline](diagrams/activity-timeline.png)",
@@ -298,14 +298,14 @@ def summary_md(m):
                 if dl_failed else "")
     return f"""# Analysis summary (rolling snapshot, cutoff {cutoff})
 
-Sensor is **still running** — this file regenerates every 24 hours.
+Sensor is **still running**: this file regenerates every 24 hours.
 Observation: `{OBS_START}` → `ongoing`. Numbers below are a snapshot at
 `{cutoff}` ({fmt(m['totals']['total_events'])} events).
 
 ## Source
 
 - Cowrie JSONL on sensor: `{SENSOR_LOG_PATH}`
-  ({m['collection']['files']} files, {m['totals']['bad_json_lines']} malformed lines) — the same files Promtail ships to Loki
+  ({m['collection']['files']} files, {m['totals']['bad_json_lines']} malformed lines): the same files Promtail ships to Loki
   (`job="cowrie"`).
 - Parser: `scripts/parse_remote.py` (stdlib only, deployed fresh each run);
   renderer: `scripts/render.py`. Aggregates only. Raw logs stay on the
@@ -332,7 +332,7 @@ Observation: `{OBS_START}` → `ongoing`. Numbers below are a snapshot at
 |---|---|
 {day_table}
 
-`{last_day}` is partial at cutoff — do not annualize.
+`{last_day}` is partial at cutoff: do not annualize.
 
 {top_tables[0]}
 
@@ -437,7 +437,7 @@ def draw_timeline(m, path):
         fig, ax = plt.subplots(figsize=(13, 4))
         fig.patch.set_facecolor(BG)
         ax.set_facecolor(BG)
-        ax.set_title("Threat Harbour — Events per UTC day (SSH-only)",
+        ax.set_title("Threat Harbour: Events per UTC day (SSH-only)",
                      fontsize=14, weight="bold", color=INK, loc="left",
                      fontfamily=T_SANS)
         ax.text(0.5, 0.5, msg, ha="center", va="center", color=MUTED)
@@ -480,7 +480,7 @@ def draw_timeline(m, path):
         xlabel = (f"Dim bars: older history in {agg_kind} buckets · "
                   f"bright bars: last {RECENT_DAILY_DAYS} days daily · "
                   "full series in analysis/summary.md")
-    title = "Threat Harbour — Events per UTC day (SSH-only)"
+    title = "Threat Harbour: Events per UTC day (SSH-only)"
     peak = max(counts)
     width = max(13, min(20, 6 + len(counts) * 0.35))
     fig, ax = plt.subplots(figsize=(width, 5.8))
@@ -541,10 +541,10 @@ def draw_timeline(m, path):
         footer = (f"{day_range} ({sum(counts):,} events): older history in "
                   f"buckets, last {RECENT_DAILY_DAYS} days daily. "
                   f"* {days[-1]} is partial at cutoff "
-                  f"({counts[-1]:,}) — do not annualize.")
+                  f"({counts[-1]:,}): do not annualize.")
     else:
         footer = (f"* {days[-1]} is a partial day at cutoff "
-                  f"({counts[-1]:,}) — do not annualize. "
+                  f"({counts[-1]:,}): do not annualize. "
                   f"{day_range}, total {sum(counts):,}.")
     ax.text(0.01, -0.24, footer, transform=ax.transAxes, fontsize=9,
             color=FAINT, style="italic")
@@ -569,7 +569,7 @@ def draw_funnel(m, path):
     fig, ax = plt.subplots(figsize=(12, 6.8))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(BG)
-    ax.set_title(f"Threat Harbour — SSH Session Funnel (rolling {cutoff} UTC)",
+    ax.set_title(f"Threat Harbour: SSH Session Funnel (rolling {cutoff} UTC)",
                  fontsize=15, weight="bold", color=INK, loc="left", pad=38,
                  fontfamily=T_SANS)
     ax.text(0.01, 1.06,

@@ -1,4 +1,4 @@
-# Daily metrics — SSH to the sensor, parse Cowrie logs, publish aggregates.
+# Daily metrics: SSH to the sensor, parse Cowrie logs, publish aggregates.
 #
 # Schedule: 00:00 UTC every 24h, plus manual runs via workflow_dispatch.
 # Only aggregates cross the wire (parse_remote.py runs ON the sensor);
@@ -11,9 +11,9 @@
 # memory pressure; in-band `ssh ... reboot` cannot work when sshd is dead,
 # so we reboot out-of-band via the OCI API before touching SSH.
 # RESET is used (not SOFTRESET) because a wedged OS may never answer the
-# graceful shutdown signal — RESET power-cycles immediately via the
+# graceful shutdown signal: RESET power-cycles immediately via the
 # hypervisor. Valid --action values are STOP, START, SOFTRESET, RESET,
-# SOFTSTOP, ... — there is no SOFTREBOOT.
+# SOFTSTOP, ...; there is no SOFTREBOOT.
 #
 # Required repo secrets (Settings → Secrets and variables → Actions):
 #   SSH_HOST         sensor admin-SSH hostname/IP
@@ -107,7 +107,7 @@ jobs:
           oci compute instance action \
             --instance-id "$OCI_INSTANCE_OCID" \
             --action RESET
-          echo "RESET issued; sshd will drop during reboot — expected."
+          echo "RESET issued; sshd will drop during reboot: expected."
 
       - name: Wait for SSH after reboot
         run: |
@@ -120,7 +120,7 @@ jobs:
               echo "SSH is back (attempt $i)."
               exit 0
             fi
-            echo "SSH not ready (attempt $i/30) — waiting 20s..."
+            echo "SSH not ready (attempt $i/30): waiting 20s..."
             sleep 20
           done
           echo "ERROR: SSH did not come back within ~10 min of RESET" >&2
@@ -136,7 +136,7 @@ jobs:
             local i
             for i in $(seq 1 "$n"); do
               if "$@"; then return 0; fi
-              echo "attempt $i/$n failed: $* — retrying in ${delay}s..." >&2
+              echo "attempt $i/$n failed: $*; retrying in ${delay}s..." >&2
               sleep "$delay"
             done
             return 1
@@ -168,7 +168,7 @@ jobs:
           git add analysis/metrics.json analysis/summary.md evidence/manifest.md \
             README.md diagrams/activity-timeline.png diagrams/session-funnel.png
           if git diff --cached --quiet; then
-            echo "No data changes — nothing to commit."
+            echo "No data changes: nothing to commit."
             exit 0
           fi
           TOTAL=$(python3 -c "import json;print(f\"{json.load(open('analysis/metrics.json'))['totals']['total_events']:,}\")")

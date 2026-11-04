@@ -1,5 +1,5 @@
-# Redacted example — mounted into the Promtail container (see docker-compose.yml.example).
-# Ships Cowrie JSONL to Loki as job="cowrie" — the same source scripts/parse_remote.py parses.
+# Redacted example: mounted into the Promtail container (see docker-compose.yml.example).
+# Ships Cowrie JSONL to Loki as job="cowrie": the same source scripts/parse_remote.py parses.
 
 server:
   http_listen_port: 9080

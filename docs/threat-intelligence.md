@@ -1,6 +1,6 @@
 # Threat Intelligence (analyst deep-dive, ARCHIVED cutoff 2026-09-08 UTC)
 
-> **ARCHIVED — not live.** Snapshot at `2026-09-08T19:08:28Z` (174,927 events).
+> **ARCHIVED, not live.** Snapshot at `2026-09-08T19:08:28Z` (174,927 events).
 > For current numbers see the live views: public dashboard
 > [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel),
 > `analysis/summary.md`, and `analysis/metrics.json` (refreshed every 24h).
@@ -45,9 +45,9 @@ No external scanning was performed.
   fingerprinting, plus recurring long recon one-liners probing
   arch/CPU/GPU/shell-filter behavior.
 - Persistence attempts: repeated writes toward `authorized_keys`
-  (see IoCs). No evidence of host compromise — these stayed inside Cowrie.
+  (see IoCs). No evidence of host compromise: these stayed inside Cowrie.
 - Downloader behavior: minimal (4 `wget/curl`-class commands; most download
-  events carry null URL — SFTP-style writes, not HTTP fetches).
+  events carry null URL: SFTP-style writes, not HTTP fetches).
 - Miner indicators: none observed. Destructive: 8 events (no impact).
 
 ## Attribution language
@@ -76,7 +76,7 @@ context: `109.160.0.0/16` 62,784 events · `91.92.0.0/16` 36,956 ·
 
 - High: directly observed with multiple event fields (counts, destfile).
 - Moderate: consistent behavioral repetition (recon one-liners, hash reuse).
-- Low: anything requiring operator identity, location, or intent — not claimed.
+- Low: anything requiring operator identity, location, or intent, not claimed.
 
 ## Findings
 
@@ -89,7 +89,7 @@ context: `109.160.0.0/16` 62,784 events · `91.92.0.0/16` 36,956 ·
 3. Post-login behavior is discovery/persistence-probing, contained by
    Cowrie; evidence: 93% discovery commands + `authorized_keys` writes
    with no host-compromise indicators (see `docs/incident-response.md`).
-   Limitation: single sensor with partial-day volume spikes — do not generalize.
+   Limitation: single sensor with partial-day volume spikes; do not generalize.
 
 ## Limitations
 

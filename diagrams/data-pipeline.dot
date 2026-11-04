@@ -1,4 +1,4 @@
-// Source for diagrams/data-pipeline.png — render with:
+// Source for diagrams/data-pipeline.png: render with:
 //   dot -Tpng -Gdpi=150 diagrams/data-pipeline.dot -o diagrams/data-pipeline.png
 // Theme: Tokyo Night (matches aaadarsh1337.github.io/intel + css/tokens.css).
 // NOTE: node labels stay count-free so the diagram never goes stale;

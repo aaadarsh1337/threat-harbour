@@ -54,7 +54,7 @@ Validate the effective rules from both OCI and the host firewall.
 
 - `docker-compose.yml` (redacted example: `configs/docker-compose.yml.example`)
   runs `loki`, `promtail` (read-only mount of the Cowrie log dir,
-  `job="cowrie"` — see `configs/promtail-config.yml.example`), and `grafana`
+  `job="cowrie"`: see `configs/promtail-config.yml.example`), and `grafana`
 - Promtail config maps `/var/log/cowrie/cowrie.json*`
 - Network rules reference: `configs/nsg-rules.md`
 - Verify: Loki `http://localhost:3100/ready`, Grafana

@@ -1,4 +1,4 @@
-"""Unit tests for scripts/parse_remote.py — command categorization + helpers.
+"""Unit tests for scripts/parse_remote.py: command categorization + helpers.
 
 Run: pytest tests/test_parse_remote.py
 Stdlib only (sensor parity); no matplotlib required.

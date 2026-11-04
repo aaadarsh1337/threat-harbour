@@ -1,4 +1,4 @@
-// Source for diagrams/architecture.png — render with:
+// Source for diagrams/architecture.png: render with:
 //   dot -Tpng -Gdpi=150 diagrams/architecture.dot -o diagrams/architecture.png
 // Theme: Tokyo Night (matches aaadarsh1337.github.io/intel + css/tokens.css).
 digraph architecture {

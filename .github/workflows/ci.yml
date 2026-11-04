@@ -1,4 +1,4 @@
-# CI — fast stdlib tests on push/PR. No sensor, no secrets, no matplotlib needed.
+# CI: fast stdlib tests on push/PR. No sensor, no secrets, no matplotlib needed.
 name: ci
 
 on:

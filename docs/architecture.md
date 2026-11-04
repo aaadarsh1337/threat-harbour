@@ -5,7 +5,7 @@
 ## Overview
 
 One OCI Free Tier VM (`VM.Standard.E2.1.Micro`, Ubuntu 24.04, `ap-hyderabad-1`)
-as a lightweight public honeypot sensor — single-node by design, one port,
+as a lightweight public honeypot sensor: single-node by design, one port,
 tight scope, rebuildable (see `configs/` for redacted source configs).
 
 The VM runs:
@@ -29,9 +29,9 @@ Internet (unsolicited SSH scanners/bots)
    |
 OCI Edge: Internet Gateway + VCN + public subnet
    |
-NSG / SecList — allow: Cowrie SSH; deny: 3000/3100, admin SSH from Internet
+NSG / SecList; allow: Cowrie SSH; deny: 3000/3100, admin SSH from Internet
    |  (exception: admin SSH key-only port reachable from GitHub runners
-   |   for the daily job — tradeoff documented in docs/operations.md)
+   |   for the daily job: tradeoff documented in docs/operations.md)
    |
 Sensor VM (ap-hyderabad-1 · E2.1.Micro · Ubuntu 24.04)
    |-- Cowrie 3.0.13 SSH honeypot :22 → cowrie.json* + tty + downloads/
@@ -62,7 +62,7 @@ numbers live in `analysis/metrics.json`, not in the image.
   + README leaderboard (both refreshed every 24h from the same aggregates;
   separate from Grafana)
 - Local Grafana, operator-only via tunnel: (`dashboard/grafana-dashboard.json`,
-  UID `b3f714e8-54fc-420f-b0ea-1aabea9d4858`) — see `dashboard/README.md`,
+  UID `b3f714e8-54fc-420f-b0ea-1aabea9d4858`): see `dashboard/README.md`,
   never public
 - Raw logs, source IPs, payloads, keys stay on the sensor; only aggregates,
   /16 volume buckets, and redacted hashes leave it.
