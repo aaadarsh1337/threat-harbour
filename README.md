@@ -4,6 +4,8 @@
 > A Cowrie SSH honeypot on Oracle Cloud Free Tier that publishes a **fresh leaderboard of real attacker credentials every 24 hours**: the usernames, passwords, and commands bots actually try against SSH servers in the wild.
 
 > **Live site: [aaadarsh1337.github.io/intel](https://aaadarsh1337.github.io/intel)**: interactive charts + credential leaderboard, refreshed daily. No login required. Start there; this README is the data + method behind it.
+>
+> **Indicators:** [iocs.txt](https://aaadarsh1337.github.io/intel/iocs.txt) · [iocs.csv](https://aaadarsh1337.github.io/intel/iocs.csv) · [iocs.json](https://aaadarsh1337.github.io/intel/iocs.json): the hashes, file paths, source networks and credentials from these aggregates, regenerated daily.
 
 ## Why this exists
 

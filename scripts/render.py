@@ -47,19 +47,19 @@ WEEKLY_SPAN_LIMIT = 84
 SUMMARY_INLINE_DAYS = 30
 # Absolute-count highlight cutoff (currently unused for colour; kept so
 # archived payloads/metrics carrying it still validate conceptually).
-# Tokyo Night (matches aaadarsh1337.github.io/intel + css/tokens.css).
-# Site chart reference: base bars #7aa2f7 @0.75, peak #f7768e, latest #7dcfff,
-# grid #292e42, values #a9b1d6, axis labels #7d86b0, Mono for numbers.
-T_BG = "#1a1b26"      # --bg-elev (.panel background)
-T_FIG_EDGE = "#16161e"  # --bg (figure edge / bar outlines)
-T_GRID = "#292e42"    # --line
-T_INK = "#c0caf5"     # --ink (titles, values)
-T_MUTED = "#a9b1d6"   # --muted (subtitles, bar labels)
-T_FAINT = "#7d86b0"   # --faint (axis ticks, footers)
-T_BLUE = "#7aa2f7"    # --accent-2 (base bars)
-T_CYAN = "#7dcfff"    # --accent (latest / partial bucket)
-T_PINK = "#f7768e"    # --danger (peak)
-T_PURPLE = "#bb9af7"  # kpi-3 accent (funnel stage 3)
+# Lunar (matches aaadarsh1337.github.io/intel and its src/styles/tokens.css, night theme).
+# Base bars --blue, peak --lily, latest --tide; grid --rule-2, values --bone, labels --fg-2,
+# axis text --muted; the background is the page's own --bg so the image sits flush on it.
+T_BG = "#0b0e13"      # --bg (page and figure background)
+T_FIG_EDGE = "#0b0e13"  # --bg (bar outlines)
+T_GRID = "#29303a"    # --rule-2
+T_INK = "#eef0f3"     # --bone (titles, values)
+T_MUTED = "#b6bec8"   # --fg-2 (subtitles, bar labels)
+T_FAINT = "#939eab"   # --muted (axis ticks, footers)
+T_BLUE = "#8fb3e8"    # --blue (base bars, funnel stage 1)
+T_TIDE = "#8bb3ad"    # --tide (latest / partial bucket, funnel stage 2)
+T_LANTERN = "#d2b177" # --lantern (funnel stage 3)
+T_LILY = "#cf7c71"    # --lily (peak, funnel stage 4)
 T_MONO = "monospace"
 T_SANS = "sans-serif"
 
@@ -498,9 +498,9 @@ def draw_timeline(m, path):
     for i, c in enumerate(counts):
         in_agg = section_split is not None and i < section_split
         if c == peak:
-            colors.append(to_rgba(T_PINK, 0.92))
+            colors.append(to_rgba(T_LILY, 0.92))
         elif i == last_idx:
-            colors.append(to_rgba(T_CYAN, 0.92))
+            colors.append(to_rgba(T_TIDE, 0.92))
         else:
             colors.append(to_rgba(T_BLUE, 0.55 if in_agg else 0.92))
     bars = ax.bar(labels, counts, color=colors, edgecolor=T_FIG_EDGE,
@@ -582,7 +582,7 @@ def draw_funnel(m, path):
     # Log scale can't render 0; floor at 0.5 for the bar but label the truth.
     plot_vals = [max(v, 0.5) for v in vals]
     bars = ax.bar(stages, plot_vals,
-                  color=[T_BLUE, T_CYAN, T_PURPLE, T_PINK],
+                  color=[T_BLUE, T_TIDE, T_LANTERN, T_LILY],
                   edgecolor=T_FIG_EDGE, linewidth=1.5, width=0.55,
                   alpha=0.92, zorder=3)
     ax.set_yscale("log")
