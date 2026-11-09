@@ -21,28 +21,28 @@ Use it to:
 No attribution, no hype: just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data: refreshed every 24 hours (last run `2026-11-08 UTC`)
+## Collected Data: refreshed every 24 hours (last run `2026-11-09 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `3,135,267` | `8,506` | `410,914` | `370,719` / 1,238 failed | `308,434` (+8,734 failed) | `2,467` (+1,598 uploads) |
+| `3,295,124` | `8,579` | `431,082` | `389,464` / 1,266 failed | `324,213` (+9,363 failed) | `2,504` (+1,705 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (142,223) | `123456` (9,588) | `uname -s -v -n -r -m` (188,591) |
-| 2 | `ubuntu` (38,005) | `123` (4,942) | `echo -e "\x6F\x6B"` (10,651) |
-| 3 | `admin` (20,948) | `1234` (4,796) | `hostname` (5,489) |
-| 4 | `user` (14,471) | `12345678` (2,696) | `uname -a` (3,960) |
-| 5 | `y2unix` (13,213) | `1` (2,315) | `export PATH=/usr/local/sbin:/usr/local/b…` (3,672) |
+| 1 | `root` (149,430) | `123456` (10,200) | `uname -s -v -n -r -m` (198,012) |
+| 2 | `ubuntu` (39,934) | `123` (5,265) | `echo -e "\x6F\x6B"` (10,651) |
+| 3 | `admin` (23,657) | `1234` (5,036) | `hostname` (5,492) |
+| 4 | `user` (14,721) | `12345678` (2,848) | `uname -a` (3,961) |
+| 5 | `y2unix` (13,215) | `1` (2,456) | `export PATH=/usr/local/sbin:/usr/local/b…` (3,672) |
 
 Key findings:
 
 - Median session `2.3s` (91% under 10s): mostly automated scanning, not humans.
 - `71%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (1,319,927 events): volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (1,370,713 events): volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
