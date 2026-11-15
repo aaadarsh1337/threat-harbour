@@ -21,28 +21,28 @@ Use it to:
 No attribution, no hype: just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data: refreshed every 24 hours (last run `2026-11-14 UTC`)
+## Collected Data: refreshed every 24 hours (last run `2026-11-15 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `3,896,233` | `9,129` | `504,293` | `456,229` / 1,495 failed | `397,332` (+14,560 failed) | `2,662` (+1,845 uploads) |
+| `3,979,093` | `9,291` | `514,164` | `464,954` / 1,511 failed | `409,848` (+15,489 failed) | `2,691` (+1,846 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (177,464) | `123456` (11,442) | `uname -s -v -n -r -m` (218,089) |
-| 2 | `ubuntu` (51,375) | `123` (5,921) | `echo -e "\x6F\x6B"` (11,273) |
-| 3 | `admin` (33,521) | `1234` (5,568) | `hostname` (5,797) |
-| 4 | `user` (17,548) | `12345678` (3,223) | `echo xsec` (4,398) |
-| 5 | `y2unix` (14,367) | `1` (2,750) | `uname -a` (4,233) |
+| 1 | `root` (180,251) | `123456` (11,513) | `uname -s -v -n -r -m` (219,099) |
+| 2 | `ubuntu` (52,450) | `123` (5,967) | `echo -e "\x6F\x6B"` (11,273) |
+| 3 | `admin` (34,060) | `1234` (5,608) | `hostname` (6,240) |
+| 4 | `user` (17,577) | `12345678` (3,246) | `uname -a` (4,611) |
+| 5 | `y2unix` (16,903) | `1` (2,762) | `echo xsec` (4,398) |
 
 Key findings:
 
 - Median session `2.3s` (91% under 10s): mostly automated scanning, not humans.
-- `63%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
+- `62%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (1,523,925 events): volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (1,532,142 events): volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
