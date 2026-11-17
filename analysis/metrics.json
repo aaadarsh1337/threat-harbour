@@ -1,21 +1,21 @@
 {
- "analysis_cutoff_utc": "2026-11-16T05:18:25Z",
+ "analysis_cutoff_utc": "2026-11-17T07:03:12Z",
  "observation_period": {
   "start": "2026-08-27",
   "end": "ongoing",
-  "interim_cutoff": "2026-11-16"
+  "interim_cutoff": "2026-11-17"
  },
  "totals": {
-  "total_events": 4077760,
-  "bad_json_lines": 43
+  "total_events": 4153919,
+  "bad_json_lines": 44
  },
  "sources": {
-  "unique_source_ips": 9480,
+  "unique_source_ips": 9654,
   "ipv6_events": 0,
   "top_source_net16_by_event_volume": [
    {
     "cidr": "109.160.0.0/16",
-    "events": 1583572
+    "events": 1614422
    },
    {
     "cidr": "200.62.0.0/16",
@@ -23,7 +23,7 @@
    },
    {
     "cidr": "77.239.0.0/16",
-    "events": 179298
+    "events": 179300
    },
    {
     "cidr": "192.145.0.0/16",
@@ -34,12 +34,12 @@
     "events": 168849
    },
    {
-    "cidr": "103.216.0.0/16",
-    "events": 144766
+    "cidr": "196.13.0.0/16",
+    "events": 154237
    },
    {
-    "cidr": "196.13.0.0/16",
-    "events": 137467
+    "cidr": "103.216.0.0/16",
+    "events": 147022
    },
    {
     "cidr": "75.130.0.0/16",
@@ -48,114 +48,114 @@
   ]
  },
  "sessions": {
-  "unique_session_ids": 526956,
-  "session_connect_events": 526913,
+  "unique_session_ids": 536265,
+  "session_connect_events": 536222,
   "session_duration_seconds": {
-   "n_closed_matched": 526655,
-   "median": 2.260722,
+   "n_closed_matched": 535963,
+   "median": 2.263177,
    "max": 18022.218617,
-   "under_10s": 479818,
-   "unmatched_closes": 45
+   "under_10s": 487748,
+   "unmatched_closes": 44
   }
  },
  "protocols": {
-  "ssh": 4077760
+  "ssh": 4153919
  },
  "logins": {
-  "success_fake": 476221,
-  "failed": 1531,
+  "success_fake": 484238,
+  "failed": 1546,
   "top_usernames": [
    {
     "value": "root",
-    "count": 184507
+    "count": 187522
    },
    {
     "value": "ubuntu",
-    "count": 54109
+    "count": 56059
    },
    {
     "value": "admin",
-    "count": 34296
+    "count": 34504
    },
    {
     "value": "y2unix",
-    "count": 18068
+    "count": 18350
    },
    {
     "value": "user",
-    "count": 17708
+    "count": 17789
    },
    {
     "value": "deploy",
-    "count": 3401
+    "count": 3470
    },
    {
     "value": "test",
-    "count": 2672
+    "count": 2722
    },
    {
     "value": "345gs5662d34",
-    "count": 2096
+    "count": 2099
    },
    {
     "value": "user1",
-    "count": 1794
+    "count": 1833
    },
    {
     "value": "claude",
-    "count": 1567
+    "count": 1600
    }
   ],
   "top_passwords": [
    {
     "value": "123456",
-    "count": 11900
+    "count": 12140
    },
    {
     "value": "123",
-    "count": 6174
+    "count": 6302
    },
    {
     "value": "1234",
-    "count": 5764
+    "count": 5864
    },
    {
     "value": "12345678",
-    "count": 3355
+    "count": 3433
    },
    {
     "value": "1",
-    "count": 2853
+    "count": 2908
    },
    {
     "value": "root",
-    "count": 2574
+    "count": 2633
    },
    {
     "value": "admin",
-    "count": 2568
+    "count": 2607
    },
    {
     "value": "password",
-    "count": 2521
+    "count": 2575
    },
    {
     "value": "12345",
-    "count": 2520
+    "count": 2569
    },
    {
     "value": "345gs5662d34",
-    "count": 2096
+    "count": 2099
    }
   ]
  },
  "commands": {
-  "input_events": 422652,
-  "failed_command_events": 16039,
+  "input_events": 435895,
+  "failed_command_events": 17037,
   "top_commands": [
    {
     "input": "uname -s -v -n -r -m",
-    "count": 225522
+    "count": 229378
    },
    {
     "input": "echo -e \"\\x6F\\x6B\"",
@@ -163,11 +163,11 @@
    },
    {
     "input": "hostname",
-    "count": 6503
+    "count": 6606
    },
    {
     "input": "uname -a",
-    "count": 4786
+    "count": 4860
    },
    {
     "input": "echo xsec",
@@ -175,7 +175,7 @@
    },
    {
     "input": "whoami",
-    "count": 3786
+    "count": 3830
    },
    {
     "input": "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH\nuname=$(uname -s -v -n -m 2>/dev/null || /bin/uname -s -v -n -m 2>/dev/null || /usr/bin/uname -s -v -n -m 2>/dev/null || busybox uname -s -v -n -m 2>/dev/null || ( [ -f /proc/version ] && head -1 /proc/version | cut -d' ' -f1 ) || ( [ -f /etc/os-release ] && grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '\"' ) || echo \"\")\narch=$(uname -m 2>/dev/null || /bin/uname -m 2>/dev/null || /usr/bin/uname -m 2>/dev/null || busybox uname -m 2>/dev/null || ( [ -f /proc/cpuinfo ] && grep -q \"lm\" /proc/cpuinfo && echo x86_64 ) || ( [ -f /proc/cpuinfo ] && grep -q \"CPU architecture: 8\" /proc/cpuinfo && echo aarch64 ) || ( [ -f /proc/cpuinfo ] && grep -q \"CPU architecture: 7\" /proc/cpuinfo && echo armv7l ) || echo \"\")\nuptime=$(cat /proc/uptime 2>/dev/null || busybox cat /proc/uptime 2>/dev/null)\ncpus=$(nproc 2>/dev/null || /usr/bin/nproc 2>/dev/null || busybox nproc 2>/dev/null || grep -c \"^processor\" /proc/cpuinfo 2>/dev/null)\ncpu_model=$( { lscpu 2>/dev/null | awk -F: '/Model name/ {print $2}'; grep -m1 -E \"^model name\" /proc/cpuinfo 2>/dev/null | cut -d: -f2-; grep -m1 -E \"^Hardware\" /proc/cpuinfo 2>/dev/null | cut -d: -f2-; cat /proc/device-tree/model 2>/dev/null; } | sed '/^$/d; /unknown/d; s/^[[:space:]]*//; s/[[:space:]]*$//; s/ AArch64 Processor$//; s/ Processor$//; s/ CPU$//' | head -1 )\ngpu_info=$( (lspci 2>/dev/null | grep -i vga; lspci 2>/dev/null | grep -i nvidia; busybox lspci 2>/dev/null | grep -i vga; busybox lspci 2>/dev/null | grep -i nvidia) 2>/dev/null )\nlast_output=$(last 2>/dev/null)\nfilter_output=$( ( export LANG=C LC_ALL=C; echo '===SHELL_BEHAVIOR==='; printf 'path_err='; ( ./xxxxxx 2>&1 || true ) | ( head -c 250 2>/dev/null || busybox head -c 250 2>/dev/null || dd bs=250 count=1 2>/dev/null ) | ( tr -d '\\n' 2>/dev/null || busybox tr -d '\\n' 2>/dev/null || cat ); printf '\\n'; printf 'cmd_err='; ( xxxxxx 2>&1 || true ) | ( head -c 250 2>/dev/null || busybox head -c 250 2>/dev/null || dd bs=250 count=1 2>/dev/null ) | ( tr -d '\\n' 2>/dev/null || busybox tr -d '\\n' 2>/dev/null || cat ); printf '\\n'; printf 'execute_err='; out=$(bash -c 'printf \"#!/bin/bash\\necho \\\"xxxxxx\\\"\\n\" > filter && chmod +x filter && ./filter && rm -rf filter' 2>&1); case \"$out\" in *xxxxxx*) ;; *) out=$(/bin/bash -c 'printf \"#!/bin/bash\\necho \\\"xxxxxx\\\"\\n\" > filter && chmod +x filter && ./filter && rm -rf filter' 2>&1); case \"$out\" in *xxxxxx*) ;; *) out=$(/usr/bin/bash -c 'printf \"#!/bin/bash\\necho \\\"xxxxxx\\\"\\n\" > filter && chmod +x filter && ./filter && rm -rf filter' 2>&1); case \"$out\" in *xxxxxx*) ;; *) out=$(busybox sh -c 'printf \"#!/bin/sh\\necho \\\"xxxxxx\\\"\\n\" > filter && chmod +x filter && ./filter && rm -rf filter' 2>&1 || sh -c 'printf \"#!/bin/sh\\necho \\\"xxxxxx\\\"\\n\" > filter && chmod +x filter && ./filter && rm -rf filter' 2>&1); esac; esac; esac; printf '%s' \"$out\" | ( head -c 250 2>/dev/null || busybox head -c 250 2>/dev/null || dd bs=250 count=1 2>/dev/null ) | ( tr -d '\\n' 2>/dev/null || busybox tr -d '\\n' 2>/dev/null || cat ); printf '\\n'; echo '===DONE===' ) 2>&1 )\necho \"UNAME:$uname\"\necho \"ARCH:$arch\"\necho \"UPTIME:$uptime\"\necho \"CPUS:$cpus\"\necho \"CPU_MODEL:$cpu_model\"\necho \"GPU:$gpu_info\"\necho \"LAST:$last_output\"\necho \"FILTER:$filter_output\"",
@@ -187,31 +187,31 @@
    },
    {
     "input": "pwd",
-    "count": 3120
+    "count": 3169
    },
    {
-    "input": "ls -la /",
-    "count": 2710
+    "input": "cd ~; chattr -ia .ssh; lockr -ia .ssh",
+    "count": 2766
    }
   ]
  },
  "behavioral_command_categories": {
-  "discovery": 262549,
-  "shell-exec": 103888,
-  "other": 45747,
-  "destructive": 7114,
-  "persistence-privilege": 3257,
+  "shell-exec": 109819,
+  "other": 48602,
+  "discovery": 266916,
+  "destructive": 7202,
+  "persistence-privilege": 3259,
   "empty": 9,
   "downloader": 88
  },
  "downloads_uploads": {
-  "file_download_events": 2736,
+  "file_download_events": 2824,
   "file_download_failed_events": 0,
   "file_upload_events": 1847,
   "top_destfiles": [
    {
     "value": "/root/.ssh/authorized_keys",
-    "count": 1372
+    "count": 1439
    },
    {
     "value": "/tmp/sshcfg",
@@ -223,17 +223,17 @@
    },
    {
     "value": "/home/ubuntu/.ssh/authorized_keys",
-    "count": 58
+    "count": 60
    },
    {
     "value": "/home/admin/.ssh/authorized_keys",
-    "count": 57
+    "count": 59
    }
   ],
   "top_shasums": [
    {
     "value": "a8460f446be540410004b1a8db4083773fa46f7fe76fa84219c93daa1669f8f2",
-    "count": 2565
+    "count": 2652
    },
    {
     "value": "00b6f15c2274420217ed3098a9f5f00545bf1793d7a324fd18a7809cbbf5b12b",
@@ -246,31 +246,31 @@
   ]
  },
  "event_ids": {
-  "cowrie.session.connect": 526913,
-  "cowrie.client.version": 505450,
-  "cowrie.client.kex": 488931,
-  "cowrie.login.success": 476221,
-  "cowrie.session.params": 298182,
-  "cowrie.command.input": 422652,
-  "cowrie.log.closed": 298172,
-  "cowrie.session.closed": 526700,
-  "cowrie.direct-tcpip.request": 172599,
-  "cowrie.direct-tcpip.ja4h": 163975,
-  "cowrie.direct-tcpip.data": 169103,
-  "cowrie.command.failed": 16039,
-  "cowrie.session.file_download": 2736,
-  "cowrie.direct-tcpip.ja4": 2622,
-  "cowrie.login.failed": 1531,
-  "cowrie.client.size": 3426,
-  "cowrie.client.malformed_packet": 20,
-  "cowrie.client.fingerprint": 572,
+  "cowrie.session.connect": 536222,
+  "cowrie.client.version": 513604,
+  "cowrie.client.kex": 497072,
+  "cowrie.login.success": 484238,
+  "cowrie.direct-tcpip.request": 175698,
+  "cowrie.session.closed": 536007,
+  "cowrie.client.size": 3653,
+  "cowrie.session.params": 303039,
+  "cowrie.command.input": 435895,
+  "cowrie.command.failed": 17037,
+  "cowrie.log.closed": 303029,
+  "cowrie.direct-tcpip.ja4h": 166840,
+  "cowrie.direct-tcpip.data": 172026,
+  "cowrie.session.file_download": 2824,
+  "cowrie.direct-tcpip.ja4": 2680,
+  "cowrie.login.failed": 1546,
   "cowrie.client.var": 33,
-  "cowrie.command.chpasswd": 18,
+  "cowrie.command.chpasswd": 19,
   "cowrie.session.file_upload": 1847,
+  "cowrie.client.fingerprint": 572,
+  "cowrie.client.malformed_packet": 20,
   "cowrie.command.success": 18
  },
  "collection": {
-  "files": 82,
+  "files": 83,
   "log_path_on_sensor": "/home/jack/honeypot/var/log/cowrie/cowrie.json*",
   "per_day_utc": {
    "2026-08-27": 964,
@@ -354,10 +354,11 @@
    "2026-11-13": 117727,
    "2026-11-14": 100818,
    "2026-11-15": 81958,
-   "2026-11-16": 30401
+   "2026-11-16": 81178,
+   "2026-11-17": 25382
   },
-  "sensor_uptime_note": "Continuous daily log files 2026-08-27 through 2026-11-16, no missing days observed",
-  "bad_json_lines": 43
+  "sensor_uptime_note": "Continuous daily log files 2026-08-27 through 2026-11-17, no missing days observed",
+  "bad_json_lines": 44
  },
  "stack": {
   "cowrie": "3.0.13",
