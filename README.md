@@ -21,26 +21,26 @@ Use it to:
 No attribution, no hype: just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data: refreshed every 24 hours (last run `2026-11-24 UTC`)
+## Collected Data: refreshed every 24 hours (last run `2026-11-25 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `4,560,126` | `11,008` | `579,120` | `523,739` / 1,737 failed | `545,076` (+25,512 failed) | `3,168` (+1,859 uploads) |
+| `4,576,044` | `11,112` | `580,187` | `524,578` / 1,782 failed | `553,343` (+26,397 failed) | `3,234` (+1,860 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (203,337) | `123456` (13,977) | `uname -s -v -n -r -m` (257,606) |
-| 2 | `ubuntu` (58,649) | `123` (7,299) | `echo -e "\x6F\x6B"` (11,273) |
-| 3 | `admin` (36,235) | `1234` (6,686) | `hostname` (6,964) |
-| 4 | `y2unix` (18,853) | `12345678` (4,052) | `uname -a` (5,172) |
-| 5 | `user` (18,420) | `1` (3,317) | `echo xsec` (4,818) |
+| 1 | `root` (203,736) | `123456` (13,997) | `uname -s -v -n -r -m` (257,610) |
+| 2 | `ubuntu` (58,664) | `123` (7,318) | `echo -e "\x6F\x6B"` (11,273) |
+| 3 | `admin` (36,321) | `1234` (6,704) | `hostname` (6,995) |
+| 4 | `y2unix` (18,853) | `12345678` (4,069) | `uname -a` (5,193) |
+| 5 | `user` (18,429) | `1` (3,322) | `echo xsec` (4,818) |
 
 Key findings:
 
 - Median session `2.3s` (91% under 10s): mostly automated scanning, not humans.
-- `55%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
+- `54%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
 - Busiest /16 by volume: `109.160.0.0/16` (1,807,576 events): volume only, never attribution.
 
