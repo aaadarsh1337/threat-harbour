@@ -21,28 +21,28 @@ Use it to:
 No attribution, no hype: just counts of what hit the sensor, refreshed daily.
 
 <!-- METRICS:START -->
-## Collected Data: refreshed every 24 hours (last run `2026-11-27 UTC`)
+## Collected Data: refreshed every 24 hours (last run `2026-11-28 UTC`)
 
 `2026-08-27` → `ongoing` · Cowrie `3.0.13` · SSH-only · `ap-hyderabad-1`.
 
 | Total events | Unique IPs | Sessions | Fake logins | Commands | Downloads (+uploads) |
 |---|---|---|---|---|---|
-| `4,623,776` | `11,308` | `585,228` | `529,118` / 1,825 failed | `565,743` (+27,541 failed) | `3,423` (+1,862 uploads) |
+| `4,684,026` | `11,398` | `592,409` | `535,913` / 1,844 failed | `574,167` (+28,053 failed) | `3,504` (+1,862 uploads) |
 
 | # | Top username | Top password | Top command |
 |---|---|---|---|
-| 1 | `root` (205,747) | `123456` (14,175) | `uname -s -v -n -r -m` (260,181) |
-| 2 | `ubuntu` (59,115) | `123` (7,426) | `echo -e "\x6F\x6B"` (11,273) |
-| 3 | `admin` (36,547) | `1234` (6,788) | `hostname` (7,029) |
-| 4 | `y2unix` (18,853) | `12345678` (4,126) | `uname -a` (5,234) |
-| 5 | `user` (18,489) | `1` (3,364) | `echo xsec` (4,818) |
+| 1 | `root` (208,628) | `123456` (14,439) | `uname -s -v -n -r -m` (264,038) |
+| 2 | `ubuntu` (59,968) | `123` (7,555) | `echo -e "\x6F\x6B"` (11,273) |
+| 3 | `admin` (36,758) | `1234` (6,895) | `hostname` (7,048) |
+| 4 | `y2unix` (18,853) | `12345678` (4,190) | `uname -a` (5,249) |
+| 5 | `user` (18,603) | `1` (3,426) | `echo xsec` (4,818) |
 
 Key findings:
 
 - Median session `2.3s` (91% under 10s): mostly automated scanning, not humans.
 - `53%` of commands are discovery/fingerprinting (`uname`, `hostname`, `whoami`).
 - Repeated persistence probes writing toward `authorized_keys` (hash `a8460f44……`, content withheld).
-- Busiest /16 by volume: `109.160.0.0/16` (1,817,862 events): volume only, never attribution.
+- Busiest /16 by volume: `109.160.0.0/16` (1,848,720 events): volume only, never attribution.
 
 ![Session funnel](diagrams/session-funnel.png)
 ![Activity timeline](diagrams/activity-timeline.png)
